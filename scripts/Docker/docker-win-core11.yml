@@ -1,0 +1,31 @@
+# irm https://massgrave.dev/get | iex 
+# irm https://get.activated.win | iex 
+
+services:
+  core11:
+    image: dockurr/windows
+    container_name: core11
+    # restart: unless-stopped
+    environment:
+      VERSION: "core11"
+      RAM_SIZE: "2G"
+      CPU_CORES: "2"
+      DISK_SIZE: "12G"
+      USERNAME: "dd"
+      PASSWORD: "7654321234567"
+      # LANGUAGE: "Chinese"   
+    volumes:
+      - /home/win_volume:/storage
+      - /home/win_share:/shared
+    devices:
+      - /dev/kvm
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 5000:5000
+      - 3389:3389/tcp
+      - 3389:3389/udp
+      # - 2080:2080/tcp
+      # - 2080:2080/udp
+    stop_grace_period: 2m

@@ -1,0 +1,15 @@
+# https://github.com/janeczku/calibre-web/raw/master/library/metadata.db
+services:  
+  calibre-web:  
+    image: linuxserver/calibre-web # admin@admin123 
+    # image: linuxserver/docker-calibre-web
+    container_name: calibre-web  
+    restart: unless-stopped  
+    environment:
+      DOCKER_MODS: linuxserver/mods:universal-calibre
+    volumes:
+        - /home/calibreweb_data:/home/calibreweb_data
+        # - ${DOCKER_MODS}:/usr/bin
+        # - ${DOCKER_MODS}:/usr/bin/unrar
+    ports:  
+      - "38083:8083"

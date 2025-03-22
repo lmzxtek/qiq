@@ -1,0 +1,30 @@
+## ===================================================
+## 「方案一」 如果不需要运行本地模型（仅 chatgpt, azure, 星火, 千帆, claude 等在线大模型服务）
+## ===================================================
+services:
+  gpt_academic_nolocalllms:
+    image: ghcr.io/binary-husky/gpt_academic_nolocal:master # (Auto Built by Dockerfile: docs/GithubAction+NoLocal)
+    environment:
+      # 请查阅 `config.py` 以查看所有的配置信息
+      API_KEY:                  ' '
+      GEMINI_API_KEY:           ' '
+      DEEPSEEK_API_KEY:         ' '
+      AUTHENTICATION:           '    [("qq", "7654321234567") ]                           '
+      USE_PROXY:                '    False                                                                                           '
+      proxies:                  '    { "http": "socks5h://localhost:10880", "https": "socks5h://localhost:10880", }                 '
+      LLM_MODEL:                '    gemini-1.5-pro                                                                                  '
+      AVAIL_LLM_MODELS:         '    ["deepseek-chat", "deepseek-coder", "deepseek-reasoner","gemini-1.5-pro","gpt-3.5-turbo", "api2d-gpt-3.5-turbo", "gpt-4","gpt-4o", "api2d-gpt-4", "sparkv2", "qianfan"]         '
+      WEB_PORT:                 '    22303 '
+      ADD_WAIFU:                '    True '
+      # THEME:                    '    Chuanhu-Small-and-Beautiful                                                                    '
+      # DEFAULT_WORKER_NUM:       '    10                                                                                             '
+
+    # 「WEB_PORT暴露方法1: 适用于Linux」与宿主的网络融合
+    # network_mode: "host"
+    restart: unless-stopped
+    ports:
+      - "22303:22303"  # 50923必须与WEB_PORT相互对应
+
+    # 启动命令
+    command: >
+      bash -c "python3 -u main.py"

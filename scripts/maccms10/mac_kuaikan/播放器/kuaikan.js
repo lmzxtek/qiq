@@ -1,0 +1,2 @@
+MacPlayer.Html = '<iframe border="0"mozallowfullscreen="mozallowfullscreen"msallowfullscreen="msallowfullscreen"oallowfullscreen="oallowfullscreen"webkitallowfullscreen="webkitallowfullscreen"  src="https://kkzyplayer.com/player/?url='+MacPlayer.PlayUrl+'&next=//'+maccms.url+''+parent.MacPlayer.PlayLinkNext+'" height="'+MacPlayer.Height+'" width="100%" height="100%" marginWidth="0" frameSpacing="0" marginHeight="0" allowfullscreen="true" frameBorder="0" scrolling="no" vspale="0" noResize></iframe>';
+MacPlayer.Show();

@@ -1,0 +1,30 @@
+networks:
+    1panel-v4v6:
+        external: true
+        
+services:
+  neko:
+    # image: "m1k1o/neko:chromium"
+    image: "m1k1o/neko:microsoft-edge"
+    restart: "unless-stopped"
+    shm_size: "4gb"
+    networks:
+        - 1panel-v4v6
+    ports:
+      - "40277:8080"
+      - "52000-52100:52000-52100/udp"
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      NEKO_SCREEN: '1920x1080@30'
+      NEKO_PASSWORD: neko7777777
+      NEKO_PASSWORD_ADMIN: admin543212345
+      NEKO_EPR: 52000-52100
+      NEKO_NAT1TO1: 23.146.40.191
+      NEKO_FILE_TRANSFER_ENABLED: true
+      NEKO_FILE_TRANSFER_PATH: /home/neko/Downloads
+      # NEKO_FILE_TRANSFER_PATH: /mnt/db4/neko_data/Downloads
+    volumes:
+      - /mnt/db4/neko_data/Downloads:/home/neko/Downloads
+    # volumes:
+    #     - ${DOWNLOAD_PATH}:${NEKO_FILE_TRANSFER_PATH}

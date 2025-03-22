@@ -1,0 +1,21 @@
+services:
+  macos:
+    image: dockurr/macos
+    container_name: macos
+    environment:
+      VERSION: "ventura"
+      RAM_SIZE: "2G"
+      CPU_CORES: "2"
+      DISK_SIZE: "15G"
+    volumes:
+      - /home_disk:/storage
+      - /home_share:/shared
+    devices:
+      - /dev/kvm
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 5900:5900/tcp
+      - 5900:5900/udp
+    stop_grace_period: 2m

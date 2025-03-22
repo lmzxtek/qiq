@@ -1,0 +1,55 @@
+1. Windows Activation:
+    irm https://get.activated.win | iex 
+
+    reinstall:
+    reinstall.bat 
+    ./reinstall.bat windows --image-name='windows server 2022 serverdatacenter' --lang zh-cn
+    ./reinstall.bat windows --image-name='Windows 7 Ultimate'  --lang zh-cn
+    ./reinstall.bat windows --image-name='Windows 11 Pro'  --lang zh-cn
+    ./reinstall.bat windows --image-name='Windows 10 Enterprise LTSC 2021'  --lang zh-cn
+
+2. ClashVerge-rev
+    https://clash-verge-rev.github.io/index.html
+    https://github.com/clash-verge-rev/clash-verge-rev
+    https://github.com/clash-verge-rev/clash-verge-rev/releases
+
+3.NekoRay:
+	NekoRay	
+		https://nekoray.net/
+	NekoBox	
+		https://getnekobox.com/
+	
+4. Hiddify	
+    https://github.com/hiddify/hiddify-next	
+
+5. Warp
+    	wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh [option] [lisence/url/token] 
+	warp [option] [lisence]
+
+	
+6. QiQTool
+    https://gitlab.com/lmzxtek/qiqtools 
+    wget -N https://sub.lmzxtek.top/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh 
+    curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
+
+7. KJLion
+	bash <(curl -sL kejilion.sh)
+    	curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
+    	curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
+
+8. SingBox
+    bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh)
+
+8. SB-yg
+    # https://github.com/yonggekkk/sing-box-yg
+    bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh)
+
+9. CondaForge:
+    https://github.com/conda-forge/miniforge
+    https://conda-forge.org/miniforge/
+
+10. PotPlayer:
+    https://t1.daumcdn.net/potplayer/PotPlayer/Version/Latest/PotPlayerSetup64.exe 
+
+11. AIMP:
+    https://www.aimp.ru/?do=download.file&id=3

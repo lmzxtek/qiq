@@ -1,0 +1,11 @@
+# https://blog.csdn.net/BBQ__ZXB/article/details/138978608
+
+version: '3'
+services:
+  photopea:
+    image: 'registry.cn-guangzhou.aliyuncs.com/os_cmty/os_cmty:Photopea' #最新版npm
+    restart: unless-stopped
+    ports:
+      - '2887:2887'
+    volumes:
+      - ./data:/data

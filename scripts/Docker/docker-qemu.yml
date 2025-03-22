@@ -1,0 +1,17 @@
+services:
+  qemu:
+    container_name: qemu
+    image: qemux/qemu-docker
+    environment:
+      BOOT: "https://download.liveupdate.fnnas.com/x86_64/trim/fnos.0.8.19-360.iso"
+      # BOOT: "https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/x86_64/alpine-virt-3.19.1-x86_64.iso"
+      RAM_SIZE: "2G"
+      CPU_CORES: "2"
+      DISK_SIZE: "12G"
+    devices:
+      - /dev/kvm
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+    stop_grace_period: 2m

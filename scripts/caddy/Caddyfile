@@ -1,0 +1,26 @@
+http:// {
+    root * /home/web/html
+    encode gzip
+    file_server
+}
+
+lc.xmx.pp.ua {
+    root * /home/web/html
+    encode gzip
+    file_server
+}
+
+sr.xmx.pp.ua {
+    reverse_proxy 127.0.0.1:8700
+    encode gzip
+}
+
+
+pdf.xmx.pp.ua {
+    reverse_proxy 127.0.0.1:8020
+    encode gzip
+}
+
+bd.xmx.pp.ua {
+    redir https://baidu.com{uri}
+}

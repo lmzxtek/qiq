@@ -1,0 +1,31 @@
+services:
+  win2025:
+    image: dockurr/windows
+    container_name: win2025
+    # restart: unless-stopped
+    environment:
+      VERSION: "2025"
+      RAM_SIZE: "8G"
+      CPU_CORES: "4"
+      DISK_SIZE: "64G"
+      DISK2_SIZE: "256G"
+      USERNAME: "dd"
+      PASSWORD: "7654321234567"
+      LANGUAGE: "Chinese"   
+    volumes:
+      # - /home/win2025-eval_zh.iso/custom.iso
+      - /home/win_share:/shared
+      - /home/win_disk:/storage
+      - /mnt/ext0/win_2025:/storage2
+    devices:
+      - /dev/kvm
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 5000:5000
+      - 3389:3389/tcp
+      - 3389:3389/udp
+      # - 2080:2080/tcp
+      # - 2080:2080/udp
+    stop_grace_period: 2m

@@ -1,0 +1,7 @@
+services:  
+  doube-itv:  
+    image: doubebly/doube-itv:latest  
+    container_name: doube-itv  
+    restart: unless-stopped  
+    ports:  
+      - "5027:5000"
