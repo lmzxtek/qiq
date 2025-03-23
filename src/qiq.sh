@@ -2526,7 +2526,7 @@ EOF
             14) 
                 dd_get_mollylau 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
-                bash InstallNET.sh -debian 24.04
+                bash InstallNET.sh -ubuntu 24.04
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
                 _IS_BREAK="false" 
                 sys_reboot 
