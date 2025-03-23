@@ -699,7 +699,7 @@ function show_github_links {
     https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.bat
     "
 
-    Write-Host "  3. KijiLion.sh : 
+    Write-Host "  3. KejiLion.sh : 
     https://github.com/kejilion/sh
     https://kejilion.pro/kejilion.sh
     https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh
