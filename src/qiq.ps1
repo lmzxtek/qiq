@@ -120,7 +120,7 @@ function Get-GitHubLatestRelease {
         [ValidatePattern("https?://github.com/.*")]
         [string]$RepositoryUrl,
         
-        [string]$DownloadPath = $env:TEMP,
+        [string]$DownloadPath = "$($PWD)/Apps",
         
         [string]$FileNamePattern,
         
@@ -147,7 +147,7 @@ function Get-GitHubLatestRelease {
             $apiUrl = url_from_repo_2_api -Url $RepositoryUrl
 
             # 获取发布信息
-            Write-Host " 正在获取仓库发布信息 -=> " -ForegroundColor Cyan
+            Write-Host " 正在获取仓库发布信息 ... " -ForegroundColor Cyan
             $release = get_json_gh_latest -Url $apiUrl
 
             # 自动检测系统参数
@@ -176,27 +176,30 @@ function Get-GitHubLatestRelease {
                     $score
                 }
                 Descending = $true
-            } #| Select-Object -First 1
+            } | Select-Object -First 1
 
             if (-not $selectedAsset) {
                 Write-Host " 系统参数： $($systemInfo.OS)`t$($systemInfo.Arch)" -ForegroundColor Yellow
-                Write-Host " 文件列表：`n$($assets.name -join "`n")" -ForegroundColor Green
+                # Write-Host " 文件列表：`n$($assets.name -join "`n")" -ForegroundColor Green
                 # Write-Host " 下载地址：`n$($assets.browser_download_url -join "`n")" -ForegroundColor Green
                 throw " !!! 未找到匹配的发布文件 "
                 
-            } else {
-                Write-Host " 系统参数： $($systemInfo.OS)`t$($systemInfo.Arch)" -ForegroundColor Yellow
-                Write-Host " 文件列表：`n$($selectedAsset.name -join "`n")" -ForegroundColor Green
+            # } else {
+            #     Write-Host " 系统参数： $($systemInfo.OS)`t$($systemInfo.Arch)" -ForegroundColor Yellow
+            #     Write-Host " 文件列表：`n$($selectedAsset.name -join "`n")" -ForegroundColor Green
             }
-            return # ######## 临时调试，不下载文件
 
             # 创建下载目录
-            $downloadDir = New-Item -Path (Join-Path $DownloadPath $release.tag_name) -ItemType Directory -Force
+            $downloadDir = New-Item -Path $DownloadPath -ItemType Directory -Force
 
             # 下载文件
+            $url_target = $selectedAsset.browser_download_url
             $localFile = Join-Path $downloadDir.FullName $selectedAsset.name
-            Write-Host "正在下载 $($selectedAsset.name) -=> " -ForegroundColor Cyan
-            Invoke-WebRequest -Uri $selectedAsset.browser_download_url -OutFile $localFile
+            Write-Host " 正在下载: $($selectedAsset.name) `n url: $($url_target)" -ForegroundColor Cyan
+            # Invoke-WebRequest -Uri $url_target -OutFile $localFile 
+            # Invoke-WebRequest -Uri $url_target -OutFile $localFile 
+            Write-Host " 文件保存:`n $($localFile) " -ForegroundColor Green
+            return # ######## 临时调试，不下载文件
 
             # 返回文件对象
             Get-Item $localFile
@@ -559,14 +562,14 @@ function  main_menu {
 # # 使用示例
 
 $url_gh = "https://github.com/PowerShell/PowerShell"
-$filepattern = ".*-win-x64.exe"
+$fpattern = ".*-win-x64.exe"
 # $url_gh = "https://github.com/microsoft/vscode"
 # $url_gh = "https://github.com/python/cpython"
-$url_gh = "https://github.com/MatsuriDayo/nekoray"
-$filepattern = ".*-windows64.exe"
+# $url_gh = "https://github.com/MatsuriDayo/nekoray"
+# $fpattern = ".*-windows64.zip"
 
 # $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl "https://github.com/PowerShell/PowerShell"
-$downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $filepattern
+$downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
 if ($downloadedFile) {
     Write-Host " 下载完成！文件路径：" -ForegroundColor Green
     $downloadedFile.FullName
