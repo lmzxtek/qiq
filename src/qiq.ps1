@@ -445,8 +445,6 @@ function System_Settings {
 function App_download {
     $sfld = 'Apps'
     $targetDir = Get_download_path $sfld
-
-
     function Show_Menu_app_download {
         Clear-Host
         Write-Host "========== Download Menu ==========" -ForegroundColor Cyan
@@ -465,6 +463,7 @@ function App_download {
         Write-Host " 13. Pot-desk         "  
         Write-Host " 14. THS-Hevo         "  
         Write-Host " 15. WanhoGM          "  
+        Write-Host " 88. reinstall.bat    "  
         Write-Host " 99. All              "  -ForegroundColor Green
         Write-Host "  0. Exit             "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
@@ -536,6 +535,17 @@ function App_download {
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
         }
+    }
+    function download_reinstall {        
+        $file = "reinstall.bat"
+        # $url_gh = "https://github.com/bin456789/reinstall"
+        $url_dl = Get_proxy_url "https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.bat"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL  : $url_dl"
+        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_rustdesk {
         $url_gh = "https://github.com/rustdesk/rustdesk"
@@ -662,6 +672,7 @@ function App_download {
             "13" { download_pot_desktop; }
             "14" { download_ths_hevo; }
             "15" { download_wanho_gm; }
+            "88" { download_reinstall; }
             "99" { download_all_software }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
@@ -672,6 +683,20 @@ function App_download {
     
 }
 
+function show_github_links {
+    Clear-Host
+    Write-Host "========== GitHub Urls ============" -ForegroundColor Cyan
+    Write-Host "  1. Docker-win : 
+    
+    "
+
+    Write-Host "  2. reinstall.bat : 
+    https://github.com/bin456789/reinstall
+    https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.bat
+    "
+
+    Write-Host "===============================" -ForegroundColor Cyan
+}
 
 function show_web_links {
     Clear-Host
@@ -771,6 +796,12 @@ function show_web_links {
     https://ypora.zwdk.org/d/sys/zh-cn_windows_11_business_editions_version_24h2_x64_dvd_5f9e5858.iso
     "
 
+    Write-Host " 52. Windows(images) : 
+    https://next.itellyou.cn/Original
+    https://msdl.gravesoft.dev/ 
+    https://www.xitongku.com/
+    "
+
     # Write-Host "  0. Exit"       -ForegroundColor Red
     Write-Host "===============================" -ForegroundColor Cyan
 }
@@ -786,12 +817,13 @@ function  main_menu {
         Clear-Host
         Write-Host "========== Tool Menu ==========" -ForegroundColor Cyan
         Write-Host "  1. App Install          "
-        Write-Host "  2. Web Links            "
-        Write-Host "  3. App Download         "  -ForegroundColor Green
-        Write-Host "  4. Symtems Setting      "  -ForegroundColor Yellow
-        Write-Host "  5. Activate Tool        "  -ForegroundColor Blue 
-        Write-Host "  6. Python Management    "  
-        Write-Host "  0. Exit                 "     -ForegroundColor Red
+        Write-Host "  2. Web Links            "  -ForegroundColor Yellow
+        Write-Host "  3. GitHub Links         "  
+        Write-Host "  4. App Download         "  -ForegroundColor Green
+        Write-Host "  5. Symtems Setting      "  
+        Write-Host "  6. Activate Tool        "  -ForegroundColor Blue 
+        Write-Host "  7. Python Management    "  
+        Write-Host "  0. Exit                 "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
     # 菜单循环
@@ -801,10 +833,11 @@ function  main_menu {
         switch ($choice) {
             "1" { Software_install }
             "2" { show_web_links; Pause }
-            "3" { App_download }
-            "4" { System_Settings }
-            "5" { activate_win_office }
-            "6" { Manage_Python }
+            "3" { show_github_links; Pause }
+            "4" { App_download }
+            "5" { System_Settings }
+            "6" { activate_win_office }
+            "7" { Manage_Python }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
