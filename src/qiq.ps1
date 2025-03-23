@@ -196,6 +196,8 @@ function Get-GitHubLatestRelease {
             $webProxy = New-Object System.Net.WebProxy($Proxy, $true)
             $global:PSDefaultParameterValues["Invoke-RestMethod:Proxy"] = $webProxy
         }
+        # 创建下载目录
+        $downloadDir = Get_download_path $SubPath
     }
 
 
@@ -205,7 +207,7 @@ function Get-GitHubLatestRelease {
             $apiUrl = url_from_repo_2_api -Url $RepositoryUrl
 
             # 获取发布信息
-            Write-Host " Fetch info. from GitHub API (releases/latest) ... " -ForegroundColor Cyan
+            # Write-Host " Fetch info. from GitHub API (releases/latest) ... " -ForegroundColor Cyan
             $release = get_json_gh_latest -Url $apiUrl
 
             # 自动检测系统参数
@@ -252,7 +254,7 @@ function Get-GitHubLatestRelease {
 
             # 下载文件
             $url_target = Get_proxy_url -Url $selectedAsset.browser_download_url
-            # Write-Host " Target Url: $($url_target)" -ForegroundColor Blue
+            Write-Host " Target Url: $($url_target)" -ForegroundColor Blue
             $localFile = Join-Path $downloadDir $selectedAsset.name
             # Write-Host " Downloading: $($selectedAsset.name) `n url: $($url_target)" -ForegroundColor Cyan
             # Invoke-WebRequest -Uri $url_target -OutFile $localFile 
@@ -264,10 +266,10 @@ function Get-GitHubLatestRelease {
             Get-Item $localFile
         }
         catch [System.Net.WebException] {
-            Write-Error "网络连接失败：$($_.Exception.Message)"
+            Write-Error " Network connect failed: $($_.Exception.Message)"
         }
         catch {
-            Write-Error "操作失败：$($_.Exception.Message)"
+            Write-Error " Action failed: $($_.Exception.Message)"
         }
         finally {
             # 重置代理设置
@@ -443,31 +445,26 @@ function App_download {
     $sfld = 'Apps'
     $targetDir = Get_download_path $sfld
 
-    function download_all_software {
-        "PowerShell", "git", "vscode" | ForEach-Object {
-            Get-GitHubLatestRelease -RepositoryUrl "https://github.com/$_/$_"
-        }
-    }
 
     function Show_Menu_app_download {
         Clear-Host
         Write-Host "========== Download Menu ==========" -ForegroundColor Cyan
-        Write-Host "  1. VC_redist.x64"  -ForegroundColor Green
-        Write-Host "  2. NekoBox 4.0.1"  -ForegroundColor Yellow
-        Write-Host "  3. Python 3.12.7"  -ForegroundColor Blue
-        Write-Host "  4. PowerShell"
-        Write-Host "  5. Notepad++"
-        Write-Host "  6. Hiddify"
-        Write-Host "  7. VSCode"
-        Write-Host "  7. 1Remote"
-        Write-Host "  8. 7zip"  -ForegroundColor Green
-        Write-Host "  8. WanHo"  
-        Write-Host "  9. frp"   -ForegroundColor Green
-        Write-Host " 10. All" 
-        Write-Host "  0. Exit"  -ForegroundColor Red
+        Write-Host "  1. VC_redist(x64)   "  -ForegroundColor Green
+        Write-Host "  2. NekoBox 4.0.1    "  -ForegroundColor Yellow
+        Write-Host "  3. Python 3.12.7    "  -ForegroundColor Blue
+        Write-Host "  4. PowerShell       "
+        Write-Host "  5. Notepad++        "
+        Write-Host "  6. Hiddify          "
+        Write-Host "  7. VSCode           "
+        Write-Host "  8. 1Remote          "
+        Write-Host "  9. 7zip             "  -ForegroundColor Green
+        Write-Host " 10. Git              "  -ForegroundColor Green
+        Write-Host " 11. frp              "  -ForegroundColor Green
+        Write-Host " 99. All              " 
+        Write-Host "  0. Exit             "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
-    function download_vc_redist64 {
+    function download_vc_redist_x64 {
         $file = "VC_redist.x64.exe"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
@@ -478,7 +475,112 @@ function App_download {
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
-    function download_nekobox {
+    function download_python3127 {
+        $file   = "python-3.12.7-amd64.exe"
+        $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL  : $url_dl"
+        write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_vscode_user {
+        $file   = "vscode-win32-x64-user.exe"
+        $url_dl = "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL  : $url_dl"
+        write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_powershell {
+        $url_gh = "https://github.com/PowerShell/PowerShell"
+        $fpattern = ".*-win-x64.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if ($downloadedFile) {
+            Write-Host " Download OK: " -ForegroundColor Green
+            $downloadedFile.FullName
+        }
+        else {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_notepadpp {
+        $url_gh = "https://github.com/notepad-plus-plus/notepad-plus-plus"
+        $fpattern = ".*Installer.x64.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if ($downloadedFile) {
+            Write-Host " Download OK: " -ForegroundColor Green
+            $downloadedFile.FullName
+        }
+        else {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_frp {
+        $url_gh = "https://github.com/fatedier/frp"
+        $fpattern = ".*windows_amd64.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if ($downloadedFile) {
+            Write-Host " Download OK: " -ForegroundColor Green
+            $downloadedFile.FullName
+        }
+        else {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_git {
+        $url_gh = "https://github.com/git-for-windows/git"
+        $fpattern = ".*-64-bit.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if ($downloadedFile) {
+            Write-Host " Download OK: " -ForegroundColor Green
+            $downloadedFile.FullName
+        }
+        else {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_1remote {
+        $url_gh = "https://github.com/1Remote/1Remote"
+        $fpattern = ".*-x64-.*.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if ($downloadedFile) {
+            Write-Host " Download OK: " -ForegroundColor Green
+            $downloadedFile.FullName
+        }
+        else {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_hiddify {
+        $url_gh = "https://github.com/hiddify/hiddify-app"
+        $fpattern = ".*Portable-x64.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if ($downloadedFile) {
+            Write-Host " Download OK: " -ForegroundColor Green
+            $downloadedFile.FullName
+        }
+        else {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_nekobox_latest {
+        $url_gh = "https://github.com/MatsuriDayo/nekoray"
+        $fpattern = ".*-windows64.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if ($downloadedFile) {
+            Write-Host " Download OK: $($downloadedFile.FullName)" -ForegroundColor Green
+        }
+        else {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_nekobox_alist {
         $file = "nekoray-4.0.1-2024-12-12-windows64.zip"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
@@ -489,42 +591,42 @@ function App_download {
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
-    function download_python3127 {
-        $file = "python-3.12.7-amd64.exe"
-        $targetDir = Get_download_path $sfld
-        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
-        write-host "File URL  : $url_dl"
-        write-host "Target dir: $targetDir" -ForegroundColor Cyan
-        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
-        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
-        write-host "Success: $targetFilePath" -ForegroundColor Green
-    }
-    function download_powershell {
-        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl "https://github.com/PowerShell/PowerShell"
-        if ($downloadedFile) {
-            Write-Host " Download finished, saved: " -ForegroundColor Green
-            $downloadedFile.FullName
-        }
-        else {
-            Write-Host " Download failed" -ForegroundColor Red
-        }
+    
+    function download_all_software {
+        # download_git
+        download_frp
+        download_notepadpp
+        download_vc_redist_x64
+        download_nekobox_alist
+        # download_nekobox_latest
+        download_python3127
+        # download_powershell
+        # download_hiddify
+        # download_vscode_user
+        # download_1remote
     }
     # 菜单循环
     while ($true) {
         Show_Menu_app_download
         $choice = Read-Host " Please select (1-9)"
         switch ($choice) {
-            "1" { download_vc_redist64; }
-            "2" { download_nekobox; }
-            "3" { download_python3127; }
-            "4" { download_powershell; }
-            "10" { download_all_software }
+            "1"  { download_vc_redist_x64; }
+            "2"  { download_nekobox_alist; }
+            "3"  { download_python3127; }
+            "4"  { download_powershell; }
+            "5"  { download_notepadpp; }
+            "6"  { download_hiddify }
+            "7"  { download_vscode_user; }
+            "8"  { download_1remote }
+            "9"  {  }
+            "10" { download_git; }
+            "11" { download_frp; }
+            "99" { download_all_software }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
         }
         # Pause 
-        $null = Read-Host " Press Enter to continue  "
+        $null = Read-Host " Press Enter to continue "
     }
     
 }
@@ -569,6 +671,22 @@ function show_web_links {
     https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.8/npp.8.7.8.Installer.x64.exe
     "
 
+    Write-Host "  8. frp : 
+    https://github.com/fatedier/frp
+    https://github.com/fatedier/frp/releases/download/v0.61.2/frp_0.61.2_windows_amd64.zip
+    "
+
+    Write-Host "  9. 1Remote : 
+    https://github.com/1Remote/1Remote
+    https://github.com/1Remote/1Remote/releases/download/1.1.1/1Remote-1.1.1-net6-x64-250124.zip
+    "
+
+    Write-Host " 10. Hiddify : 
+    https://github.com/hiddify/hiddify-app
+    https://github.com/hiddify/hiddify-app/releases/download/v2.5.7/Hiddify-Windows-Portable-x64.zip
+    https://github.com/hiddify/hiddify-app/releases/download/v2.5.7/Hiddify-Windows-Setup-x64.exe
+    "
+
     # Write-Host "  0. Exit"       -ForegroundColor Red
     Write-Host "===============================" -ForegroundColor Cyan
 }
@@ -611,27 +729,26 @@ function  main_menu {
 }
 
 
-# main_menu 
+main_menu 
 
 # # 使用示例
 
 
-$region = get_region 
-Write-Host $region 
+# $region = get_region 
+# Write-Host $region 
 
-$url_gh = "https://github.com/PowerShell/PowerShell"
-$fpattern = ".*-win-x64.exe"
-# $url_gh = "https://github.com/microsoft/vscode"
-# $url_gh = "https://github.com/python/cpython"
+# $url_gh = "https://github.com/PowerShell/PowerShell"
+# $fpattern = ".*-win-x64.exe"
+# # $url_gh = "https://github.com/microsoft/vscode"
+# # $url_gh = "https://github.com/python/cpython"
 # $url_gh = "https://github.com/MatsuriDayo/nekoray"
 # $fpattern = ".*-windows64.zip"
 
-# $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl "https://github.com/PowerShell/PowerShell"
-$downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
-if ($downloadedFile) {
-    Write-Host " 下载完成！文件路径：" -ForegroundColor Green
-    $downloadedFile.FullName
-}
+# # $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl "https://github.com/PowerShell/PowerShell"
+# $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+# if ($downloadedFile) {
+#     Write-Host " Download OK: $($downloadedFile.FullName)" -ForegroundColor Green
+# }
 
 # 查找包含 Python 3.12 的 Windows 安装包
 # Get-GitHubLatestRelease -RepositoryUrl "https://github.com/python/cpython" `
