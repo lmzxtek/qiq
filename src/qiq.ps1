@@ -466,9 +466,9 @@ function App_download {
     }
     function download_vc_redist_x64 {
         $file = "VC_redist.x64.exe"
+        $url_dl = "https://ypora.zwdk.org/d/app/$file"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
         write-host "File URL  : $url_dl"
         write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -477,7 +477,7 @@ function App_download {
     }
     function download_python3127 {
         $file   = "python-3.12.7-amd64.exe"
-        $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
+        $url_dl = "https://ypora.zwdk.org/d/app/$file"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL  : $url_dl"
@@ -582,9 +582,9 @@ function App_download {
     }
     function download_nekobox_alist {
         $file = "nekoray-4.0.1-2024-12-12-windows64.zip"
+        $url_dl = "https://ypora.zwdk.org/d/app/$file"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
         write-host "File URL  : $url_dl"
         write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
