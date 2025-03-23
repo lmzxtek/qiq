@@ -447,26 +447,26 @@ function App_download {
     $targetDir = Get_download_path $sfld
     function Show_Menu_app_download {
         Clear-Host
-        Write-Host "========== Download Menu ==========" -ForegroundColor Cyan
-        Write-Host "  1. VC_redist(x64)   "  
-        Write-Host "  2. NekoBox 4.0.1    "  -ForegroundColor Yellow
-        Write-Host "  3. Python 3.12.7    "  -ForegroundColor Blue
-        Write-Host "  4. PowerShell       "
-        Write-Host "  5. Notepad++        "  -ForegroundColor Blue
-        Write-Host "  6. Hiddify          "
-        Write-Host "  7. VSCode           "  
-        Write-Host "  8. 1Remote          "
-        Write-Host "  9. 7zip             "  -ForegroundColor Green
-        Write-Host " 10. Git              "  
-        Write-Host " 11. frp              "  -ForegroundColor Green
-        Write-Host " 12. RustDesk         "  
-        Write-Host " 13. Pot-desk         "  
-        Write-Host " 14. THS-Hevo         "  
-        Write-Host " 15. WanhoGM          "  
-        Write-Host " 88. reinstall.bat    "  
-        Write-Host " 99. All              "  -ForegroundColor Green
-        Write-Host "  0. Exit             "  -ForegroundColor Red
-        Write-Host "===============================" -ForegroundColor Cyan
+        Write-Host "========== Download Menu =============" -ForegroundColor Cyan
+        Write-Host "   1. VC_redist(x64)   " -NoNewline  
+        Write-Host "  11. frp              " -ForegroundColor Green
+        Write-Host "   2. NekoBox          " -NoNewline  -ForegroundColor Yellow
+        Write-Host "  12. RustDesk         "  
+        Write-Host "   3. Python3.12.7     " -NoNewline  
+        Write-Host "  13. Pot-desk         "  
+        Write-Host "   4. PowerShell       " -NoNewline
+        Write-Host "  14. THS-Hevo         "  
+        Write-Host "   5. Notepad++        " -NoNewline  -ForegroundColor Blue
+        Write-Host "  15. WanhoGM          "  
+        Write-Host "   6. Hiddify          " -NoNewline
+        Write-Host "  16. Git              "  
+        Write-Host "   7. VSCode           " -NoNewline  
+        Write-Host "  17. 1Remote          " 
+        Write-Host "   8. 7zip             " #-NoNewline  -ForegroundColor Green
+        Write-Host "  88. reinstall.bat    "  -NoNewline
+        Write-Host "  99. All              "  -ForegroundColor Green
+        Write-Host "   0. Exit             "  -ForegroundColor Red
+        Write-Host "======================================" -ForegroundColor Cyan
     }
     function download_vc_redist_x64_alist {
         $file = "VC_redist.x64.exe"
@@ -654,7 +654,7 @@ function App_download {
     # 菜单循环
     while ($true) {
         Show_Menu_app_download
-        $choice = Read-Host " Please select (1-9)"
+        $choice = Read-Host " Please select "
         switch ($choice) {
             # "1"  { download_vc_redist_x64_alist; }
             "1"  { download_vc_redist_x64_ms; }
