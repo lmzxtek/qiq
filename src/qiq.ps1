@@ -467,9 +467,20 @@ function App_download {
         Write-Host "  0. Exit             "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
-    function download_vc_redist_x64 {
+    function download_vc_redist_x64_alist {
         $file = "VC_redist.x64.exe"
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL  : $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_vc_redist_x64_ms {
+        $file = "vc_redist.x64.exe"
+        $url_dl = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL  : $url_dl"
@@ -556,6 +567,14 @@ function App_download {
             Write-Host " Download failed" -ForegroundColor Red
         }
     }
+    function download_pot_desktop {
+        $url_gh = "https://github.com/pot-app/pot-desktop"
+        $fpattern = ".*-x64-setup.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
     function download_nekobox_latest {
         $url_gh = "https://github.com/MatsuriDayo/nekoray"
         $fpattern = ".*-windows64.zip"
@@ -603,7 +622,7 @@ function App_download {
         download_notepadpp
         download_git
         download_frp
-        download_vc_redist_x64
+        download_vc_redist_x64_alist
         download_nekobox_alist
         download_python3127
         # download_nekobox_latest
@@ -617,8 +636,9 @@ function App_download {
         Show_Menu_app_download
         $choice = Read-Host " Please select (1-9)"
         switch ($choice) {
-            "1"  { download_vc_redist_x64; }
-            "2"  { download_nekobox_alist; }
+            # "1"  { download_vc_redist_x64_alist; }
+            "1"  { download_vc_redist_x64_ms; }
+            "2"  { download_nekobox_latest; }
             "3"  { download_python3127; }
             "4"  { download_powershell; }
             "5"  { download_notepadpp; }
@@ -628,8 +648,9 @@ function App_download {
             "9"  { download_7zip_latest }
             "10" { download_git; }
             "11" { download_frp; }
-            "12" { download_ths_hevo; }
-            "13" { download_wanho_gm; }
+            "12" { download_pot_desktop; }
+            "13" { download_ths_hevo; }
+            "14" { download_wanho_gm; }
             "99" { download_all_software }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
@@ -663,6 +684,11 @@ function show_web_links {
     Write-Host "  4. Python : 
     https://www.python.org/downloads/windows/
     https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe
+    "
+
+    Write-Host "  5. Pot-Desktop : 
+    https://github.com/pot-app/pot-desktop
+    https://github.com/pot-app/pot-desktop/releases/download/3.0.6/pot_3.0.6_x64-setup.exe
     "
 
     Write-Host "  5. 7Zip : 
