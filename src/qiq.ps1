@@ -26,6 +26,62 @@ if (Get-Command choco -ErrorAction SilentlyContinue) {
     $chocoAvailable = $true
 }
 
+
+function url_from_repo_2_api {
+    param (
+        [Parameter(Mandatory = $true)]
+        [ValidatePattern("https?://github.com/.*")]
+        [string]$Url
+    )
+    
+    $apiUrl = $Url -replace "https://github.com/", "https://api.github.com/repos/" -replace "/$", ""
+    $apiUrl += "/releases/latest"
+    return $apiUrl 
+}
+
+function get_json_gh_latest {
+    param (
+        [Parameter(Mandatory = $true)]
+        [ValidatePattern("https?://api.github.com/repos/.*")]
+        [string]$Url
+    )
+    
+    $release = Invoke-RestMethod -Uri $Url -Headers @{
+        "Accept" = "application/vnd.github.v3+json"
+    }
+    return $release 
+}
+
+function get_sys_info {   
+    # 自动检测系统参数
+    $systemInfo = @{
+        OS   = if ($env:OS -eq 'Windows_NT') { "win" } else { $PSVersionTable.OS.Split()[0].ToLower() }
+        Arch = if ([Environment]::Is64BitOperatingSystem) { "x64" } else { "x86" }
+    }
+    return $systemInfo 
+}
+
+function get_auto_pattern {  
+    # 构建智能匹配规则
+    $autoPattern = @{
+        win    = @{
+            # pattern  = ".*(win|windows|windows64).*$($systemInfo.Arch).*(exe|msi|zip)$"
+            # pattern  = ".*(win|windows|windows64)(?:.*\$$?systemInfo\.Arch$?)?.*(exe|msi|zip)$"
+            pattern  = ".*(win|windows|windows64)(?:.*$($systemInfo.Arch))?.*(exe|msi|zip)$"
+            priority = 1
+        }
+        linux  = @{
+            pattern  = ".*(linux|linux64|ubuntu|debian)(?:.*$($systemInfo.Arch))?.*(deb|rpm|tar.gz)$"
+            priority = 2
+        }
+        darwin = @{
+            pattern  = ".*(macos|osx|darwin).*(dmg|pkg|tar.gz)$"
+            priority = 3
+        }
+    }
+    return $autoPattern 
+}
+
 function Get-GitHubLatestRelease {
     <#
     .SYNOPSIS
@@ -84,39 +140,21 @@ function Get-GitHubLatestRelease {
         }
     }
 
+
     process {
         try {
             # 转换仓库地址为 API 路径
-            $apiUrl = $RepositoryUrl -replace "https://github.com/", "https://api.github.com/repos/" -replace "/$", ""
-            $apiUrl += "/releases/latest"
+            $apiUrl = url_from_repo_2_api -Url $RepositoryUrl
 
             # 获取发布信息
-            Write-Host " 正在获取仓库发布信息..." -ForegroundColor Cyan
-            $release = Invoke-RestMethod -Uri $apiUrl -Headers @{
-                "Accept" = "application/vnd.github.v3+json"
-            }
+            Write-Host " 正在获取仓库发布信息 -=> " -ForegroundColor Cyan
+            $release = get_json_gh_latest -Url $apiUrl
 
             # 自动检测系统参数
-            $systemInfo = @{
-                OS   = if ($env:OS -eq 'Windows_NT') { "win" } else { $PSVersionTable.OS.Split()[0].ToLower() }
-                Arch = if ([Environment]::Is64BitOperatingSystem) { "x64" } else { "x86" }
-            }
+            $systemInfo = get_sys_info
 
             # 构建智能匹配规则
-            $autoPattern = @{
-                win = @{
-                    pattern = ".*(win|windows).*$($systemInfo.Arch).*(exe|msi|zip)$"
-                    priority = 1
-                }
-                linux = @{
-                    pattern = ".*(linux|ubuntu|debian).*$($systemInfo.Arch).*(deb|rpm|tar.gz)$"
-                    priority = 2
-                }
-                darwin = @{
-                    pattern = ".*(macos|osx|darwin).*(dmg|pkg|tar.gz)$"
-                    priority = 3
-                }
-            }
+            $autoPattern = get_auto_pattern 
 
             # 筛选可用资产
             $assets = $release.assets | Sort-Object -Property @{
@@ -127,8 +165,9 @@ function Get-GitHubLatestRelease {
             # 应用筛选条件
             $selectedAsset = $assets | Where-Object {
                 ($_.name -match $FileNamePattern) -or 
-                ($_.name -match $autoPattern[$systemInfo.OS].pattern) -and
-                (-not ($_.name -match $ExcludePattern))
+                ($_.name -match $autoPattern[$systemInfo.OS].pattern)
+                # ($_.name -match $autoPattern[$systemInfo.OS].pattern) -and
+                # (-not ($_.name -match $ExcludePattern))
             } | Sort-Object @{
                 Expression = { 
                     $score = 0
@@ -137,18 +176,26 @@ function Get-GitHubLatestRelease {
                     $score
                 }
                 Descending = $true
-            } | Select-Object -First 1
+            } #| Select-Object -First 1
 
             if (-not $selectedAsset) {
-                throw "未找到匹配的发布文件，可用文件列表：`n$($assets.name -join "`n")"
+                Write-Host " 系统参数： $($systemInfo.OS)`t$($systemInfo.Arch)" -ForegroundColor Yellow
+                Write-Host " 文件列表：`n$($assets.name -join "`n")" -ForegroundColor Green
+                # Write-Host " 下载地址：`n$($assets.browser_download_url -join "`n")" -ForegroundColor Green
+                throw " !!! 未找到匹配的发布文件 "
+                
+            } else {
+                Write-Host " 系统参数： $($systemInfo.OS)`t$($systemInfo.Arch)" -ForegroundColor Yellow
+                Write-Host " 文件列表：`n$($selectedAsset.name -join "`n")" -ForegroundColor Green
             }
+            return # ######## 临时调试，不下载文件
 
             # 创建下载目录
             $downloadDir = New-Item -Path (Join-Path $DownloadPath $release.tag_name) -ItemType Directory -Force
 
             # 下载文件
             $localFile = Join-Path $downloadDir.FullName $selectedAsset.name
-            Write-Host "正在下载 $($selectedAsset.name)..." -ForegroundColor Cyan
+            Write-Host "正在下载 $($selectedAsset.name) -=> " -ForegroundColor Cyan
             Invoke-WebRequest -Uri $selectedAsset.browser_download_url -OutFile $localFile
 
             # 返回文件对象
@@ -193,15 +240,16 @@ function Install-Software {
 }
 
 # 安装 Python（可选择版本）
-function Install-Python {
+function Manage_Python {
     while ($true) {
         Clear-Host
         Write-Host "========== Python Management ==========" -ForegroundColor Green
-        Write-Host " 1. Install Latest Python"
-        Write-Host " 2. Install Specific Python Version"
+        Write-Host " 1. Install Python Latest "
+        Write-Host " 2. Install Python by ver."
         Write-Host " 3. Install pipenv"
-        Write-Host " 4. Set Python Pip Mirror"
-        Write-Host " 0. Back to Main Menu"
+        Write-Host " 4. Set Pip Source"
+        Write-Host " 0. Back"
+        Write-Host "=======================================" -ForegroundColor Green
         $py_choice = Read-Host "Enter your choice (1-5)"
         
         switch ($py_choice) {
@@ -220,12 +268,12 @@ function Install-Python {
 
 # 设置 pip 源
 function Set-Pip-Mirror {
-    Write-Host " 选择镜像: "
-    Write-Host " 1. 阿里云"
-    Write-Host " 2. 清华源"
-    Write-Host " 3. 中科大"
-    Write-Host " 4. 自定义"
-    Write-Host " 0. 返回"
+    Write-Host " Select Source: "
+    Write-Host " 1. AliYun"
+    Write-Host " 2. TUNA"
+    Write-Host " 3. USTC"
+    Write-Host " 4. Custom"
+    Write-Host " 0. Back"
     $mirror_choice = Read-Host "Enter choice"
 
     $mirrorURL = switch ($mirror_choice) {
@@ -274,6 +322,29 @@ function Software_install {
 
 # 系统设置
 function System_Settings {
+    # 启用 OpenSSH 服务
+    function Enable-OpenSSH {
+        Write-Host "Enabling OpenSSH server..."
+        Add-WindowsFeature -Name OpenSSH-Server
+        Set-Service -Name sshd -StartupType Automatic
+        Start-Service sshd
+        Write-Host "OpenSSH is enabled!" -ForegroundColor Green
+        Pause
+    }
+
+    # 设置 PowerShell 7 为默认 shell
+    function Set-DefaultShell-Pwsh {
+        if (Get-Command pwsh -ErrorAction SilentlyContinue) {
+            $pwshPath = (Get-Command pwsh).Source
+            New-ItemProperty -Path "HKCU:\Software\Microsoft\Command Processor" -Name "AutoRun" -Value "$pwshPath" -PropertyType String -Force
+            Write-Host "Default shell set to PowerShell 7 (pwsh)." -ForegroundColor Green
+        }
+        else {
+            Write-Host "PowerShell 7 is not installed! Install it first." -ForegroundColor Red
+        }
+        Pause
+    }
+
     while ($true) {
         Clear-Host
         Write-Host "======= System Settings =======" -ForegroundColor Yellow
@@ -293,33 +364,6 @@ function System_Settings {
     }
 }
 
-# 启用 OpenSSH 服务
-function Enable-OpenSSH {
-    Write-Host "Enabling OpenSSH server..."
-    Add-WindowsFeature -Name OpenSSH-Server
-    Set-Service -Name sshd -StartupType Automatic
-    Start-Service sshd
-    Write-Host "OpenSSH is enabled!" -ForegroundColor Green
-    Pause
-}
-
-# 设置 PowerShell 7 为默认 shell
-function Set-DefaultShell-Pwsh {
-    if (Get-Command pwsh -ErrorAction SilentlyContinue) {
-        $pwshPath = (Get-Command pwsh).Source
-        New-ItemProperty -Path "HKCU:\Software\Microsoft\Command Processor" -Name "AutoRun" -Value "$pwshPath" -PropertyType String -Force
-        Write-Host "Default shell set to PowerShell 7 (pwsh)." -ForegroundColor Green
-    } else {
-        Write-Host "PowerShell 7 is not installed! Install it first." -ForegroundColor Red
-    }
-    Pause
-}
-
-function download_all_software {
-    "PowerShell", "git", "vscode" | ForEach-Object {
-        Get-GitHubLatestRelease -RepositoryUrl "https://github.com/$_/$_"
-    }
-}
 
 function get_download_path {
     param ([string]$sfld)
@@ -338,9 +382,15 @@ function get_download_path {
 }
 
 
-function app_download{
+function App_download {
     $sfld = 'Apps'
     $targetDir = get_download_path $sfld
+
+    function download_all_software {
+        "PowerShell", "git", "vscode" | ForEach-Object {
+            Get-GitHubLatestRelease -RepositoryUrl "https://github.com/$_/$_"
+        }
+    }
 
     function Show_Menu_app_download {
         Clear-Host
@@ -352,12 +402,15 @@ function app_download{
         Write-Host "  5. Notepad++"
         Write-Host "  6. Hiddify"
         Write-Host "  7. VSCode"
+        Write-Host "  7. 1Remote"
         Write-Host "  8. 7zip"  -ForegroundColor Green
-        Write-Host "  9. All" 
-        Write-Host "  0. Exit" -ForegroundColor Red
+        Write-Host "  8. WanHo"  
+        Write-Host "  9. frp"   -ForegroundColor Green
+        Write-Host " 10. All" 
+        Write-Host "  0. Exit"  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
-    function download_vc_redist64{
+    function download_vc_redist64 {
         $file = "VC_redist.x64.exe"
         $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
@@ -368,7 +421,7 @@ function app_download{
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
-    function download_nekobox{
+    function download_nekobox {
         $file = "nekoray-4.0.1-2024-12-12-windows64.zip"
         $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
@@ -379,7 +432,7 @@ function app_download{
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
-    function download_python3127{
+    function download_python3127 {
         $file = "python-3.12.7-amd64.exe"
         $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
@@ -390,10 +443,10 @@ function app_download{
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
-    function download_powershell{
+    function download_powershell {
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl "https://github.com/PowerShell/PowerShell"
         if ($downloadedFile) {
-            Write-Host " Download finished, file saved: " -ForegroundColor Green
+            Write-Host " Download finished, saved: " -ForegroundColor Green
             $downloadedFile.FullName
         }
         else {
@@ -409,6 +462,7 @@ function app_download{
             "2" { download_nekobox; }
             "3" { download_python3127; }
             "4" { download_powershell; }
+            "10" { download_all_software }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
         }
@@ -418,37 +472,67 @@ function app_download{
     
 }
 
-function activate_win_office{
-    # > irm https://get.activated.win | iex 
-    Invoke-RestMethod "https://get.activated.win" | Invoke-Expression
-}
 
-function print_web_links{
+function show_web_links {
     Clear-Host
     Write-Host "========== Web Urls ============" -ForegroundColor Cyan
-    Write-Host "  1. NekoBox   : https://nekoray.net/"
-    Write-Host "  2. VC_Redist : https://aka.ms/vs/17/release/vc_redist.x64.exe"
-    Write-Host "  3. PowerShell: https://aka.ms/powershell-release?tag=stable"
-    Write-Host "  4. Python    : https://www.python.org/downloads/windows/"
-    Write-Host "  5. Git       : https://git-scm.com/downloads/win"
-    Write-Host "  6. VSCode    : https://code.visualstudio.com/Download"
-    Write-Host "  7. Notepad++ : https://notepad-plus-plus.org/downloads/"
+    Write-Host "  1. VC_Redist : 
+    https://aka.ms/vs/17/release/vc_redist.x64.exe
+    https://aka.ms/vs/17/release/vc_redist.x86.exe
+    https://aka.ms/vs/17/release/vc_redist.arm64.exe
+    "
+
+    Write-Host "  2. NekoBox : 
+    https://nekoray.net/
+    https://github.com/MatsuriDayo/nekoray/releases/download/4.0.1/nekoray-4.0.1-2024-12-12-windows64.zip
+    "
+
+    Write-Host "  3. PowerShell: 
+    https://aka.ms/powershell-release?tag=stable
+    https://github.com/PowerShell/PowerShell/releases/download/v7.5.0/PowerShell-7.5.0-win-x64.exe
+    "
+
+    Write-Host "  4. Python : 
+    https://www.python.org/downloads/windows/
+    https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe
+    "
+
+    Write-Host "  5. Git : 
+    https://git-scm.com/downloads/win
+    https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe
+    "
+
+    Write-Host "  6. VSCode : 
+    https://code.visualstudio.com/Download
+    https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user 
+    "
+
+    Write-Host "  7. Notepad++ : 
+    https://notepad-plus-plus.org/downloads/
+    https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.8/npp.8.7.8.Installer.x64.exe
+    "
+
     # Write-Host "  0. Exit"       -ForegroundColor Red
     Write-Host "===============================" -ForegroundColor Cyan
 }
 
 function  main_menu {
+    
+    function activate_win_office {
+        # > irm https://get.activated.win | iex 
+        Invoke-RestMethod "https://get.activated.win" | Invoke-Expression
+    }
     # 菜单界面
     function Show-Menu {
         Clear-Host
         Write-Host "========== Tool Menu ==========" -ForegroundColor Cyan
-        Write-Host "  1. Web Links"
-        Write-Host "  2. App Download"  -ForegroundColor Green
-        Write-Host "  3. App Install"
-        Write-Host "  4. Symtems Setting"  -ForegroundColor Yellow
-        Write-Host "  5. Activate Tool"  -ForegroundColor Blue 
-        Write-Host "  6. Python Management"  
-        Write-Host "  0. Exit"     -ForegroundColor Red
+        Write-Host "  1. App Install          "
+        Write-Host "  2. Web Links            "
+        Write-Host "  3. App Download         "  -ForegroundColor Green
+        Write-Host "  4. Symtems Setting      "  -ForegroundColor Yellow
+        Write-Host "  5. Activate Tool        "  -ForegroundColor Blue 
+        Write-Host "  6. Python Management    "  
+        Write-Host "  0. Exit                 "     -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
     # 菜单循环
@@ -456,12 +540,12 @@ function  main_menu {
         Show-Menu
         $choice = Read-Host "Enter your choice (1-6)"
         switch ($choice) {
-            "1" { print_web_links; Pause }
-            "2" { app_download }
-            "3" { Software_install }
+            "1" { Software_install }
+            "2" { show_web_links; Pause }
+            "3" { App_download }
             "4" { System_Settings }
             "5" { activate_win_office }
-            "6" { Install-Python }
+            "6" { Manage_Python }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
@@ -470,14 +554,23 @@ function  main_menu {
 }
 
 
-main_menu 
+# main_menu 
 
 # # 使用示例
+
+$url_gh = "https://github.com/PowerShell/PowerShell"
+$filepattern = ".*-win-x64.exe"
+# $url_gh = "https://github.com/microsoft/vscode"
+# $url_gh = "https://github.com/python/cpython"
+$url_gh = "https://github.com/MatsuriDayo/nekoray"
+$filepattern = ".*-windows64.exe"
+
 # $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl "https://github.com/PowerShell/PowerShell"
-# if ($downloadedFile) {
-#     Write-Host "下载完成！文件路径：" -ForegroundColor Green
-#     $downloadedFile.FullName
-# }
+$downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $filepattern
+if ($downloadedFile) {
+    Write-Host " 下载完成！文件路径：" -ForegroundColor Green
+    $downloadedFile.FullName
+}
 
 # 查找包含 Python 3.12 的 Windows 安装包
 # Get-GitHubLatestRelease -RepositoryUrl "https://github.com/python/cpython" `

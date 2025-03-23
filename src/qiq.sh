@@ -23,6 +23,7 @@ SRC_VER=v0.7.3
 #==========================
 
 URL_PROXY='https://proxy.zwdk.org/proxy/'
+URL_REDIRECT='https://qiq.zwdk.org/sh'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
 URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh'
 URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/log.sh'
@@ -4744,8 +4745,8 @@ function caddy_install(){
     echo -e "$PRIGHT 2.切换至当前目录到: ${dir_root} ... "
     cd "$dir_main"
     echo -e "$PRIGHT 3.下载主页和默认配置文件 ... "
-    local url_caddy_index=$(get_proxy_url 'https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/scripts/caddy/index.html')
-    local url_caddy_conf=$(get_proxy_url  'https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/scripts/caddy/default.conf')
+    local url_caddy_index=$(get_proxy_url 'https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/scripts/caddy/index.html')
+    local url_caddy_conf=$(get_proxy_url  'https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/scripts/caddy/default.conf')
     [[ -f "${dir_html}/index.html"   ]] || curl -sSL -o ${dir_html}/index.html   $url_caddy_index || wget -qO ${dir_html}/index.html   $url_caddy_index
     [[ -f "${dir_main}/default.conf" ]] || curl -sSL -o ${dir_main}/default.conf $url_caddy_conf  || wget -qO ${dir_main}/default.conf $url_caddy_conf
 
@@ -6915,3 +6916,4 @@ check_ip_status
 
 # 显示主菜单 
 main_menu
+
