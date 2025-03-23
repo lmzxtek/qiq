@@ -12,7 +12,7 @@
 #   $> curl -sSL -o qiq.sh https://qiq.zwdk.org/sh && chmod +x qiq.sh && ./qiq.sh
 #   $> curl -sSL -o qiq.sh https://sub.zwdk.org/qiq && chmod +x qiq.sh && ./qiq.sh
 # 
-#   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiq/raw/main/qiq.sh && chmod +x qiq.sh && ./qiq.sh
+#   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiq/raw/main/src/qiq.sh && chmod +x qiq.sh && ./qiq.sh
 #   $> curl -sS -O https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh && chmod +x qiq.sh && ./qiq.sh
 #   $> wget -qN https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh && chmod +x qiq.sh && ./qiq.sh
 #========================================================
