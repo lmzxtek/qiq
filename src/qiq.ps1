@@ -461,7 +461,8 @@ function App_download {
         Write-Host "  9. 7zip             "  -ForegroundColor Green
         Write-Host " 10. Git              "  
         Write-Host " 11. frp              "  -ForegroundColor Green
-        Write-Host " 12. THS-Hevo        "  
+        Write-Host " 12. THS-Hevo         "  
+        Write-Host " 13. WanhoGM          "  
         Write-Host " 99. All              " 
         Write-Host "  0. Exit             "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
@@ -598,13 +599,14 @@ function App_download {
     }
     
     function download_all_software {
-        # download_git
-        download_frp
+        download_7zip_latest
         download_notepadpp
+        download_git
+        download_frp
         download_vc_redist_x64
         download_nekobox_alist
-        # download_nekobox_latest
         download_python3127
+        # download_nekobox_latest
         # download_powershell
         # download_hiddify
         # download_vscode_user
@@ -615,15 +617,15 @@ function App_download {
         Show_Menu_app_download
         $choice = Read-Host " Please select (1-9)"
         switch ($choice) {
-            "1" { download_vc_redist_x64; }
-            "2" { download_nekobox_alist; }
-            "3" { download_python3127; }
-            "4" { download_powershell; }
-            "5" { download_notepadpp; }
-            "6" { download_hiddify }
-            "7" { download_vscode_user; }
-            "8" { download_1remote }
-            "9" { download_7zip_latest }
+            "1"  { download_vc_redist_x64; }
+            "2"  { download_nekobox_alist; }
+            "3"  { download_python3127; }
+            "4"  { download_powershell; }
+            "5"  { download_notepadpp; }
+            "6"  { download_hiddify }
+            "7"  { download_vscode_user; }
+            "8"  { download_1remote }
+            "9"  { download_7zip_latest }
             "10" { download_git; }
             "11" { download_frp; }
             "12" { download_ths_hevo; }
