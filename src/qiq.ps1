@@ -27,6 +27,64 @@ if (Get-Command choco -ErrorAction SilentlyContinue) {
 }
 
 
+function get_region {    
+    $ipapi = ""
+    $region = "Unknown"
+    foreach ($url in ("https://dash.cloudflare.com/cdn-cgi/trace", "https://developers.cloudflare.com/cdn-cgi/trace", "https://1.0.0.1/cdn-cgi/trace")) {
+        try {
+            $ipapi = Invoke-RestMethod -Uri $url -TimeoutSec 5 -UseBasicParsing
+            if ($ipapi -match "loc=(\w+)" ) {
+                $region = $Matches[1]
+                break
+            }
+        }
+        catch {
+            Write-Host "Error occurred while querying $url : $_"
+        }
+    }
+    return $region
+}
+
+function Get_proxy_url {
+    param (
+        # Parameter help description
+        # [Parameter(AttributeValues)]
+        [string]$Url,
+        [string]$proxy = "https://proxy.zwdk.org/proxy/"
+    )
+    
+    $region = get_region 
+
+    if ($region -ne "CN") {
+        # write-host "Region: $region" -ForegroundColor Green
+        # write-host "Url   : $Url"    -ForegroundColor Green
+        $proxy_url = $Url
+    }
+    else {
+        # write-host "Region: $region" -ForegroundColor Green
+        # write-host "Url   : $Url"    -ForegroundColor Green
+        # write-host "proxy : $proxy"  -ForegroundColor Green
+        $proxy_url = $proxy + $Url
+    }
+    return $proxy_url
+}
+
+function Get_download_path {
+    param ( [string]$sfld )
+    # 获取脚本所在的目录路径
+    # $scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
+    $scriptDir = $PWD.Path
+
+    # 创建目标子目录 Apps（如果不存在）
+    $targetDir = Join-Path -Path $scriptDir -ChildPath $sfld 
+    if (-not (Test-Path -Path $targetDir)) {
+        New-Item -ItemType Directory -Path $targetDir
+    }
+    # 定义目标文件路径
+    # $targetFilePath = Join-Path -Path $targetDir -ChildPath "file.zip"
+    return $targetDir
+}
+
 function url_from_repo_2_api {
     param (
         [Parameter(Mandatory = $true)]
@@ -52,7 +110,7 @@ function get_json_gh_latest {
     return $release 
 }
 
-function get_sys_info {   
+function Get_sys_info {   
     # 自动检测系统参数
     $systemInfo = @{
         OS   = if ($env:OS -eq 'Windows_NT') { "win" } else { $PSVersionTable.OS.Split()[0].ToLower() }
@@ -61,7 +119,7 @@ function get_sys_info {
     return $systemInfo 
 }
 
-function get_auto_pattern {  
+function Get_auto_pattern {  
     # 构建智能匹配规则
     $autoPattern = @{
         win    = @{
@@ -120,13 +178,13 @@ function Get-GitHubLatestRelease {
         [ValidatePattern("https?://github.com/.*")]
         [string]$RepositoryUrl,
         
-        [string]$DownloadPath = "$($PWD)/Apps",
-        
         [string]$FileNamePattern,
         
         [string]$ExcludePattern,
         
-        [string]$Proxy
+        [string]$Proxy,
+        
+        [string]$SubPath = "Apps"
     )
 
     begin {
@@ -147,14 +205,14 @@ function Get-GitHubLatestRelease {
             $apiUrl = url_from_repo_2_api -Url $RepositoryUrl
 
             # 获取发布信息
-            Write-Host " 正在获取仓库发布信息 ... " -ForegroundColor Cyan
+            Write-Host " Fetch info. from GitHub API (releases/latest) ... " -ForegroundColor Cyan
             $release = get_json_gh_latest -Url $apiUrl
 
             # 自动检测系统参数
-            $systemInfo = get_sys_info
+            $systemInfo = Get_sys_info
 
             # 构建智能匹配规则
-            $autoPattern = get_auto_pattern 
+            $autoPattern = Get_auto_pattern 
 
             # 筛选可用资产
             $assets = $release.assets | Sort-Object -Property @{
@@ -179,27 +237,28 @@ function Get-GitHubLatestRelease {
             } | Select-Object -First 1
 
             if (-not $selectedAsset) {
-                Write-Host " 系统参数： $($systemInfo.OS)`t$($systemInfo.Arch)" -ForegroundColor Yellow
-                # Write-Host " 文件列表：`n$($assets.name -join "`n")" -ForegroundColor Green
+                Write-Host " System Info: OS=$($systemInfo.OS)`tArch=$($systemInfo.Arch)" -ForegroundColor Yellow
+                Write-Host " File List: `n$($assets.name -join "`n")" -ForegroundColor Green
                 # Write-Host " 下载地址：`n$($assets.browser_download_url -join "`n")" -ForegroundColor Green
-                throw " !!! 未找到匹配的发布文件 "
-                
-            # } else {
-            #     Write-Host " 系统参数： $($systemInfo.OS)`t$($systemInfo.Arch)" -ForegroundColor Yellow
-            #     Write-Host " 文件列表：`n$($selectedAsset.name -join "`n")" -ForegroundColor Green
+                throw " !!! Can't find the target file !!!"
+            } else {
+                Write-Host " Find target: $($selectedAsset.name)" -ForegroundColor Green
             }
 
             # 创建下载目录
-            $downloadDir = New-Item -Path $DownloadPath -ItemType Directory -Force
+            $downloadDir = Get_download_path $SubPath
+            # $downloadDir = New-Item -Path $sfld -ItemType Directory -Force
+            # Write-Host " Target Dir: $($downloadDir)" -ForegroundColor Blue
 
             # 下载文件
-            $url_target = $selectedAsset.browser_download_url
-            $localFile = Join-Path $downloadDir.FullName $selectedAsset.name
-            Write-Host " 正在下载: $($selectedAsset.name) `n url: $($url_target)" -ForegroundColor Cyan
+            $url_target = Get_proxy_url -Url $selectedAsset.browser_download_url
+            # Write-Host " Target Url: $($url_target)" -ForegroundColor Blue
+            $localFile = Join-Path $downloadDir $selectedAsset.name
+            # Write-Host " Downloading: $($selectedAsset.name) `n url: $($url_target)" -ForegroundColor Cyan
             # Invoke-WebRequest -Uri $url_target -OutFile $localFile 
-            # Invoke-WebRequest -Uri $url_target -OutFile $localFile 
-            Write-Host " 文件保存:`n $($localFile) " -ForegroundColor Green
-            return # ######## 临时调试，不下载文件
+            Start-BitsTransfer -Source $url_target -Destination  $localFile   # 适合下载大文件或需要后台下载的场景
+            Write-Host " Saved to: $($localFile) " -ForegroundColor Green
+            # return # ######## 临时调试，不下载文件
 
             # 返回文件对象
             Get-Item $localFile
@@ -378,26 +437,11 @@ function System_Settings {
 }
 
 
-function get_download_path {
-    param ([string]$sfld)
-    # 获取脚本所在的目录路径
-    # $scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
-    $scriptDir = $PWD.Path
-
-    # 创建目标子目录 Apps（如果不存在）
-    $targetDir = Join-Path -Path $scriptDir -ChildPath $sfld 
-    if (-not (Test-Path -Path $targetDir)) {
-        New-Item -ItemType Directory -Path $targetDir
-    }
-    # 定义目标文件路径
-    # $targetFilePath = Join-Path -Path $targetDir -ChildPath "file.zip"
-    return $targetDir
-}
 
 
 function App_download {
     $sfld = 'Apps'
-    $targetDir = get_download_path $sfld
+    $targetDir = Get_download_path $sfld
 
     function download_all_software {
         "PowerShell", "git", "vscode" | ForEach-Object {
@@ -425,7 +469,7 @@ function App_download {
     }
     function download_vc_redist64 {
         $file = "VC_redist.x64.exe"
-        $targetDir = get_download_path $sfld
+        $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
         write-host "File URL  : $url_dl"
@@ -436,7 +480,7 @@ function App_download {
     }
     function download_nekobox {
         $file = "nekoray-4.0.1-2024-12-12-windows64.zip"
-        $targetDir = get_download_path $sfld
+        $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
         write-host "File URL  : $url_dl"
@@ -447,7 +491,7 @@ function App_download {
     }
     function download_python3127 {
         $file = "python-3.12.7-amd64.exe"
-        $targetDir = get_download_path $sfld
+        $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
         write-host "File URL  : $url_dl"
@@ -570,6 +614,10 @@ function  main_menu {
 # main_menu 
 
 # # 使用示例
+
+
+$region = get_region 
+Write-Host $region 
 
 $url_gh = "https://github.com/PowerShell/PowerShell"
 $fpattern = ".*-win-x64.exe"
