@@ -13,7 +13,7 @@ services:
       PASSWORD: "d7654321234567d"
       LANGUAGE: "Chinese"   
     volumes:
-      # - /home/win2025-eval_zh.iso/custom.iso
+      # - /home/win2025.iso:/custom.iso
       - /home/dwin_share:/shared
       - /home/dwin_disk:/storage
       # - /mnt/ext0/win_2025:/storage2
