@@ -2355,7 +2355,7 @@ EOF
             ) 
             function get_system_language(){
                 local sys_lang='CN'
-                print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
+                # print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请选择语言(默认为中文)[CN/EN]: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
                 case "${INPUT}" in
@@ -2365,7 +2365,6 @@ EOF
                 #     ;;
                 2) 
                     sys_lang='EN'
-                    _BREAK_INFO=" 已选择英文！"
                 esac 
                 echo ${sys_lang}
             }
@@ -2592,6 +2591,7 @@ EOF
                 ;;
             32) 
                 dd_get_mollylau
+                print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local lang=$(get_system_language) 
                 dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
                 bash InstallNET.sh -windows 2022 $lang 
@@ -2601,6 +2601,7 @@ EOF
                 ;;
             33) 
                 dd_get_mollylau
+                print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local lang=$(get_system_language) 
                 dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
                 bash InstallNET.sh -windows 2019 $lang 
@@ -2609,6 +2610,7 @@ EOF
                 sys_reboot 
                 ;;
             34) 
+                print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local lang=$(get_system_language) 
                 dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
                 bash InstallNET.sh -windows 11 $lang 
@@ -2618,6 +2620,7 @@ EOF
                 ;;
             35) 
                 dd_get_mollylau
+                print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local lang=$(get_system_language) 
                 dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
                 bash InstallNET.sh -windows 10 $lang 
@@ -2627,6 +2630,7 @@ EOF
                 ;;
             36) 
                 dd_get_bin456789
+                print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local lang=$(get_system_language) 
                 local sys_lang='en-us'
                 [[ $lang -eq 'CN' ]] && sys_lang='zh-cn'
@@ -2638,9 +2642,12 @@ EOF
                 ;;
             77) 
                 dd_get_bin456789 
+                print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local lang=$(get_system_language) 
                 local sys_lang='zh-cn'
                 [[ $lang -eq 'EN' ]] && sys_lang='en-us'
+
+                echo -e "\n$PRIGHT 选择的系统语言： ${sys_lang} \n"
                 
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请输入统版本(默认: Windows Server 2025 ServerDataCenter): ${PLAIN}\n")
                 read -rp "${CHOICE}" INPUT
@@ -2651,7 +2658,7 @@ EOF
                 url_iso=${INPUT:-"https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso"}
                 
                 dd_print_login_info 'Administrator' '123@@@' '3389'
-                bash reinstall.sh windows --image-name $img_name --iso $url_iso --lang $sys_lang
+                bash reinstall.sh windows --image-name "${img_name}" --iso "${url_iso}" --lang $sys_lang
                 dd_print_login_info 'Administrator' '123@@@' '3389'
                 _IS_BREAK="false" 
                 sys_reboot 
