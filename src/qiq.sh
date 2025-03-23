@@ -2340,123 +2340,124 @@ EOF
             
     }
     function sys_setting_dd_system(){
-            local sys_dd_options=(
-                "1.Leitbogioro"
-                "2.MoeClub"
-                "3.0oVicero0"
-                "4.mowwom"
-                "5.bin456789"
-                "0.返回"
-            )         
-            
-            local sys_lang_options=(
-                "1.中文(CN)"
-                "2.英文(EN)"
-            ) 
-            function get_system_language(){
-                local sys_lang='CN'
-                # print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请选择语言(默认为中文)[CN/en]: ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                case "${INPUT}" in
-                1) sys_lang='CN' ;;
-                2) sys_lang='EN' ;; 
-                *) sys_lang='CN' ;; 
-                esac 
-                echo ${sys_lang}
-            }
+        local sys_dd_options=(
+            "1.Leitbogioro"
+            "2.MoeClub"
+            "3.0oVicero0"
+            "4.mowwom"
+            "5.bin456789"
+            "0.返回"
+        )         
+        
+        local sys_lang_options=(
+            "1.中文(CN)"
+            "2.英文(EN)"
+        ) 
+        function get_system_language(){
+            local sys_lang='CN'
+            # print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择语言(默认为中文)[CN/en]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) sys_lang='CN' ;;
+            2) sys_lang='EN' ;; 
+            *) sys_lang='CN' ;; 
+            esac 
+            echo ${sys_lang}
+        }
 
-            local systems_list=(
-                "1|Alpine Edge|$WHITE"
-                "2|Alpine 3.20|$WHITE"
-                "3|Alpine 3.19|$WHITE"
-                "4|Alpine 3.18|$WHITE"
-                "…………………………………|$WHITE" 
-                "11|Debian 12|$YELLOW"
-                "12|Debian 11|$WHITE"
-                "13|Debian 10|$WHITE"
-                "14|Ubuntu 24.04|$YELLOW"
-                "15|Ubuntu 22.04|$WHITE"
-                "16|Ubuntu 20.04|$WHITE"
-                "…………………………………|$WHITE" 
-                "21|AlmaLinux 9|$WHITE"
-                "22|AlmaLinux 8|$WHITE"
-                "23|RockyLinux 9|$WHITE"
-                "24|RockyLinux 8|$WHITE"
-                "…………………………………|$WHITE" 
-                "31|Windows 2025|$YELLOW"
-                "32|Windows 2022|$WHITE"
-                "33|Windows 2019|$WHITE"
-                "34|Windows 11|$WHITE"
-                "35|Windows 10|$WHITE"
-                "36|Windows 7|$WHITE"
-                "…………………………………|$WHITE" 
-                "77|自定义镜像|$WHITE"
-                "88|41合一脚本|$WHITE"
-                "99|脚本说明|$WHITE"
-            )            
+        local systems_list=(
+            "1|Alpine Edge|$WHITE"
+            "2|Alpine 3.20|$WHITE"
+            "3|Alpine 3.19|$WHITE"
+            "4|Alpine 3.18|$WHITE"
+            "…………………………………|$WHITE" 
+            "11|Debian 12|$YELLOW"
+            "12|Debian 11|$WHITE"
+            "13|Debian 10|$WHITE"
+            "14|Ubuntu 24.04|$YELLOW"
+            "15|Ubuntu 22.04|$WHITE"
+            "16|Ubuntu 20.04|$WHITE"
+            "…………………………………|$WHITE" 
+            "21|AlmaLinux 9|$WHITE"
+            "22|AlmaLinux 8|$WHITE"
+            "23|RockyLinux 9|$WHITE"
+            "24|RockyLinux 8|$WHITE"
+            "…………………………………|$WHITE" 
+            "31|Windows 2025|$YELLOW"
+            "32|Windows 2022|$WHITE"
+            "33|Windows 2019|$WHITE"
+            "34|Windows 11|$WHITE"
+            "35|Windows 10|$WHITE"
+            "36|Windows 7|$WHITE"
+            "…………………………………|$WHITE" 
+            "77|自定义(Win)|$WHITE"
+            "88|41合一脚本|$WHITE"
+            "99|脚本说明|$WHITE"
+        )            
 
-            _IS_BREAK="true"
-            _BREAK_INFO=" DD系统！"
+        _IS_BREAK="true"
+        _BREAK_INFO=" DD系统！"
 
-            check_sys_virt 
-            if [[ "$VIRT" != *"KVM"* ]]; then
-                # 如果系统虚拟化不是KVM，则使用OsMutation进行DD系统
-                local fname='OsMutation.sh' 
-                local url=$(get_proxy_url 'https://raw.githubusercontent.com/LloydAsp/OsMutation/main/OsMutation.sh')
-                if command -v curl &>/dev/null; then 
-                    curl -sL -o ${fname} "${url}" && chmod u+x ${fname} && bash ${fname}
-                elif command -v wget &>/dev/null; then 
-                    wget -qO ${fname} $url && chmod u+x ${fname} &&  bash ${fname}
-                else
-                    _BREAK_INFO=" 请先安装curl或wget！"
-                fi
-                return 0   
+        check_sys_virt 
+        if [[ "$VIRT" != *"KVM"* ]]; then
+            # 如果系统虚拟化不是KVM，则使用OsMutation进行DD系统
+            local fname='OsMutation.sh' 
+            local url=$(get_proxy_url 'https://raw.githubusercontent.com/LloydAsp/OsMutation/main/OsMutation.sh')
+            if command -v curl &>/dev/null; then 
+                curl -sL -o ${fname} "${url}" && chmod u+x ${fname} && bash ${fname}
+            elif command -v wget &>/dev/null; then 
+                wget -qO ${fname} $url && chmod u+x ${fname} &&  bash ${fname}
+            else
+                _BREAK_INFO=" 请先安装curl或wget！"
+            fi
+            return 0   
+        fi 
+        
+        function dd_print_login_info(){
+            local username=$1
+            local password=$2
+            local port=$3
+            echo -e "\n$TIP DD系统登录信息:"
+            echo -e "============================="
+            echo -e "$BOLD  用户: ${username}"
+            echo -e "$BOLD  密码: ${password}"
+            echo -e "$BOLD  端口: ${port}"
+            echo -e "============================="
+        }
+        function dd_get_mollylau(){
+            local weburl='https://github.com/leitbogioro/Tools'
+            local fname='InstallNET.sh' 
+            local url=$(get_proxy_url 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh')
+            if command -v curl &>/dev/null; then 
+                curl -sL -o ${fname} "${url}" && chmod a+x ${fname}
+            elif command -v wget &>/dev/null; then 
+                wget -qO ${fname} $url && chmod a+x ${fname} 
+            else
+                _BREAK_INFO=" 请先安装curl或wget！"
+                _IS_BREAK="true"
+                return 0
             fi 
-            
-            function dd_print_login_info(){
-                local username=$1
-                local password=$2
-                local port=$3
-                echo -e "\n$TIP DD系统登录信息:"
-                echo -e "============================="
-                echo -e "$BOLD  用户: ${username}"
-                echo -e "$BOLD  密码: ${password}"
-                echo -e "$BOLD  端口: ${port}"
-                echo -e "============================="
-            }
-            function dd_get_mollylau(){
-                local weburl='https://github.com/leitbogioro/Tools'
-                local fname='InstallNET.sh' 
-                local url=$(get_proxy_url 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh')
-                if command -v curl &>/dev/null; then 
-                    curl -sL -o ${fname} "${url}" && chmod a+x ${fname}
-                elif command -v wget &>/dev/null; then 
-                    wget -qO ${fname} $url && chmod a+x ${fname} 
-                else
-                    _BREAK_INFO=" 请先安装curl或wget！"
-                    _IS_BREAK="true"
-                    return 0
-                fi 
-                return 1 
-            }
-            
-            function dd_get_bin456789(){
-                local weburl='https://github.com/bin456789/reinstall'
-                local fname='reinstall.sh' 
-                local url=$(get_proxy_url 'https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh')
-                if command -v curl &>/dev/null; then 
-                    curl -sL -o ${fname} "${url}" && chmod a+x ${fname}
-                elif command -v wget &>/dev/null; then 
-                    wget -qO ${fname} $url && chmod a+x ${fname} 
-                else
-                    echo -e " 请先安装curl或wget！"
-                    return 0
-                fi 
-                return 1 
-            }
-            
-            
+            return 1 
+        }
+        
+        function dd_get_bin456789(){
+            local weburl='https://github.com/bin456789/reinstall'
+            local fname='reinstall.sh' 
+            local url=$(get_proxy_url 'https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh')
+            if command -v curl &>/dev/null; then 
+                curl -sL -o ${fname} "${url}" && chmod a+x ${fname}
+            elif command -v wget &>/dev/null; then 
+                wget -qO ${fname} $url && chmod a+x ${fname} 
+            else
+                echo -e " 请先安装curl或wget！"
+                return 0
+            fi 
+            return 1 
+        }
+        
+        
+        while true; do
             clear 
             local num_split=40
             print_sub_head " DD系统 " $num_split 1 0 
@@ -2469,7 +2470,7 @@ EOF
             1) 
                 dd_get_mollylau 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
-				bash InstallNET.sh -alpine 
+                bash InstallNET.sh -alpine 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
                 _IS_BREAK="false" 
                 sys_reboot 
@@ -2632,7 +2633,7 @@ EOF
                 local sys_lang='en-us'
                 [[ $lang -eq 'CN' ]] && sys_lang='zh-cn'
                 dd_print_login_info 'Administrator' '123@@@' '3389'
-				bash reinstall.sh windows --image-name='Windows 7 PROFESSIONAL' --iso="https://drive.massgrave.dev/cn_windows_7_professional_with_sp1_x64_dvd_u_677031.iso"
+                bash reinstall.sh windows --image-name='Windows 7 PROFESSIONAL' --iso="https://drive.massgrave.dev/cn_windows_7_professional_with_sp1_x64_dvd_u_677031.iso"
                 dd_print_login_info 'Administrator' '123@@@' '3389'
                 _IS_BREAK="false" 
                 sys_reboot 
@@ -2652,6 +2653,7 @@ EOF
                 read -rp "${CHOICE}" INPUT
                 url_iso=${INPUT:-"https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso"}
                 
+                echo -e " "
                 generate_separator "=|$WHITE" 40
                 echo -e "$PRIGHT 系统语言： ${sys_lang} "
                 echo -e "$PRIGHT 系统版本： ${img_name} "
@@ -2695,11 +2697,12 @@ EOF
                 # wget --no-check-certificate -O NewReinstall.sh https://raw.githubusercontent.com/fcurrk/reinstall/master/NewReinstall.sh && chmod a+x NewReinstall.sh && bash NewReinstall.sh
                 ;;
             99) system_dd_usage && _BREAK_INFO=" DD系统说明 " ;; 
-            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
-            xx) sys_reboot ;;
+            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
+            xx) sys_reboot && exit 0 ;;
             *)  _BREAK_INFO=" 请输入正确选项！" ;;
             esac 
-            
+            case_end_tackle
+        done
     }
     function sys_setting_alter_swap(){
         local swap_used=$(free -m  | awk 'NR==3{print $3}')
