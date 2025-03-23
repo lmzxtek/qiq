@@ -4648,6 +4648,15 @@ function python_management_menu(){
         
     }
     function py_subitem_install_julia(){
+        function jill_usage(){
+            generate_separator '=' $MAX_SPLIT_CHAR_NUM
+            echo -e "\n$TIP jill Usage:"
+            echo -e "   > jill upstream                       # Check available Julia upstream sources"
+            echo -e "   > jill install --upstream USTC        # Install Julia from USTC source"
+            echo -e "   > jill install --install_dir './'     # Install Julia to current directory"
+            generate_separator '=' $MAX_SPLIT_CHAR_NUM
+        }
+        jill_usage
         _BREAK_INFO=" Julia安装成功！"
         if  command -v julia &>/dev/null; then
             _BREAK_INFO=" julia已安装！"
