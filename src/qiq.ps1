@@ -244,13 +244,22 @@ function Install-Software {
 
 # 安装 Python（可选择版本）
 function Manage_Python {
+    function show_jill_usage{
+        Write-Host "========== Jill Usage ==========" -ForegroundColor Green
+        Write-Host "Usage: jill install [options] "
+        Write-Host "   > jill upstream                       # Check available Julia upstream sources"
+        Write-Host "   > jill install --upstream USTC        # Install Julia from USTC source"
+        Write-Host "   > jill install --install_dir './'     # Install Julia to current directory"
+        Write-Host "================================" -ForegroundColor Green
+    }
     while ($true) {
         Clear-Host
         Write-Host "========== Python Management ==========" -ForegroundColor Green
         Write-Host " 1. Install Python Latest "
         Write-Host " 2. Install Python by ver."
         Write-Host " 3. Install pipenv"
-        Write-Host " 4. Set Pip Source"
+        Write-Host " 4. Install Julia"
+        Write-Host " 5. Set Pip Source"
         Write-Host " 0. Back"
         Write-Host "=======================================" -ForegroundColor Green
         $py_choice = Read-Host "Enter your choice (1-5)"
@@ -262,7 +271,8 @@ function Manage_Python {
                 Install-Software "Python.Python --version $py_version" "python --version $py_version" "https://www.python.org/downloads/release/python-$py_version/"
             }
             "3" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
-            "4" { Set-Pip-Mirror }
+            "4" { show_jill_usage; pip install jill; jill install  }
+            "5" { Set-Pip-Mirror }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
