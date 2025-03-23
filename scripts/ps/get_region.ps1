@@ -38,9 +38,8 @@ function get_proxy_url {
 }
 
 $url_dl = get_proxy_url
-
-Invoke-WebRequest $url_dl -OutFile "C:\nezha.zip"
-
+# Invoke-WebRequest $url_dl -OutFile "C:\nezha.zip"
+Write-Host $url_dl 
 
 $region = get_region 
 Write-Host $region 
