@@ -14,8 +14,8 @@ services:
       LANGUAGE: "Chinese"   
     volumes:
       # - /home/win2025-eval_zh.iso/custom.iso
-      - /home/win_share:/shared
-      - /home/win_disk:/storage
+      - /home/dwin_share:/shared
+      - /home/dwin_disk:/storage
       # - /mnt/ext0/win_2025:/storage2
     devices:
       - /dev/kvm
