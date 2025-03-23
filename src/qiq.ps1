@@ -461,6 +461,7 @@ function App_download {
         Write-Host "  9. 7zip             "  -ForegroundColor Green
         Write-Host " 10. Git              "  
         Write-Host " 11. frp              "  -ForegroundColor Green
+        Write-Host " 12. THS-Hevo        "  
         Write-Host " 99. All              " 
         Write-Host "  0. Exit             "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
@@ -546,6 +547,14 @@ function App_download {
             Write-Host " Download failed" -ForegroundColor Red
         }
     }
+    function download_7zip_latest {
+        $url_gh = "https://github.com/ip7z/7zip"
+        $fpattern = ".*-x64.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
     function download_nekobox_latest {
         $url_gh = "https://github.com/MatsuriDayo/nekoray"
         $fpattern = ".*-windows64.zip"
@@ -557,6 +566,28 @@ function App_download {
     function download_nekobox_alist {
         $file = "nekoray-4.0.1-2024-12-12-windows64.zip"
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL  : $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_ths_hevo {
+        $file = "ths-hevo.exe"
+        $url_dl = "https://download.10jqka.com.cn/index/download/id/275/"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL  : $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_wanho_gm {
+        $file = "Vanhogm.exe"
+        $url_dl = "https://download.vanho.cn/download/juejin/Vanhogm.exe"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL  : $url_dl"
@@ -592,9 +623,11 @@ function App_download {
             "6" { download_hiddify }
             "7" { download_vscode_user; }
             "8" { download_1remote }
-            "9" {  }
+            "9" { download_7zip_latest }
             "10" { download_git; }
             "11" { download_frp; }
+            "12" { download_ths_hevo; }
+            "13" { download_wanho_gm; }
             "99" { download_all_software }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
@@ -630,6 +663,13 @@ function show_web_links {
     https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe
     "
 
+    Write-Host "  5. 7Zip : 
+    https://www.7-zip.org/download.html
+    https://www.7-zip.org/a/7z2409-x64.exe
+    https://github.com/ip7z/7zip
+    https://github.com/ip7z/7zip/releases/download/24.09/7z2409-x64.exe
+    "
+
     Write-Host "  5. Git : 
     https://git-scm.com/downloads/win
     https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe
@@ -659,6 +699,23 @@ function show_web_links {
     https://github.com/hiddify/hiddify-app
     https://github.com/hiddify/hiddify-app/releases/download/v2.5.7/Hiddify-Windows-Portable-x64.zip
     https://github.com/hiddify/hiddify-app/releases/download/v2.5.7/Hiddify-Windows-Setup-x64.exe
+    "
+
+    Write-Host " 11. WanHo : 
+    http://www.wanhesec.com.cn/main/views/softwareDownload/index.html
+    https://download.vanho.cn/download/juejin/Vanhogm.exe
+    "
+
+    Write-Host " 12. PTrade : 
+    https://www.i618.com.cn/main/companybusi/wealth/quantitativetrading/ptrade/index.shtml
+    https://www.i618.com.cn/plat_files/upload/source_upload/20250321/%E4%BB%BF%E7%9C%9F-PTrade1.0-Client-V202407-09-001(%E5%B1%B1%E8%A5%BF-FZ).zip
+    https://www.i618.com.cn/plat_files/upload/source_upload/20250321/%E7%94%9F%E4%BA%A7-PTrade1.0-Client-V202407-09-001(%E5%B1%B1%E8%A5%BF).zip
+    "
+
+    Write-Host " 13. THS : 
+    https://www.10jqka.com.cn/
+    https://download.10jqka.com.cn/index/download/id/275/ Hevo-THS
+    https://sp.thsi.cn/staticS3/mobileweb-upload-static-server.file/app_6/downloadcenter/THS_freeldy_9.40.40_0228.exe
     "
 
     # Write-Host "  0. Exit"       -ForegroundColor Red
