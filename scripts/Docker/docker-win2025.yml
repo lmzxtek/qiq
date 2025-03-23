@@ -2,21 +2,21 @@ services:
   win2025:
     image: dockurr/windows
     container_name: win2025
-    # restart: unless-stopped
+    restart: unless-stopped
     environment:
       VERSION: "2025"
-      RAM_SIZE: "8G"
+      RAM_SIZE: "4G"
       CPU_CORES: "4"
-      DISK_SIZE: "64G"
-      DISK2_SIZE: "256G"
+      DISK_SIZE: "24G"
+      # DISK2_SIZE: "256G"
       USERNAME: "dd"
-      PASSWORD: "7654321234567"
+      PASSWORD: "d7654321234567d"
       LANGUAGE: "Chinese"   
     volumes:
       # - /home/win2025-eval_zh.iso/custom.iso
       - /home/win_share:/shared
       - /home/win_disk:/storage
-      - /mnt/ext0/win_2025:/storage2
+      # - /mnt/ext0/win_2025:/storage2
     devices:
       - /dev/kvm
     cap_add:
