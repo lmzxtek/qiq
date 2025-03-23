@@ -522,7 +522,7 @@ function App_download {
     }
     function download_powershell {
         $url_gh = "https://github.com/PowerShell/PowerShell"
-        $fpattern = ".*-win-x64.exe"
+        $fpattern = ".*-win-x64.msi"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
