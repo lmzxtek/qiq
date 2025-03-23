@@ -456,14 +456,16 @@ function App_download {
         Write-Host "  4. PowerShell       "
         Write-Host "  5. Notepad++        "  -ForegroundColor Blue
         Write-Host "  6. Hiddify          "
-        Write-Host "  7. VSCode           "
+        Write-Host "  7. VSCode           "  
         Write-Host "  8. 1Remote          "
         Write-Host "  9. 7zip             "  -ForegroundColor Green
         Write-Host " 10. Git              "  
         Write-Host " 11. frp              "  -ForegroundColor Green
-        Write-Host " 12. THS-Hevo         "  
-        Write-Host " 13. WanhoGM          "  
-        Write-Host " 99. All              " 
+        Write-Host " 12. RustDesk         "  
+        Write-Host " 13. Pot-desk         "  
+        Write-Host " 14. THS-Hevo         "  
+        Write-Host " 15. WanhoGM          "  
+        Write-Host " 99. All              "  -ForegroundColor Green
         Write-Host "  0. Exit             "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
@@ -530,6 +532,14 @@ function App_download {
     function download_frp {
         $url_gh = "https://github.com/fatedier/frp"
         $fpattern = ".*windows_amd64.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_rustdesk {
+        $url_gh = "https://github.com/rustdesk/rustdesk"
+        $fpattern = ".*-x86_64.exe"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
@@ -648,9 +658,10 @@ function App_download {
             "9"  { download_7zip_latest }
             "10" { download_git; }
             "11" { download_frp; }
-            "12" { download_pot_desktop; }
-            "13" { download_ths_hevo; }
-            "14" { download_wanho_gm; }
+            "12" { download_rustdesk; }
+            "13" { download_pot_desktop; }
+            "14" { download_ths_hevo; }
+            "15" { download_wanho_gm; }
             "99" { download_all_software }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
@@ -691,59 +702,73 @@ function show_web_links {
     https://github.com/pot-app/pot-desktop/releases/download/3.0.6/pot_3.0.6_x64-setup.exe
     "
 
-    Write-Host "  5. 7Zip : 
+    Write-Host "  6. 7Zip : 
     https://www.7-zip.org/download.html
     https://www.7-zip.org/a/7z2409-x64.exe
     https://github.com/ip7z/7zip
     https://github.com/ip7z/7zip/releases/download/24.09/7z2409-x64.exe
     "
 
-    Write-Host "  5. Git : 
+    Write-Host "  7. Git : 
     https://git-scm.com/downloads/win
     https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe
     "
 
-    Write-Host "  6. VSCode : 
+    Write-Host "  8. VSCode : 
     https://code.visualstudio.com/Download
     https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user 
     "
 
-    Write-Host "  7. Notepad++ : 
+    Write-Host "  9. Notepad++ : 
     https://notepad-plus-plus.org/downloads/
     https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.8/npp.8.7.8.Installer.x64.exe
     "
 
-    Write-Host "  8. frp : 
+    Write-Host " 10. frp : 
     https://github.com/fatedier/frp
     https://github.com/fatedier/frp/releases/download/v0.61.2/frp_0.61.2_windows_amd64.zip
     "
 
-    Write-Host "  9. 1Remote : 
+    Write-Host " 11. rustdesk : 
+    https://github.com/rustdesk/rustdesk
+    https://github.com/rustdesk/rustdesk/releases/download/1.3.8/rustdesk-1.3.8-x86_64.exe
+    "
+
+    Write-Host " 12. 1Remote : 
     https://github.com/1Remote/1Remote
     https://github.com/1Remote/1Remote/releases/download/1.1.1/1Remote-1.1.1-net6-x64-250124.zip
     "
 
-    Write-Host " 10. Hiddify : 
+    Write-Host " 13. Hiddify : 
     https://github.com/hiddify/hiddify-app
     https://github.com/hiddify/hiddify-app/releases/download/v2.5.7/Hiddify-Windows-Portable-x64.zip
     https://github.com/hiddify/hiddify-app/releases/download/v2.5.7/Hiddify-Windows-Setup-x64.exe
     "
 
-    Write-Host " 11. WanHo : 
+    Write-Host " 14. WanHo : 
     http://www.wanhesec.com.cn/main/views/softwareDownload/index.html
     https://download.vanho.cn/download/juejin/Vanhogm.exe
     "
 
-    Write-Host " 12. PTrade : 
+    Write-Host " 15. PTrade : 
     https://www.i618.com.cn/main/companybusi/wealth/quantitativetrading/ptrade/index.shtml
     https://www.i618.com.cn/plat_files/upload/source_upload/20250321/%E4%BB%BF%E7%9C%9F-PTrade1.0-Client-V202407-09-001(%E5%B1%B1%E8%A5%BF-FZ).zip
     https://www.i618.com.cn/plat_files/upload/source_upload/20250321/%E7%94%9F%E4%BA%A7-PTrade1.0-Client-V202407-09-001(%E5%B1%B1%E8%A5%BF).zip
     "
 
-    Write-Host " 13. THS : 
-    https://www.10jqka.com.cn/
+    Write-Host " 16. THS : 
+    https://www.10jqka.com.cn
     https://download.10jqka.com.cn/index/download/id/275/ Hevo-THS
     https://sp.thsi.cn/staticS3/mobileweb-upload-static-server.file/app_6/downloadcenter/THS_freeldy_9.40.40_0228.exe
+    "
+
+    Write-Host " 51. Windows(.iso) : 
+    https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso
+    https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_jan_2025_x64_dvd_7a8e5a29.iso
+    https://alistus.zwdk.im/d/a/sys/zh-cn_windows_server_2025_updated_nov_2024_x64_dvd_ccbcec44.iso
+    https://ypora.zwdk.org/d/sys/zh-cn_windows_server_2025_updated_nov_2024_x64_dvd_ccbcec44.iso
+    https://ypora.zwdk.org/d/sys/zh-cn_windows_server_2022_updated_nov_2024_x64_dvd_4e34897c.iso
+    https://ypora.zwdk.org/d/sys/zh-cn_windows_11_business_editions_version_24h2_x64_dvd_5f9e5858.iso
     "
 
     # Write-Host "  0. Exit"       -ForegroundColor Red
