@@ -2610,55 +2610,42 @@ EOF
             
     }
     function sys_setting_alter_swap(){
-            local swap_used=$(free -m | awk 'NR==3{print $3}')
-            local swap_total=$(free -m | awk 'NR==3{print $2}')
-            local swap_info=$(free -m | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dM/%dM (%d%%)", used, total, percentage}')
+        local swap_used=$(free -m | awk 'NR==3{print $3}')
+        local swap_total=$(free -m | awk 'NR==3{print $2}')
+        local swap_info=$(free -m | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dM/%dM (%d%%)", used, total, percentage}')
 
-            local swap_size_options=(
-                "1. 1024M"
-                "2. 2048M"
-                "3. 4096M"
-                "4. 8192M"
-                "5. 自定义"
-                "0. 返回"
-            )           
-            
-            _IS_BREAK="true"
-            print_items_list swap_size_options[@] " ⚓ 虚拟内存容量菜单:"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+        local swap_size_options=(
+            " 1. 1024M"
+            " 2. 2048M"
+            " 3. 4096M"
+            " 4. 8192M"
+            " 5. 自定义"
+            " 0. 返回"
+        )           
+        
+        _IS_BREAK="true"
+        echo -e "\n$PRIGHT 当前虚拟内存: $swap_info \n"
+        print_items_list swap_size_options[@] " ⚓ 虚拟内存容量菜单:"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1)  add_swap 1024 && _BREAK_INFO=" 已设置1G虚拟内存！" ;;
+        2)  add_swap 2048 && _BREAK_INFO=" 已设置2G虚拟内存！" ;;
+        3)  add_swap 4096 && _BREAK_INFO=" 已设置4G虚拟内存！" ;;
+        4)  add_swap 8192 && _BREAK_INFO=" 已设置8G虚拟内存！" ;;
+        5) 
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要设置的虚拟内存大小(M): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
-            case "${INPUT}" in
-            1) 
-                add_swap 1024
-                _BREAK_INFO=" 已设置1G虚拟内存！"
-                ;;
-            2) 
-                add_swap 2048
-                _BREAK_INFO=" 已设置2G虚拟内存！"
-                ;;
-            3) 
-                add_swap 4096
-                _BREAK_INFO=" 已设置4G虚拟内存！"
-                ;;
-            4) 
-                add_swap 8192
-                _BREAK_INFO=" 已设置8G虚拟内存！"
-                ;;
-            5) 
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要设置的虚拟内存大小(M): ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                if [[ $INPUT =~ ^[0-9]+$ ]]; then
-                    add_swap $INPUT 
-                    _BREAK_INFO=" 已设置${INPUT}M虚拟内存！"
-                else
-                    _BREAK_INFO=" 虚拟内存大小输入错误，格式有误，应为数字！"
-                fi
-                ;;
-            *)
-                _BREAK_INFO=" 请输入正确选项！"
-                ;;
-            esac 
-            
+            if [[ $INPUT =~ ^[0-9]+$ ]]; then
+                add_swap $INPUT 
+                _BREAK_INFO=" 已设置${INPUT}M虚拟内存！"
+            else
+                _BREAK_INFO=" 虚拟内存大小输入错误，格式有误，应为数字！"
+            fi
+            ;;
+        0)  _BREAK_INFO=" 返回 " && _IS_BREAK="false" ;;
+        *)  _BREAK_INFO=" 请输入正确选项！" ;;
+        esac 
     }
     function sys_setting_enable_ssh_reproxy(){
         # 这项功能主要用于将服务器作为中转站，进行网络请求的转发 
@@ -6151,7 +6138,7 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
-        macver='2025'
+        local macver='2025'
         echo -e ""
         echo -e "$PRIGHT 1.2025(Windows Server 2025)"
         echo -e "$PRIGHT 2.2022(Windows Server 2022)"
@@ -6160,6 +6147,7 @@ EOF
         echo -e "$PRIGHT 5.win10(Windows 10)"
         echo -e "$PRIGHT 6.tiny11(Tiny 11)"
         echo -e "$PRIGHT 7.tiny10(Tiny 10)"
+        echo -e "$PRIGHT 8.Custom iso url "
         local CHOICE=$(echo -e "\n${BOLD}└─ 请选择Windows版本(默认为: Win2025)]: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] && INPUT=1        
@@ -6171,6 +6159,12 @@ EOF
         5) macver='win10' ;;
         6) macver='tiny11' ;;
         7) macver='tiny10' ;;
+        8) 
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入ISO镜像链接: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] && INPUT="2025"
+            macver=$INPUT 
+            ;;
         *) echo -e "\n$WARN 输入错误[Y/n],设置为默认2025"  ;;
         esac
         
@@ -6233,6 +6227,7 @@ services:
     volumes:
       - $lfld/$dc_name/dcwin_disk:/storage
       - $lfld/$dc_name/dcwin_share:/shared
+      # - ./example.iso:/custom.iso 
     ports:
       - ${dc_port}:8006
       - 5000:5000
@@ -6254,6 +6249,7 @@ EOF
             echo -e "$TIP 配置目录: ${lfld}" 
             echo -e "$TIP 配置文件: ${fyml}" 
             echo -e "$TIP 运行命令: docker-compose up -d " 
+            echo -e "$TIP 自定义镜像: docker-compose.yml > volumes:  - ./example.iso:/custom.iso " 
             ;;
         *)  echo -e "\n$WARN 输入错误！" ;;
         esac

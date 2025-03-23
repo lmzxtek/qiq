@@ -306,6 +306,17 @@ function Install-Software {
 
 # 安装 Python（可选择版本）
 function Manage_Python {
+    function Show_manage_python_menu {
+        Clear-Host
+        Write-Host "========== Python Management ==========" -ForegroundColor Green
+        Write-Host " 1. Install Python Latest              "
+        Write-Host " 2. Install Python by ver.             "
+        Write-Host " 3. Install pipenv                     "
+        Write-Host " 4. Install Julia                      "
+        Write-Host " 5. Set Pip Source                     "
+        Write-Host " 0. Back                               "
+        Write-Host "=======================================" -ForegroundColor Green
+    }
     function show_jill_usage {
         Write-Host "========== Jill Usage ==========" -ForegroundColor Green
         Write-Host "Usage: jill install [options] "
@@ -314,18 +325,42 @@ function Manage_Python {
         Write-Host "   > jill install --install_dir './'     # Install Julia to current directory"
         Write-Host "================================" -ForegroundColor Green
     }
-    while ($true) {
-        Clear-Host
-        Write-Host "========== Python Management ==========" -ForegroundColor Green
-        Write-Host " 1. Install Python Latest "
-        Write-Host " 2. Install Python by ver."
-        Write-Host " 3. Install pipenv"
-        Write-Host " 4. Install Julia"
-        Write-Host " 5. Set Pip Source"
+    
+    # 设置 pip 源
+    function Set-Pip-Mirror {
+        Write-Host " Select Source: "
+        Write-Host " 1. AliYun"
+        Write-Host " 2. TUNA"
+        Write-Host " 3. USTC"
+        Write-Host " 4. Custom"
         Write-Host " 0. Back"
-        Write-Host "=======================================" -ForegroundColor Green
-        $py_choice = Read-Host "Enter your choice (1-5)"
-        
+        $mirror_choice = Read-Host "Enter choice"
+        $mirrorURL = switch ($mirror_choice) {
+            "1" { "https://mirrors.aliyun.com/pypi/simple/" }
+            "2" { "https://pypi.tuna.tsinghua.edu.cn/simple/" }
+            "3" { "https://pypi.mirrors.ustc.edu.cn/simple/" }
+            "4" { Read-Host "Enter custom pip mirror URL" }
+            "0" { return }
+            default { Write-Host "Invalid input"; return }
+        }
+
+        $pipConfigPath = "$env:USERPROFILE\pip\pip.ini"
+        if (-not (Test-Path "$env:USERPROFILE\pip")) {
+            New-Item -ItemType Directory -Path "$env:USERPROFILE\pip" -Force
+        }
+
+        @"
+[global]
+index-url = $mirrorURL
+"@ | Set-Content -Path $pipConfigPath -Encoding UTF8
+
+        Write-Host "Pip mirror set to: $mirrorURL" -ForegroundColor Green
+        Pause
+    }
+
+    while ($true) {
+        Show_manage_python_menu
+        $py_choice = Read-Host "Enter your choice (1-5)"        
         switch ($py_choice) {
             "1" { Install-Software "Python.Python" "python" "https://www.python.org/downloads/" }
             "2" { 
@@ -341,50 +376,20 @@ function Manage_Python {
     }
 }
 
-# 设置 pip 源
-function Set-Pip-Mirror {
-    Write-Host " Select Source: "
-    Write-Host " 1. AliYun"
-    Write-Host " 2. TUNA"
-    Write-Host " 3. USTC"
-    Write-Host " 4. Custom"
-    Write-Host " 0. Back"
-    $mirror_choice = Read-Host "Enter choice"
-
-    $mirrorURL = switch ($mirror_choice) {
-        "1" { "https://mirrors.aliyun.com/pypi/simple/" }
-        "2" { "https://pypi.tuna.tsinghua.edu.cn/simple/" }
-        "3" { "https://pypi.mirrors.ustc.edu.cn/simple/" }
-        "4" { Read-Host "Enter custom pip mirror URL" }
-        "0" { return }
-        default { Write-Host "Invalid input"; return }
-    }
-
-    $pipConfigPath = "$env:USERPROFILE\pip\pip.ini"
-    if (-not (Test-Path "$env:USERPROFILE\pip")) {
-        New-Item -ItemType Directory -Path "$env:USERPROFILE\pip" -Force
-    }
-
-    @"
-[global]
-index-url = $mirrorURL
-"@ | Set-Content -Path $pipConfigPath -Encoding UTF8
-
-    Write-Host "Pip mirror set to: $mirrorURL" -ForegroundColor Green
-    Pause
-}
-
 # 常用软件安装
 function Software_install {
-    while ($true) {
+    function Shwo_software_menu {
         Clear-Host
-        Write-Host "====== Common Software Installation ======" -ForegroundColor Cyan
-        Write-Host "1. Install 7-Zip"
-        Write-Host "2. Install Notepad++"
-        Write-Host "3. Install VS Code"
-        Write-Host "0. Back to Main Menu"
-        $soft_choice = Read-Host "Enter your choice (1-4)"
-        
+        Write-Host "======  Software Installation ======" -ForegroundColor Cyan
+        Write-Host "  1. Install 7-Zip                  "
+        Write-Host "  2. Install Notepad++              "
+        Write-Host "  3. Install VS Code                "
+        Write-Host "  0. Back to Main Menu              "
+        Write-Host "====================================" -ForegroundColor Cyan
+    }
+    while ($true) {
+        Shwo_software_menu
+        $soft_choice = Read-Host "Enter your choice (1-4)"        
         switch ($soft_choice) {
             "1" { Install-Software "7zip.7zip" "7zip" "https://www.7-zip.org/download.html" }
             "2" { Install-Software "Notepad++.Notepad++" "notepadplusplus" "https://notepad-plus-plus.org/downloads/" }
@@ -397,6 +402,15 @@ function Software_install {
 
 # 系统设置
 function System_Settings {
+    function Show_system_menu {
+        Clear-Host
+        Write-Host "======= System Settings ===============" -ForegroundColor Yellow
+        Write-Host "  1. Set PowerShell Execution Policy   "
+        Write-Host "  2. Enable OpenSSH Service            "
+        Write-Host "  3. Set Default Shell to pwsh         "
+        Write-Host "  0. Back to Main Menu                 " -ForegroundColor Red
+        Write-Host "=======================================" -ForegroundColor Yellow
+    }
     # 启用 OpenSSH 服务
     function Enable-OpenSSH {
         Write-Host "Enabling OpenSSH server..."
@@ -421,14 +435,8 @@ function System_Settings {
     }
 
     while ($true) {
-        Clear-Host
-        Write-Host "======= System Settings =======" -ForegroundColor Yellow
-        Write-Host "1. Set PowerShell Execution Policy"
-        Write-Host "2. Enable OpenSSH Service"
-        Write-Host "3. Set Default Shell to pwsh"
-        Write-Host "0. Back to Main Menu"
-        $sys_choice = Read-Host "Enter your choice (1-4)"
-        
+        Show_system_menu
+        $sys_choice = Read-Host "Enter choice " 
         switch ($sys_choice) {
             "1" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!"; Pause }
             "2" { Enable-OpenSSH }
@@ -657,21 +665,21 @@ function App_download {
         $choice = Read-Host " Please select "
         switch ($choice) {
             # "1"  { download_vc_redist_x64_alist; }
-            "1"  { download_vc_redist_x64_ms; }
+            "1" { download_vc_redist_x64_ms; }
             "11" { download_frp; }
-            "2"  { download_nekobox_latest; }
+            "2" { download_nekobox_latest; }
             "12" { download_rustdesk; }
-            "3"  { download_python3127; }
+            "3" { download_python3127; }
             "13" { download_pot_desktop; }
-            "4"  { download_powershell; }
+            "4" { download_powershell; }
             "14" { download_ths_hevo; }
-            "5"  { download_notepadpp; }
+            "5" { download_notepadpp; }
             "15" { download_wanho_gm; }
-            "6"  { download_hiddify }
+            "6" { download_hiddify }
             "16" { download_git; }
-            "7"  { download_vscode_user; }
+            "7" { download_vscode_user; }
             "17" { download_1remote }
-            "8"  { download_7zip_latest }
+            "8" { download_7zip_latest }
             "88" { download_reinstall; }
             "99" { download_all_software }
             "0" { return }
@@ -686,6 +694,23 @@ function App_download {
 function show_github_links {
     Clear-Host
     Write-Host "========== GitHub Urls ============" -ForegroundColor Cyan
+    
+    Write-Host " 51. Windows(.iso) : 
+    https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso
+    https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_jan_2025_x64_dvd_7a8e5a29.iso
+    https://alistus.zwdk.im/d/a/sys/zh-cn_windows_server_2025_updated_nov_2024_x64_dvd_ccbcec44.iso
+    https://ypora.zwdk.org/d/sys/zh-cn_windows_server_2025_updated_nov_2024_x64_dvd_ccbcec44.iso
+    https://ypora.zwdk.org/d/sys/zh-cn_windows_server_2022_updated_nov_2024_x64_dvd_4e34897c.iso
+    https://ypora.zwdk.org/d/sys/zh-cn_windows_11_business_editions_version_24h2_x64_dvd_5f9e5858.iso
+    "
+
+    Write-Host " 52. Windows(images) : 
+    https://next.itellyou.cn/Original
+    https://msdl.gravesoft.dev
+    https://www.xitongku.com
+    https://massgrave.dev
+    "
+    
     Write-Host "  1. Docker-win : 
     https://github.com/dockur/windows-arm/
     https://github.com/dockur/windows
@@ -817,22 +842,6 @@ function show_web_links {
     https://sp.thsi.cn/staticS3/mobileweb-upload-static-server.file/app_6/downloadcenter/THS_freeldy_9.40.40_0228.exe
     "
 
-    Write-Host " 51. Windows(.iso) : 
-    https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso
-    https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_jan_2025_x64_dvd_7a8e5a29.iso
-    https://alistus.zwdk.im/d/a/sys/zh-cn_windows_server_2025_updated_nov_2024_x64_dvd_ccbcec44.iso
-    https://ypora.zwdk.org/d/sys/zh-cn_windows_server_2025_updated_nov_2024_x64_dvd_ccbcec44.iso
-    https://ypora.zwdk.org/d/sys/zh-cn_windows_server_2022_updated_nov_2024_x64_dvd_4e34897c.iso
-    https://ypora.zwdk.org/d/sys/zh-cn_windows_11_business_editions_version_24h2_x64_dvd_5f9e5858.iso
-    "
-
-    Write-Host " 52. Windows(images) : 
-    https://next.itellyou.cn/Original
-    https://msdl.gravesoft.dev/ 
-    https://www.xitongku.com/
-    "
-
-    # Write-Host "  0. Exit"       -ForegroundColor Red
     Write-Host "===============================" -ForegroundColor Cyan
 }
 
