@@ -687,12 +687,42 @@ function show_github_links {
     Clear-Host
     Write-Host "========== GitHub Urls ============" -ForegroundColor Cyan
     Write-Host "  1. Docker-win : 
-    
+    https://github.com/dockur/windows-arm/
+    https://github.com/dockur/windows
+    https://github.com/dockur/macos
+    https://github.com/qemus/qemu-docker
+    https://github.com/sickcodes/Docker-OSX
     "
 
     Write-Host "  2. reinstall.bat : 
     https://github.com/bin456789/reinstall
     https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.bat
+    "
+
+    Write-Host "  3. KijiLion.sh : 
+    https://github.com/kejilion/sh
+    https://kejilion.pro/kejilion.sh
+    https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh
+    "
+
+    Write-Host "  4. warp(@fscarmen) : 
+    https://gitlab.com/fscarmen/warp
+    https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh
+    "
+
+    Write-Host "  4. Sing-box(@fscarmen) : 
+    https://github.com/fscarmen/sing-box
+    https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh
+    "
+
+    Write-Host "  5. Warp(@ygkkk) : 
+    https://github.com/yonggekkk/warp-yg
+    https://raw.githubusercontent.com/yonggekkk/warp-yg/main/CFwarp.sh
+    "
+
+    Write-Host "  5. Sing-box(@ygkkk) : 
+    https://github.com/yonggekkk/sing-box-yg
+    https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh
     "
 
     Write-Host "===============================" -ForegroundColor Cyan
