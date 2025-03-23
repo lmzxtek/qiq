@@ -3,15 +3,18 @@
 #========================================================
 #   System Required: CentOS 7+ | Debian 8+ | Ubuntu 16+ | Alpine 3+ |
 #   Description: QiQ一键安装脚本
-#   GitHub : https://github.com/lmzxtek/qiqtools
-#   GitCode: https://gitcode.com/lmzxtek/qiqtools
+#   GitHub : https://github.com/lmzxtek/qiq
+#   GitCode: https://gitcode.com/lmzxtek/qiq
 #
 #   一键安装命令如下：
-#   $> wget -qO qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
-#   $> curl -sSL -o qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
-
-#   $> wget -qN https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiq.sh && chmod +x qiqtools.sh && ./qiqtools.sh
-#   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiq.sh && chmod +x qiqtools.sh && ./qiqtools.sh
+#   $> wget -qO qiq.sh https://qiq.zwdk.im/sh && chmod +x qiq.sh && ./qiq.sh
+#   $> wget -qO qiq.sh https://sub.zwdk.org/qiq && chmod +x qiq.sh && ./qiq.sh
+#   $> curl -sSL -o qiq.sh https://qiq.zwdk.org/sh && chmod +x qiq.sh && ./qiq.sh
+#   $> curl -sSL -o qiq.sh https://sub.zwdk.org/qiq && chmod +x qiq.sh && ./qiq.sh
+# 
+#   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiq/raw/main/qiq.sh && chmod +x qiq.sh && ./qiq.sh
+#   $> curl -sS -O https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh && chmod +x qiq.sh && ./qiq.sh
+#   $> wget -qN https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh && chmod +x qiq.sh && ./qiq.sh
 #========================================================
 
 
@@ -21,8 +24,8 @@ SRC_VER=v0.7.3
 
 URL_PROXY='https://proxy.zwdk.org/proxy/'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
-URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiq.sh'
-URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/log.sh'
+URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh'
+URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/log.sh'
 
 
 # Emoji: 💡🧹🎉⚙️♻️🔧🛠️🏹💣🎯🧲🌍🌎🌏🌐🏡🏚️🏠🏯🗼🧭♨️💧📡👫

@@ -24,10 +24,11 @@ echoT "   2.测试DD脚本项"
 echoT "   3.修正测试项链接"
 echoT "   4.完善Docker部署"
 echoT "--------------------------------"
-echoR " -=> 2025-03-22   v0.7.3" " $VLATEST"
+echoR " -=> 2025-03-23   v0.7.3" " $VLATEST"
 echoY "   1.美化单栏菜单显示效果：左侧增加自定义Emoji表情"
 echoY "   2.美化系统信息显示效果"
 echoY "   3.修改双栏显示函数的调用方式，增加输入参数，控制显示效果"
+echoY "   4.修改了仓库名称，因为qiqtools仓库添加了大文件到仓库中，导致仓库体积过大"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 
