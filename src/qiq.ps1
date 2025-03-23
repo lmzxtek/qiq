@@ -658,20 +658,20 @@ function App_download {
         switch ($choice) {
             # "1"  { download_vc_redist_x64_alist; }
             "1"  { download_vc_redist_x64_ms; }
-            "2"  { download_nekobox_latest; }
-            "3"  { download_python3127; }
-            "4"  { download_powershell; }
-            "5"  { download_notepadpp; }
-            "6"  { download_hiddify }
-            "7"  { download_vscode_user; }
-            "8"  { download_1remote }
-            "9"  { download_7zip_latest }
-            "10" { download_git; }
             "11" { download_frp; }
+            "2"  { download_nekobox_latest; }
             "12" { download_rustdesk; }
+            "3"  { download_python3127; }
             "13" { download_pot_desktop; }
+            "4"  { download_powershell; }
             "14" { download_ths_hevo; }
+            "5"  { download_notepadpp; }
             "15" { download_wanho_gm; }
+            "6"  { download_hiddify }
+            "16" { download_git; }
+            "7"  { download_vscode_user; }
+            "17" { download_1remote }
+            "8"  { download_7zip_latest }
             "88" { download_reinstall; }
             "99" { download_all_software }
             "0" { return }
