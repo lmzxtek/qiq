@@ -2356,15 +2356,12 @@ EOF
             function get_system_language(){
                 local sys_lang='CN'
                 # print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请选择语言(默认为中文)[CN/EN]: ${PLAIN}")
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请选择语言(默认为中文)[CN/en]: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
                 case "${INPUT}" in
-                # 1) 
-                #     sys_lang='CN'
-                #     _BREAK_INFO=" 已选择中文！"
-                #     ;;
-                2) 
-                    sys_lang='EN'
+                1) sys_lang='CN' ;;
+                2) sys_lang='EN' ;; 
+                *) sys_lang='CN' ;; 
                 esac 
                 echo ${sys_lang}
             }
@@ -2646,22 +2643,41 @@ EOF
                 local lang=$(get_system_language) 
                 local sys_lang='zh-cn'
                 [[ $lang -eq 'EN' ]] && sys_lang='en-us'
-
-                echo -e "\n$PRIGHT 选择的系统语言： ${sys_lang} \n"
                 
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入统版本(默认: Windows Server 2025 ServerDataCenter): ${PLAIN}\n")
-                read -rp "${CHOICE}" INPUT
-                img_name=${INPUT:-"Windows Server 2025 ServerDataCenter"}
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入统版本(默认: Windows Server 2025 SERVERDATACENTER): ${PLAIN}\n")
+                read -rp "${CHOICE}" INPUT 
+                img_name=${INPUT:-"Windows Server 2025 SERVERDATACENTER"}
                 
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请输镜像链接(默认: https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso): ${PLAIN}\n")
                 read -rp "${CHOICE}" INPUT
                 url_iso=${INPUT:-"https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso"}
                 
-                dd_print_login_info 'Administrator' '123@@@' '3389'
-                bash reinstall.sh windows --image-name "${img_name}" --iso "${url_iso}" --lang $sys_lang
-                dd_print_login_info 'Administrator' '123@@@' '3389'
-                _IS_BREAK="false" 
-                sys_reboot 
+                generate_separator "=|$WHITE" 40
+                echo -e "$PRIGHT 系统语言： ${sys_lang} "
+                echo -e "$PRIGHT 系统版本： ${img_name} "
+                echo -e "$PRIGHT 镜像链接： ${url_iso}  "
+                generate_separator "=|$WHITE" 40
+                local CHOICE=$(echo -e "\n${BOLD}└─ 是否继续DD? [Y/n] ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+                case "$INPUT" in
+                [Yy] | [Yy][Ee][Ss])
+                    dd_print_login_info 'Administrator' '123@@@' '3389'
+                    bash reinstall.sh windows --image-name "${img_name}" --iso "${url_iso}" --lang $sys_lang
+                    dd_print_login_info 'Administrator' '123@@@' '3389'
+                    _IS_BREAK="false" 
+                    sys_reboot 
+                    ;;
+                [Nn] | [Nn][Oo])
+                    _BREAK_INFO=" 取消DD系统！" 
+                    _IS_BREAK="false"
+                    ;;
+                *)
+                    _BREAK_INFO=" 无效的选择。"
+                    _IS_BREAK="true"
+                    ;;
+                esac
+
                 ;;
             88) 
                 sys_update 
