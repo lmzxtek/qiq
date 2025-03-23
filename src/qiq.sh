@@ -1340,6 +1340,7 @@ function sys_reboot() {
         echo -e "\n$TIP 重启系统 ...\n"
         _BREAK_INFO=" 系统重启中 ..."
         reboot 
+        exit 0 
         ;;
     [Nn] | [Nn][Oo])
         echo -e "\n$TIP 取消重启系统！"
@@ -1348,6 +1349,7 @@ function sys_reboot() {
         echo -e "\n$WARN 输入错误！"
         _BREAK_INFO=" 输入错误，不重启系统！"
         _IS_BREAK="true"
+        case_end_tackle
         ;;
     esac
 }
@@ -2351,7 +2353,7 @@ EOF
                 "1.中文(CN)"
                 "2.英文(EN)"
             ) 
-            function select_system_language(){
+            function get_system_language(){
                 local sys_lang='CN'
                 print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请选择语言(默认为中文)[CN/EN]: ${PLAIN}")
@@ -2393,6 +2395,7 @@ EOF
                 "35|Windows 10|$WHITE"
                 "36|Windows 7|$WHITE"
                 "…………………………………|$WHITE" 
+                "77|自定义镜像|$WHITE"
                 "88|41合一脚本|$WHITE"
                 "99|脚本说明|$WHITE"
             )            
@@ -2412,30 +2415,21 @@ EOF
                 else
                     _BREAK_INFO=" 请先安装curl或wget！"
                 fi
-                continue  
+                return 0   
             fi 
             
-            function dd_sys_login_info(){
+            function dd_print_login_info(){
                 local username=$1
                 local password=$2
                 local port=$3
-
                 echo -e "\n$TIP DD系统登录信息:"
-                echo -e "======================="
+                echo -e "============================="
                 echo -e "$BOLD  用户: ${username}"
                 echo -e "$BOLD  密码: ${password}"
                 echo -e "$BOLD  端口: ${port}"
-                echo -e "======================="
-
-                _BREAK_INFO=" DD系统后登录信息:"
-                # _IS_BREAK="true"
-                # break_tacle 
+                echo -e "============================="
             }
-            function dd_sys_mollylau(){
-                local sys_type=$1
-                local sys_ver=$2
-                local sys_lang=$3
-
+            function dd_get_mollylau(){
                 local weburl='https://github.com/leitbogioro/Tools'
                 local fname='InstallNET.sh' 
                 local url=$(get_proxy_url 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh')
@@ -2446,25 +2440,12 @@ EOF
                 else
                     _BREAK_INFO=" 请先安装curl或wget！"
                     _IS_BREAK="true"
-                    return 
+                    return 0
                 fi 
-
-                # echo -e "\n$TIP dd input: ${sys_type} ${sys_ver}\n"
-                if [[ -n "${sys_lang}" ]] ; then 
-                    bash ${fname} "-"${sys_type} ${sys_ver} -lang $sys_lang
-                else 
-                    bash ${fname} "-"${sys_type} ${sys_ver}
-                fi 
-
-                _IS_BREAK="false"
-                sys_reboot 
+                return 1 
             }
             
-            function dd_sys_bin456789(){
-                local sys_type=$1
-                local sys_ver=$2
-                local sys_lang=$3
-
+            function dd_get_bin456789(){
                 local weburl='https://github.com/bin456789/reinstall'
                 local fname='reinstall.sh' 
                 local url=$(get_proxy_url 'https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh')
@@ -2473,21 +2454,10 @@ EOF
                 elif command -v wget &>/dev/null; then 
                     wget -qO ${fname} $url && chmod a+x ${fname} 
                 else
-                    _BREAK_INFO=" 请先安装curl或wget！"
-                    _IS_BREAK="true"
-                    return 
+                    echo -e " 请先安装curl或wget！"
+                    return 0
                 fi 
-
-                if [[ -n "${sys_lang}" ]] ; then 
-                    sys_lang='en-us'
-                    [[ "${sys_lang}" == "cn" ]] && sys_lang='zh-cn'
-                    bash ${fname} ${sys_type} ${sys_ver} --lang $sys_lang
-                else 
-                    bash ${fname} ${sys_type} ${sys_ver}
-                fi 
-
-                _IS_BREAK="false"
-                sys_reboot 
+                return 1 
             }
             
             
@@ -2495,97 +2465,196 @@ EOF
             local num_split=40
             print_sub_head " DD系统 " $num_split 1 0 
             # print_items_list sys_dd_options[@] " ⚓ DD系统脚本选择:"
-            split_menu_items systems_list[@]
+            split_menu_items systems_list[@] 0 
             print_sub_menu_tail $num_split
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择要DD的系统: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
             1) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'alpine' ''
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+				bash InstallNET.sh -alpine 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             2) 
-                dd_sys_mollylau 'alpine' 3.20
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -alpine  3.20
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             3) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'alpine' 3.19
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -alpine  3.19
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             4) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'alpine' 3.18
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -alpine  3.18
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             11) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'debian' 12
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -debian 12
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             12) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'debian' 11
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -debian 11
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             13) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'debian' 10
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -debian 10
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             14) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'ubuntu' 24.04
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -debian 24.04
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             15) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'ubuntu' 22.04
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -ubuntu 22.04
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             16) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
-                dd_sys_mollylau 'ubuntu' 20.04
+                dd_get_mollylau 
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                bash InstallNET.sh -ubuntu  20.04
+                dd_print_login_info 'root' 'LeitboGi0ro' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             21) 
-                dd_sys_login_info 'root' '123@@@' '22'
-                dd_sys_bin456789 'almalinux' 9
+                dd_get_bin456789
+                dd_print_login_info 'root' '123@@@' '22'
+                bash reinstall.sh almalinux 9
+                dd_print_login_info 'root' '123@@@' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             22) 
-                dd_sys_login_info 'root' '123@@@' '22'
-                dd_sys_bin456789 'almalinux' 8
+                dd_get_bin456789
+                dd_print_login_info 'root' '123@@@' '22'
+                bash reinstall.sh almalinux 8
+                dd_print_login_info 'root' '123@@@' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             23) 
-                dd_sys_login_info 'root' '123@@@' '22'
-                dd_sys_bin456789 'rocky' 9
+                dd_get_bin456789
+                dd_print_login_info 'root' '123@@@' '22'
+                bash reinstall.sh rocky 9
+                dd_print_login_info 'root' '123@@@' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             24) 
-                dd_sys_login_info 'root' '123@@@' '22'
-                dd_sys_bin456789 'rocky' 8
+                dd_get_bin456789
+                dd_print_login_info 'root' '123@@@' '22'
+                bash reinstall.sh rocky 8
+                dd_print_login_info 'root' '123@@@' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             31) 
-                local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
-                # dd_sys_bin456789 'windows' 2025 $lang 
+                dd_get_bin456789
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
                 bash reinstall.sh dd --img "https://dl.lamp.sh/vhd/zh-cn_win2025.xz"
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             32) 
-                local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
-                dd_sys_mollylau 'windows' 2022 $lang 
+                dd_get_mollylau
+                local lang=$(get_system_language) 
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                bash InstallNET.sh -windows 2022 $lang 
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             33) 
-                local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
-                dd_sys_mollylau 'windows' 2019 $lang 
+                dd_get_mollylau
+                local lang=$(get_system_language) 
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                bash InstallNET.sh -windows 2019 $lang 
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             34) 
-                local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
-                dd_sys_mollylau 'windows' 11 $lang 
+                local lang=$(get_system_language) 
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                bash InstallNET.sh -windows 11 $lang 
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             35) 
-                local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
-                dd_sys_mollylau 'windows' 10 $lang 
+                dd_get_mollylau
+                local lang=$(get_system_language) 
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                bash InstallNET.sh -windows 10 $lang 
+                dd_print_login_info 'Administrator' 'Teddysun.com' '3389'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             36) 
-                local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' '123@@@' '3389'
-                dd_sys_mollylau 'windows' 7 $lang 
+                dd_get_bin456789
+                local lang=$(get_system_language) 
+                local sys_lang='en-us'
+                [[ $lang -eq 'CN' ]] && sys_lang='zh-cn'
+                dd_print_login_info 'Administrator' '123@@@' '3389'
+				bash reinstall.sh windows --image-name='Windows 7 PROFESSIONAL' --iso="https://drive.massgrave.dev/cn_windows_7_professional_with_sp1_x64_dvd_u_677031.iso"
+                dd_print_login_info 'Administrator' '123@@@' '3389'
+                _IS_BREAK="false" 
+                sys_reboot 
+                ;;
+            77) 
+                dd_get_bin456789 
+                local lang=$(get_system_language) 
+                local sys_lang='zh-cn'
+                [[ $lang -eq 'EN' ]] && sys_lang='en-us'
+                
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入统版本(默认: Windows Server 2025 ServerDataCenter): ${PLAIN}\n")
+                read -rp "${CHOICE}" INPUT
+                img_name=${INPUT:-"Windows Server 2025 ServerDataCenter"}
+                
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输镜像链接(默认: https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso): ${PLAIN}\n")
+                read -rp "${CHOICE}" INPUT
+                url_iso=${INPUT:-"https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso"}
+                
+                dd_print_login_info 'Administrator' '123@@@' '3389'
+                bash reinstall.sh windows --image-name $img_name --iso $url_iso --lang $sys_lang
+                dd_print_login_info 'Administrator' '123@@@' '3389'
+                _IS_BREAK="false" 
+                sys_reboot 
                 ;;
             88) 
                 sys_update 
@@ -2610,9 +2679,9 @@ EOF
             
     }
     function sys_setting_alter_swap(){
-        local swap_used=$(free -m | awk 'NR==3{print $3}')
+        local swap_used=$(free -m  | awk 'NR==3{print $3}')
         local swap_total=$(free -m | awk 'NR==3{print $2}')
-        local swap_info=$(free -m | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dM/%dM (%d%%)", used, total, percentage}')
+        local swap_info=$(free -m  | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dM/%dM (%d%%)", used, total, percentage}')
 
         local swap_size_options=(
             " 1. 1024M"
