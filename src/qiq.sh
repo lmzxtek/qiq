@@ -35,7 +35,7 @@ URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/lo
 # Emoji: 💔💖💝🩷❤️💗⛳🕹️🎨♥️♠️♣️♦️♟️🃏🔒🔓🔐🔏🔑🗝️
 #        👌👍✌️👋👉👈👆👇👎✊👊🤛🤝👐👀👁️🦶🩸💊🩹
 #        ⚠️🚸⛔🚫🚳📵☣️☢️🔅🔆✖️➕➖➗🟰♾️⁉️❓❔💲♻️🔱⚜️📛⭕❌✔️☑️✅❎✳️❇️✴️
-#        🔛🔚🔙🔜🔝⬆️⬇️⬅️➡️↖️↕️↗️↪️↙️↩️⤴️⤵️↔️🔄🔃
+#        🔛🔚🔙🔜🔝⬆️⬇️⬅️➡️↖️↕️↗️↪️↙️↩️⤴️⤵️↔️🔄🔃🔢🔢🔢🔡🔤⌨️
 
 BOLD='\033[1m'
 PLAIN='\033[0m'
@@ -1832,7 +1832,7 @@ MENU_SYSTEM_TOOLS_ITEMS=(
     "5|DNS管理|$CYAN"
     "6|改主机名|$WHITE"
     "7|时区调整|$WHITE" 
-    "8|用户管理|$WHITE"
+    "8|用户管理|$BLUE"
     "9|端口管理|$WHITE"
     "………………………|$WHITE" 
     "21|DD系统|$GREEN"
@@ -1940,13 +1940,13 @@ function system_tools_menu(){
     }
     function sys_setting_users_manage(){
         local users_items_list=(
-            '1.用户列表'
-            '2.新普通账户'
-            '3.新高级账户'
-            '4.设置最高权限'
-            '5.取消最高权限'
-            '6.删除账号'
-            '0.返回'
+            "1.显示用户列表|$GREEN|🕺"
+            "2.新建普通账户||"
+            "3.新建高级账户|$YELLOW|➕"
+            "4.设置最高权限||🌹"
+            "5.取消最高权限||🥀"
+            "6.删除账号|$RED|❌"
+            "0.返回|$BLUE|🔙"
         )
         function print_items_users(){
             echo "用户列表"
@@ -2003,24 +2003,26 @@ function system_tools_menu(){
             print_items_users
         }
 
-        # 询问用户是否要更改主机名
-        clear 
-        _IS_BREAK="true"
-        print_items_list users_items_list[@] " ⚓ 用户管理:"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        case "${INPUT}" in
-        1) print_items_users ;;
-        2) users_add_new ;;
-        3) users_add_sudo ;;
-        4) users_set_sudo ;;
-        5) users_unset_sudo ;;
-        6) users_delete ;;
-        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
-        *)  _BREAK_INFO=" 请输入正确选项！" ;;
-        esac 
-        # print_items_users
-        case_end_tackle
+        #=============================================================
+        while true; do
+            # 询问用户是否要更改主机名
+            clear 
+            _IS_BREAK="true"
+            print_items_list users_items_list[@] " 👯 用户管理:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) print_items_users ;;
+            2) users_add_new ;;
+            3) users_add_sudo ;;
+            4) users_set_sudo ;;
+            5) users_unset_sudo ;;
+            6) users_delete ;;
+            0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
+            *) _BREAK_INFO=" 请输入正确选项！" ;;
+            esac 
+            case_end_tackle
+        done
     }
     function sys_setting_alter_timezone(){
         local cur_timezone=$(timedatectl show --property=Timezone --value)
@@ -2710,17 +2712,17 @@ EOF
         local swap_info=$(free -m  | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dM/%dM (%d%%)", used, total, percentage}')
 
         local swap_size_options=(
-            " 1. 1024M"
-            " 2. 2048M"
-            " 3. 4096M"
-            " 4. 8192M"
-            " 5. 自定义"
-            " 0. 返回"
+            "1.1024M|$YELLOW|⭐"
+            "2.2048M||✅"
+            "3.4096M||"
+            "4.8192M||"
+            "5.自定义|$GREEN|🔢"
+            "0.返回|$RED|❎"
         )           
         
         _IS_BREAK="true"
-        echo -e "\n$PRIGHT 当前虚拟内存: $swap_info \n"
-        print_items_list swap_size_options[@] " ⚓ 虚拟内存容量菜单:"
+        echo -e "\n$PRIGHT 当前虚拟内存: $swap_info "
+        print_items_list swap_size_options[@] " 🖥️ 设置虚拟内存:"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -2749,51 +2751,47 @@ EOF
         service sshd restart
         _BREAK_INFO=" 已开启SSH转发功能"
         _IS_BREAK="true"
-            
     }
     function sys_setting_alter_priority_v4v6(){
+        function print_v4v6_priority(){
             local ipv6_disabled=$(sysctl -n net.ipv6.conf.all.disable_ipv6)
             if [ "$ipv6_disabled" -eq 1 ]; then
                 echo -e "\n${PRIGHT} 当前网络: IPv4 优先\n"
             else
                 echo -e "\n${PRIGHT} 当前网络: IPv6 优先\n"
             fi
-            local net_1st_options=(
-                "1.IPv4优先"
-                "2.IPv6优先"
-                "3.IPv6修复"
-                "0.返回"
-            )
-            
-            _IS_BREAK="true"
-            print_items_list net_1st_options[@] " ⚓ 功能菜单:"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            case "${INPUT}" in
-            1) 
-                sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null 2>&1
-                echo "已切换为 IPv4 优先"
-                _BREAK_INFO=" 已切换为 IPv4 优先！"
-                ;;
-            2) 
-                sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null 2>&1
-                echo "已切换为 IPv6 优先"
-                _BREAK_INFO=" 已切换为 IPv6 优先！"
-                ;;
-            3) 
-                bash <(curl -L -s jhb.ovh/jb/v6.sh)
-                # echo "该功能由jhb大神提供，感谢他！"
-                _BREAK_INFO=" IPv6 修复成功！(jhb脚本)"
-                ;;
-            0) 
-                echo -e "\n$TIP 返回主菜单 ..."
-                _IS_BREAK="false"
-                ;;
-            *)
-                _BREAK_INFO=" 请输入正确选项！"
-                ;;
-            esac 
-            
+        }
+        local net_1st_options=(
+            "1.IPv4优先"
+            "2.IPv6优先|$GREEN"
+            "3.IPv6修复|$BLUE"
+            "0.返回|$RED"
+        )
+        
+        _IS_BREAK="true"
+        print_v4v6_priority
+        print_items_list net_1st_options[@] " 🚀 功能菜单:"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1) 
+            sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null 2>&1
+            echo "已切换为 IPv4 优先"
+            _BREAK_INFO=" 已切换为 IPv4 优先！"
+            ;;
+        2) 
+            sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null 2>&1
+            echo "已切换为 IPv6 优先"
+            _BREAK_INFO=" 已切换为 IPv6 优先！"
+            ;;
+        3) 
+            bash <(curl -L -s jhb.ovh/jb/v6.sh)
+            # echo "该功能由jhb大神提供，感谢他！"
+            _BREAK_INFO=" IPv6 修复成功！(jhb脚本)"
+            ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+        *)  _BREAK_INFO=" 请输入正确选项！" ;;
+        esac 
     }
     function sys_setting_bbrv3_manage(){        
             local cpu_arch=$(uname -m)
