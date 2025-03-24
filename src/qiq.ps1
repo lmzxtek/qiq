@@ -470,10 +470,11 @@ function App_download {
         Write-Host "  16. Git              "  
         Write-Host "   7. VSCode           " -NoNewline  
         Write-Host "  17. 1Remote          " 
-        Write-Host "   8. 7zip             " #-NoNewline  -ForegroundColor Green
-        Write-Host "  88. reinstall.bat    "  -NoNewline
-        Write-Host "  99. All              "  -ForegroundColor Green
-        Write-Host "   0. Exit             "  -ForegroundColor Red
+        Write-Host "   8. 7zip             " -NoNewline  
+        Write-Host "  18. gm-api           " -ForegroundColor Green
+        Write-Host "  88. reinstall.bat    " -NoNewline
+        Write-Host "  99. All              " -ForegroundColor Green
+        Write-Host "   0. Exit             " -ForegroundColor Red
         Write-Host "======================================" -ForegroundColor Cyan
     }
     function download_vc_redist_x64_alist {
@@ -654,15 +655,75 @@ function App_download {
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
+    function download_gm_api {
+        # 生成 gm_api.py, cfg.toml, 生成 run_wh3.bat, 生成 run_gm.bat
+        param([string]$sfld = "c:\gm_api")
+        $targetDir = Get_download_path $sfld
+        function Generate_run_wh3_bat {
+            param(
+                [string]$batFileName = "c:\gm_api\run_wh3.bat",
+                [string]$exePath = "C:\Vanho Goldminer3\vanhogm3.exe"
+            )
+
+            $batContent = @"
+start "" "$exePath" 
+"@
+
+            $batContent | Out-File -FilePath $batFileName -Encoding ASCII
+            Write-Host " .bat file saved: $batFileName"
+        }
+        function Generate_run_gm_bat {
+            param([string]$batFileName = "c:\gm_api\run_gm.bat")
+
+            $batContent = @"
+hypercorn gm_api:app --bind 0.0.0.0:5000 --workers 5
+"@
+
+            $batContent | Out-File -FilePath $batFileName -Encoding ASCII
+            Write-Host " .bat file saved: $batFileName"
+        }
+        function Generate_cfg_toml {
+            param([string]$batFileName = "c:\gm_api\cfg.toml")
+
+            $batContent = @"
+[gm-api] # gm-api server config
+debug = false
+token = "9ac4d4a74c4daf280baa84512faf5612bac25ae3"
+# token = "77613857b482f33d6d5e3cf90ec8cd67fd4effaa"
+
+host  = ""
+port  = 5000
+workers = 4 
+servertag = 'gm(demo)'
+"@
+
+            $batContent | Out-File -FilePath $batFileName -Encoding ASCII
+            Write-Host " .toml file saved: $batFileName"
+        }
+        function Generate_gm_api_py {
+            param([string]$batFileName = "c:\gm_api\gm_api.py")
+
+            $batContent = ""
+            $batContent | Out-File -FilePath $batFileName -Encoding ASCII
+            Write-Host " .py file saved: $batFileName"
+        }
+
+        Generate_run_wh3_bat $targetDir+"\run_wh3.bat"
+        Generate_run_gm_bat  $targetDir+"\run_gm.bat"
+        Generate_gm_api_py   $targetDir+"\gm_api.py"
+        Generate_cfg_toml    $targetDir+"\cfg.toml"
+    }
+
     
     function download_all_software {
         download_7zip_latest
         download_notepadpp
-        download_git
-        download_frp
-        download_vc_redist_x64_alist
-        download_nekobox_alist
         download_python3127
+        download_wanho_gm
+        # download_git
+        # download_frp
+        # download_vc_redist_x64_alist
+        # download_nekobox_alist
         # download_nekobox_latest
         # download_powershell
         # download_hiddify
@@ -675,24 +736,25 @@ function App_download {
         $choice = Read-Host " Please select "
         switch ($choice) {
             # "1"  { download_vc_redist_x64_alist; }
-            "1" { download_vc_redist_x64_ms; }
+            "1"  { download_vc_redist_x64_ms; }
             "11" { download_frp; }
-            "2" { download_nekobox_latest; }
+            "2"  { download_nekobox_latest; }
             "12" { download_rustdesk; }
-            "3" { download_python3127; }
+            "3"  { download_python3127; }
             "13" { download_pot_desktop; }
-            "4" { download_powershell; }
+            "4"  { download_powershell; }
             "14" { download_ths_hevo; }
-            "5" { download_notepadpp; }
+            "5"  { download_notepadpp; }
             "15" { download_wanho_gm; }
-            "6" { download_hiddify }
+            "6"  { download_hiddify }
             "16" { download_git; }
-            "7" { download_vscode_user; }
+            "7"  { download_vscode_user; }
             "17" { download_1remote }
-            "8" { download_7zip_latest }
+            "8"  { download_7zip_latest }
+            "18" { download_gm_api }
             "88" { download_reinstall; }
             "99" { download_all_software }
-            "0" { return }
+            "0"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
         }
         # Pause 
