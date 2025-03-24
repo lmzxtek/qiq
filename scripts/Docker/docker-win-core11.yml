@@ -5,14 +5,14 @@ services:
   core11:
     image: dockurr/windows
     container_name: core11
-    # restart: unless-stopped
+    restart: unless-stopped
     environment:
       VERSION: "core11"
       RAM_SIZE: "2G"
       CPU_CORES: "2"
       DISK_SIZE: "12G"
       USERNAME: "dd"
-      PASSWORD: "7654321234567"
+      PASSWORD: "d7654321234567d"
       # LANGUAGE: "Chinese"   
     volumes:
       - /home/win_volume:/storage

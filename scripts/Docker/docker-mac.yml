@@ -2,6 +2,7 @@ services:
   macos:
     image: dockurr/macos
     container_name: macos
+    restart: unless-stopped
     environment:
       VERSION: "ventura"
       RAM_SIZE: "2G"

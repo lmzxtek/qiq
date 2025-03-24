@@ -2,7 +2,7 @@ services:
   winarm:
     image: dockurr/windows
     container_name: win_arm
-    # restart: unless-stopped
+    restart: unless-stopped
     environment:
       # VERSION: "https://example.com/win.iso"
       # VERSION: "win7"

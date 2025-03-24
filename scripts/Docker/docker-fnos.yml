@@ -2,16 +2,17 @@ services:
   fnos:
     container_name: fnos
     image: qemux/qemu-docker
+    restart: unless-stopped
     environment:
       BOOT: "https://download.liveupdate.fnnas.com/x86_64/trim/fnos.0.8.19-360.iso"
       RAM_SIZE: "2G"
       CPU_CORES: "2"
       DISK_SIZE: "12G"
-      DISK2_SIZE: "12G"
+      # DISK2_SIZE: "12G"
     volumes:
-      - /home/win_share:/shared
-      - /home/win_disk1:/storage
-      - /home/win_disk2:/storage2
+      - /home/dfnos_share:/shared
+      - /home/dfnos_disk1:/storage
+      # - /home/dfnos_disk2:/storage2
       # - /home/user/example.iso:/boot.iso
     devices:
       - /dev/kvm

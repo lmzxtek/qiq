@@ -2,6 +2,7 @@ services:
   qemu:
     container_name: qemu
     image: qemux/qemu-docker
+    restart: unless-stopped
     environment:
       BOOT: "https://download.liveupdate.fnnas.com/x86_64/trim/fnos.0.8.19-360.iso"
       # BOOT: "https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/x86_64/alpine-virt-3.19.1-x86_64.iso"

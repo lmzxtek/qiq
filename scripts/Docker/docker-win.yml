@@ -1,8 +1,8 @@
 services:
-  windows:
+  win:
     image: dockurr/windows
-    container_name: windows
-    # restart: unless-stopped
+    container_name: win
+    restart: unless-stopped
     environment:
       # VERSION: "https://example.com/win.iso"
       # VERSION: "win7"
@@ -11,7 +11,7 @@ services:
       CPU_CORES: "2"
       DISK_SIZE: "15G"
       USERNAME: "qq"
-      PASSWORD: "7654321234567"
+      PASSWORD: "d7654321234567d"
       LANGUAGE: "Chinese"   
     volumes:
       # - /home/tiny11corex64beta1.iso:/custom.iso

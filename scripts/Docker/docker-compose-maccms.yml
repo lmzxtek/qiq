@@ -1,5 +1,4 @@
 # https://www.tweek.top/archives/1706060591396
-# version: '3'
 # services:
 #   maccms10:
 #       volumes:
@@ -11,7 +10,6 @@
 #         #network_mode: host (optional)
 #       restart: always
 
-version: '3'
 services:
   app:
     image: 'jc21/nginx-proxy-manager:latest' #最新版npm
