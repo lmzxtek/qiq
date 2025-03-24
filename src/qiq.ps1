@@ -659,6 +659,9 @@ function App_download {
         # 生成 gm_api.py, cfg.toml, 生成 run_wh3.bat, 生成 run_gm.bat
         param([string]$sfld = "c:\gm_api")
         $targetDir = $sfld
+        if (-not (Test-Path -Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir
+        }
         function Generate_run_wh3_bat {
             param(
                 [string]$batFileName = "c:\gm_api\run_wh3.bat",
@@ -708,10 +711,10 @@ servertag = 'gm(demo)'
             Write-Host " .py file saved: $batFileName"
         }
 
-        Generate_run_wh3_bat $targetDir+"\run_wh3.bat"
-        Generate_run_gm_bat  $targetDir+"\run_gm.bat"
-        Generate_gm_api_py   $targetDir+"\gm_api.py"
-        Generate_cfg_toml    $targetDir+"\cfg.toml"
+        Generate_run_wh3_bat $(Join-Path -Path $targetDir -ChildPath "run_wh3.bat") 
+        Generate_run_gm_bat  $(Join-Path -Path $targetDir -ChildPath "run_gm.bat")  
+        Generate_gm_api_py   $(Join-Path -Path $targetDir -ChildPath "gm_api.py")   
+        Generate_cfg_toml    $(Join-Path -Path $targetDir -ChildPath "cfg.toml")    
     }
 
     
