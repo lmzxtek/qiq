@@ -6787,7 +6787,7 @@ function docker_management_menu(){
         docker network create --driver=bridge \
             --subnet=172.16.10.0/24 \
             --gateway=172.16.10.1 \
-            --ip-range=172.16.10.0/16 \
+            --ip-range=172.16.0.0/16 \
             --subnet=2408:400e::/48 \
             --gateway=2408:400e::1 \
             --ip-range=2408:400e::/64 \
