@@ -481,7 +481,7 @@ function App_download {
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL  : $url_dl"
+        write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
@@ -492,7 +492,7 @@ function App_download {
         $url_dl = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL  : $url_dl"
+        write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
@@ -503,7 +503,7 @@ function App_download {
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL  : $url_dl"
+        write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
@@ -514,7 +514,7 @@ function App_download {
         $url_dl = "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL  : $url_dl"
+        write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
@@ -535,6 +535,16 @@ function App_download {
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
         }
+        
+        # 下载 Notepad++ Julia语言配色方案
+        $file = "npp_julia_style.xml"
+        $url_dl = "https://ypora.zwdk.org/d/app/$file"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_frp {
         $url_gh = "https://github.com/fatedier/frp"
@@ -550,7 +560,7 @@ function App_download {
         $url_dl = Get_proxy_url "https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.bat"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL  : $url_dl"
+        write-host "File URL: $url_dl"
         Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
@@ -616,7 +626,7 @@ function App_download {
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL  : $url_dl"
+        write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
@@ -627,7 +637,7 @@ function App_download {
         $url_dl = "https://download.10jqka.com.cn/index/download/id/275/"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL  : $url_dl"
+        write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
@@ -638,7 +648,7 @@ function App_download {
         $url_dl = "https://download.vanho.cn/download/juejin/Vanhogm.exe"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL  : $url_dl"
+        write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
