@@ -750,6 +750,12 @@ function show_github_links {
     https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh
     "
 
+    Write-Host "  6. NeZha : 
+    https://nezhainfojson.pages.dev/
+    https://nezhadash-docs.buycoffee.top/custom-code
+    https://wiziscool.github.io/Nezha-Traffic-Alarm-Generator/
+    "
+
     Write-Host "===============================" -ForegroundColor Cyan
 }
 

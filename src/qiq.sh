@@ -6980,7 +6980,18 @@ function docker_management_menu(){
 
 }
 
-
+function print_web_urls(){
+    echo -e "\n$TIP 常用网址："
+    generate_separator "=" 45
+    echo -e ""
+    echo -e "  1. 哪吒面板:" "https://nezha.wiki"
+    echo -e "   JSON生成器:" "https://nezhainfojson.pages.dev"
+    echo -e "    自定义代码:" "https://nezhadash-docs.buycoffee.top/custom-code"
+    echo -e "      流量监测:" "https://wiziscool.github.io/Nezha-Traffic-Alarm-Generator"
+    generate_separator "=" 45
+    _IS_BREAK="true"
+    case_end_tackle
+}
 
 # 定义主菜单数组
 MENU_MAIN_ITEMS=(
@@ -6996,6 +7007,7 @@ MENU_MAIN_ITEMS=(
     "21|Caddy管理|$WHITE"
     "22|Docker管理|$YELLOW"
     "23|Python管理|$CYAN"
+    "24|Web-URLs|$BLUE"
 )
 ## ======================================================
 function main_menu(){
