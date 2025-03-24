@@ -658,7 +658,7 @@ function App_download {
     function download_gm_api {
         # 生成 gm_api.py, cfg.toml, 生成 run_wh3.bat, 生成 run_gm.bat
         param([string]$sfld = "c:\gm_api")
-        $targetDir = Get_download_path $sfld
+        $targetDir = $sfld
         function Generate_run_wh3_bat {
             param(
                 [string]$batFileName = "c:\gm_api\run_wh3.bat",
