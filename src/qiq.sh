@@ -7037,6 +7037,7 @@ function main_menu(){
         21) caddy_management_menu ;;
         22) docker_management_menu ;;
         23) python_management_menu ;;
+        24) print_web_urls ;;
 
         xx) sys_reboot ;;
         00) script_update ;;
