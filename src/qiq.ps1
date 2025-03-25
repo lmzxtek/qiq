@@ -311,11 +311,12 @@ function Manage_Python {
         Write-Host "========== Python Management ==========" -ForegroundColor Green
         Write-Host " 1. Install Python Latest              "
         Write-Host " 2. Install Python by ver.             "
-        Write-Host " 3. Install pipenv                     "
-        Write-Host " 4. Install Poetry                     " -ForegroundColor Yellow
-        Write-Host " 5. Install Julia                      "
-        Write-Host " 6. Set Pip Source                     "
-        Write-Host " 7. Set poetry Source                  " -ForegroundColor Yellow
+        Write-Host " 3. Install pyenv                      " -ForegroundColor Yellow
+        Write-Host " 4. Install pipenv                     "
+        Write-Host " 5. Install Poetry                     " -ForegroundColor Yellow
+        Write-Host " 6. Install Julia                      "
+        Write-Host " 7. Set Pip Source                     "
+        Write-Host " 8. Set poetry Source                  " -ForegroundColor Yellow
         Write-Host " 0. Back                               "
         Write-Host "=======================================" -ForegroundColor Green
     }
@@ -327,7 +328,22 @@ function Manage_Python {
         Write-Host "   > jill install --install_dir './'     # Install Julia to current directory"
         Write-Host "================================" -ForegroundColor Green
     }
-    
+    function py_install_pyenv {
+        # 下载 pyenv 安装脚本
+        $file = "install-pyenv-win.ps1"
+        $url_dl = "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+
+        # 安装 pyenv 
+        write-host " Installing pyenv..." -ForegroundColor Green
+        &"$targetFilePath"
+        write-host " Success: pyenv installed" -ForegroundColor Green
+    }
     # 设置 pip 源
     function Set-Pip-Mirror {
         Write-Host " Select Source: "
