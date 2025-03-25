@@ -4685,9 +4685,9 @@ function python_management_menu(){
             read -rp "${CHOICE}" INPUT
             [[ -z "${INPUT}"]] && $INPUT=1
             case "${INPUT}" in
-            1 ) curl -sSL https://install.python-poetry.org | python3 -  ;;
+            1 )  curl -sSL https://install.python-poetry.org | python3 -  ;;
             2 )  pip install --user poetry ;;
-            2 )  sudo pip install peotry  ;;
+            3 )  sudo pip install peotry  ;;
             0 )  echo -e "\n$WARN 返回 ${RESET}" && _IS_BREAK="false"  && return 0  ;;
             *)  _BREAK_INFO=" 请输入正确先项！" && _IS_BREAK="true" && return 0;;
             esac
