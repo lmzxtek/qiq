@@ -1127,7 +1127,7 @@ function print_system_info() {
     local time_zone="$(timedatectl status 2>/dev/null | grep "Time zone" | awk -F ':' '{print$2}' | awk -F ' ' '{print$1}')"
     local runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 	echo -e "${FCQH}运行时长:  ${FCTL}$runtime"
-	echo -e "${FCQH}系统时间:  ${FCZS}$time_zone $date_time"
+	echo -e "${FCQH}系统时间:  ${FCTL}$date_time ${FCZS}$time_zone "
     generate_separator "↑|$FCYE" 40 # 割线
 
     _BREAK_INFO=" 系统信息获取完成"
