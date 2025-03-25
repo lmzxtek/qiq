@@ -1068,7 +1068,7 @@ function  main_menu {
             "5" { System_Settings }
             "6" { activate_win_office }
             "7" { Manage_Python }
-            "8" { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$global:LOCATION_REGION `n" -ForegroundColor Red ; Pause }
+            "8" { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$global:LOCATION_REGION `n" -ForegroundColor Green ; Pause }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
