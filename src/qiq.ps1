@@ -831,10 +831,10 @@ servertag = 'gm(demo)'
         download_7zip_latest
         download_notepadpp
         download_python3127
+        download_vc_redist_x64_alist
         download_wanho_gm
         # download_git
         # download_frp
-        # download_vc_redist_x64_alist
         # download_nekobox_alist
         # download_nekobox_latest
         # download_powershell
@@ -847,8 +847,8 @@ servertag = 'gm(demo)'
         Show_Menu_app_download
         $choice = Read-Host " Please select "
         switch ($choice) {
-            # "1"  { download_vc_redist_x64_alist; }
-            "1"  { download_vc_redist_x64_ms; }
+            "1"  { download_vc_redist_x64_alist; }
+            # "1"  { download_vc_redist_x64_ms; }
             "11" { download_frp; }
             "2"  { download_nekobox_latest; }
             "12" { download_rustdesk; }
