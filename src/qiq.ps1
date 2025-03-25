@@ -64,7 +64,7 @@ function Get_location_region {
     }
 
     if ( $region -eq "Unknown") {        
-        $prompt = " Get Unknow region, set to CN ? (Default:Y) [Y/N]"
+        $prompt = "`n Get Unknow region, set to CN ? (Default:Y) [Y/N]"
         $confirmation = Read-Host $prompt
         
         # 处理空输入（直接回车）和首尾空格
