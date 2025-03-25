@@ -1103,14 +1103,14 @@ function print_system_info() {
 
     if [[ $IPV4_SUPPORTED -eq 1 ]]; then
 		echo -e "${FCHD}IPv4地址:  ${FCGR}$WAN4"
-        [[ -n "$WAN4" ]] && echo -e "${FCTL}地理位置:  ${BLUE}$COUNTRY4,$IP_INFO4,$ASNORG4"
+        [[ -n "$WAN4" ]] && echo -e "${FCQH}地理位置:  ${BLUE}$COUNTRY4,$IP_INFO4,$ASNORG4"
     else
 		echo -e "${FCHD}IPv4地址:  ${FCGR} Not Supported "
 	fi
 
     if [[ $IPV6_SUPPORTED -eq 1 ]]; then
 		echo -e "${FCHD}IPv6地址:  ${FCGR}$WAN6"
-        [[ -n "$WAN6" ]] && echo -e "${FCTL}地理位置:  ${BLUE}$COUNTRY6,$IP_INFO6,$ASNORG6"
+        [[ -n "$WAN6" ]] && echo -e "${FCQH}地理位置:  ${BLUE}$COUNTRY6,$IP_INFO6,$ASNORG6"
     else
 		echo -e "${FCHD}IPv6地址:  ${FCGR} Not Supported "
 	fi
