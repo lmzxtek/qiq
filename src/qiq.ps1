@@ -59,6 +59,7 @@ function Get_location_region {
     $region = $global:LOCATION_REGION 
     if ( $region -eq "Unknown") {
         $region = get_region 
+        $region = $region.Trim() 
         write-host " Get Region: $region" -ForegroundColor Green
         $global:LOCATION_REGION = $region 
     }
@@ -93,17 +94,11 @@ function Get_proxy_url {
     )
     
     $region = Get_location_region
-    if ($region -ne "CN") {
-        # write-host "Region: $region" -ForegroundColor Green
-        # write-host "Url   : $Url"    -ForegroundColor Green
-        $proxy_url = $Url
+    $proxy_url = $Url
+    if ($region -eq "CN") {
+        $proxy_url = $proxy + $proxy_url
     }
-    else {
-        # write-host "Region: $region" -ForegroundColor Green
-        # write-host "Url   : $Url"    -ForegroundColor Green
-        # write-host "proxy : $proxy"  -ForegroundColor Green
-        $proxy_url = $proxy + $Url
-    }
+    
     return $proxy_url
 }
 
