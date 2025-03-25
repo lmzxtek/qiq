@@ -1087,7 +1087,7 @@ function print_system_info() {
 	echo -e "${FCQH}虚拟类型:  ${FCRE}$VIRT"
 	echo -e "${FCYE}内核版本:  ${FCGR}$kernel_version"
 	echo -e "${FCQH}系统版本:  ${FCTL}$os_info"
-	echo -e "${FCQH}主机名称:  ${FCTL}$hostname"
+	echo -e "${FCQH}主机名称:  ${FCGR}$hostname"
     generate_separator "…|$AZURE" 40 # 割线
 	echo -e "${FCQH}CPU架构:   ${FCTL}$DEVICE_ARCH"
 	echo -e "${FCQH}CPU核数:   ${FCGR}$cpu_cores@${FCGR}$cpu_freq"
