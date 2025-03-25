@@ -2033,9 +2033,10 @@ function system_tools_menu(){
             "2.欧洲|$WHITE"
             "3.美洲|$WHITE"
             "4.UTC|$WHITE"
+            "0.返回|$WHITE"
         )
         local tz_items_asian=(
-            "1.中国上海|$GEEN"
+            "1.中国上海|$GREEN"
             "2.中国香港|$WHITE"
             "3.日本东京|$WHITE"
             "4.韩国首尔|$WHITE"
@@ -2044,14 +2045,16 @@ function system_tools_menu(){
             "7.阿联酋迪拜|$WHITE"
             "8.澳大利亚悉尼|$WHITE"
             "9.泰国曼谷|$WHITE"
+            "0.返回|$WHITE"
         )
         local tz_items_eu=(
-            "1.英国伦敦|$WHITE"
+            "1.英国伦敦|$GREEN"
             "2.法国巴黎|$WHITE"
             "3.德国柏林|$WHITE"
             "4.俄罗斯莫斯科|$WHITE"
             "5.荷兰尤特赖赫特|$WHITE"
             "6.西班牙马德里|$WHITE"
+            "0.返回|$WHITE"
         )
         local tz_items_us=(
             "1.美国西部|$GREEN"
@@ -2060,6 +2063,7 @@ function system_tools_menu(){
             "4.墨西哥|$WHITE"
             "5.巴西|$WHITE"
             "6.阿根廷|$WHITE"
+            "0.返回|$WHITE"
         )
 
         function set_timedate() {
@@ -2079,8 +2083,9 @@ function system_tools_menu(){
             echo "当前时间：$cur_time"
 
             print_items_list tz_items_asian[@] " ⚓ 亚太地区列表:"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区(默认为1): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] && INPUT=1
             case "${INPUT}" in
             1) set_timedate Asia/Shanghai ;;
             2) set_timedate Asia/Hong_Kong ;;
@@ -2104,6 +2109,7 @@ function system_tools_menu(){
             print_items_list tz_items_eu[@] " ⚓ 欧洲地区列表:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] && INPUT=1
             case "${INPUT}" in
             1) set_timedate Europe/London ;;
             2) set_timedate Europe/Paris ;;
@@ -2122,8 +2128,9 @@ function system_tools_menu(){
             echo "当前系统时间：$cur_time"
 
             print_items_list tz_items_us[@] " ⚓ 美洲地区列表:"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区(默认为1): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] && INPUT=1
             case "${INPUT}" in
             1) set_timedate America/Los_Angeles ;;
             2) set_timedate America/New_York ;;
@@ -2142,8 +2149,9 @@ function system_tools_menu(){
         echo "当前系统时间：$cur_time"
 
         print_items_list tz_items_regions[@] " ⚓ 时区地区列表:"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区所属区域: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区所属区域(默认为1): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && INPUT=1
         case "${INPUT}" in
         1) tz_alter_asia ;;
         2) tz_alter_eu ;;
@@ -2158,34 +2166,21 @@ function system_tools_menu(){
                 "1.大陆地区"
                 "2.教育网"
                 "3.海外地区"
-                "0.退出"
+                "0.返回"
             )
 
             _IS_BREAK="true"
             _BREAK_INFO=" 已修改系统源！"
             print_items_list source_list_options[@] " ⚓ 系统源地区选择:"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择(默认为1): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] && INPUT=1
             case "${INPUT}" in
-            1) 
-                bash <(curl -sSL https://linuxmirrors.cn/main.sh)
-                _BREAK_INFO=" 已修改系统源为大陆地区！"
-                ;;
-            2) 
-                bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu
-                _BREAK_INFO=" 已修改系统源为教育网！"
-                ;;
-            3) 
-                bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroad
-                _BREAK_INFO=" 已修改系统源为海外地区！"
-                ;;
-            0) 
-                echo -e "\n$TIP 返回主菜单 ..."
-                _IS_BREAK="false"
-                ;;
-            *)
-                _BREAK_INFO=" 请输入正确选项！"
-                ;;
+            1)  bash <(curl -sSL https://linuxmirrors.cn/main.sh)          && _BREAK_INFO=" 已修改系统源为大陆地区！" ;;
+            2)  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu    && _BREAK_INFO=" 已修改系统源为教育网！ " ;;
+            3)  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroad && _BREAK_INFO=" 已修改系统源为海外地区！" ;;
+            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+            *)  _BREAK_INFO=" 请输入正确选项！" ;;
             esac 
             
     }
@@ -2205,10 +2200,7 @@ function system_tools_menu(){
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
-            1) 
-                clear 
-                ss -tulnape
-                ;;
+            1)  clear  && ss -tulnape ;;
             2) 
                 # permission_judgment 
                 if [ "$EUID" -ne 0 ] ; then 
@@ -2222,9 +2214,7 @@ function system_tools_menu(){
                 _BREAK_INFO=" 已开放全部端口"
                 ;;
             3) 
-            
                 current_port=$(grep -E '^ *Port [0-9]+' /etc/ssh/sshd_config | awk '{print $2}')
-
                 cat > /etc/iptables/rules.v4 << EOF
 *filter
 :INPUT DROP [0:0]
@@ -2238,11 +2228,9 @@ function system_tools_menu(){
 COMMIT
 EOF
                 iptables-restore < /etc/iptables/rules.v4
-
                 _BREAK_INFO=" 已关闭所有端口！"
                 ;;
             4) 
-            
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要开放的端口号: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
 
@@ -2250,7 +2238,6 @@ EOF
                 sed -i "/COMMIT/i -A INPUT -p udp --dport $INPUT -j ACCEPT" /etc/iptables/rules.v4
                 iptables-restore < /etc/iptables/rules.v4
                 _BREAK_INFO=" 已开放端口: $INPUT！"
-
                 ;;
             5) 
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要关闭的端口号: ${PLAIN}")
@@ -2259,15 +2246,9 @@ EOF
                 sed -i "/--dport $INPUT/d" /etc/iptables/rules.v4
                 iptables-restore < /etc/iptables/rules.v4
                 _BREAK_INFO=" 已关闭端口: $INPUT！"
-
                 ;;
-            0) 
-                echo -e "\n$TIP 返回主菜单 ..."
-                _IS_BREAK="false"
-                ;;
-            *)
-                _BREAK_INFO=" 请输入正确选项！"
-                ;;
+            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+            *) _BREAK_INFO=" 请输入正确选项！" ;;
             esac 
             
     }
