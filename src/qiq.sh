@@ -1088,10 +1088,9 @@ function print_system_info() {
 	echo -e "${FCYE}内核版本:  ${FCGR}$kernel_version"
 	echo -e "${FCQH}系统版本:  ${FCTL}$os_info"
 	echo -e "${FCQH}主机名称:  ${FCTL}$hostname"
-	echo -e "${FCQH}运营商家:  ${FCTL}$ASNORG4"
     generate_separator "…|$AZURE" 40 # 割线
 	echo -e "${FCQH}CPU架构:   ${FCTL}$DEVICE_ARCH"
-	echo -e "${FCQH}CPU核数:   ${FCRE}$cpu_cores@${FCGR}$cpu_freq"
+	echo -e "${FCQH}CPU核数:   ${FCGR}$cpu_cores@${FCGR}$cpu_freq"
 	echo -e "${FCQH}CPU型号:   ${FCTL}$cpu_info"
     generate_separator "…|$AZURE" 40 # 割线
 	echo -e "${FCQH}CPU占用:   ${FCTL}$cpu_usage_percent%"
@@ -1100,6 +1099,7 @@ function print_system_info() {
 	echo -e "${FCLS}物理内存:  ${FCTL}$mem_info"
 	echo -e "${FCYE}虚拟内存:  ${FCGR}$swap_info"
     generate_separator "…|$FCYE" 40 # 割线
+	echo -e "${FCQH}运营商家:  ${FCTL}$ASNORG4"
 
     if [[ $IPV4_SUPPORTED -eq 1 ]]; then
 		echo -e "${FCHD}IPv4地址:  ${FCGR}$WAN4"
