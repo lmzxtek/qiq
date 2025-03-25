@@ -103,8 +103,8 @@ function get_json_gh_latest {
         [ValidatePattern("https?://api.github.com/repos/.*")]
         [string]$Url
     )
-    
-    $release = Invoke-RestMethod -Uri $Url -Headers @{
+    $url_target = Get_proxy_url -Url $Url 
+    $release = Invoke-RestMethod -Uri $url_target -Headers @{
         "Accept" = "application/vnd.github.v3+json"
     }
     return $release 
@@ -330,13 +330,15 @@ function Manage_Python {
     }
     function py_install_pyenv {
         # 下载 pyenv 安装脚本
+        $sfld = "./"
         $file = "install-pyenv-win.ps1"
         $url_dl = "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL: $url_dl"
-        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
-        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        $url_target = Get_proxy_url -Url $url_dl
+        write-host "File URL: $url_target"
+        Invoke-WebRequest -Uri $url_target -OutFile $targetFilePath            # 
+        # Start-BitsTransfer -Source $url_target -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
 
         # 安装 pyenv 
@@ -433,8 +435,8 @@ index-url = $mirrorURL
                 Install-Software "Python.Python --version $py_version" "python --version $py_version" "https://www.python.org/downloads/release/python-$py_version/"
                 Pause 
             }
-            "3" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
-            "4" { py_install_pyenv; Pause }
+            "3" { py_install_pyenv; Pause }
+            "4" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
             "5" { Install-Poetry; Pause   }
             "6" { show_jill_usage; pip install jill; jill install; Pause }
             "7" { Set-Pip-Mirror; Pause   }
