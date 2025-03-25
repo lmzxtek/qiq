@@ -31,6 +31,7 @@ echoY "   3.修改双栏显示函数的调用方式，增加输入参数，控�
 echoY "   4.修改了仓库名称(qiq)，因为qiqtools仓库添加了大文件到仓库中，导致仓库体积过大"
 echoY "   5.修改虚拟内存时显示当前虚拟内情情况"
 echoY "   6.修正了时区调整显示问题"
+echoY "   7.优化显示系统信息"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 

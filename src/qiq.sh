@@ -1044,7 +1044,7 @@ function print_system_info() {
     local kernel_version=$(uname -r)
 
     local cpu_cores=$(nproc)
-	local cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1f GHz\n", $4/1000}')
+	local cpu_freq=$(cat /proc/cpuinfo | grep "MHz" | head -n 1 | awk '{printf "%.1fGHz\n", $4/1000}')
     if [ "$(uname -m)" == "x86_64" ]; then
       local cpu_info=$(cat /proc/cpuinfo | grep 'model name' | uniq | sed -e 's/model name[[:space:]]*: //')
     else
@@ -1084,36 +1084,35 @@ function print_system_info() {
 	echo ""
 	echo -e " ⚙️  系统信息 "
     generate_separator "↓|$FCYE" 40 # 割线
+	echo -e "${FCQH}虚拟类型:  ${FCRE}$VIRT"
+	echo -e "${FCYE}内核版本:  ${FCGR}$kernel_version"
+	echo -e "${FCQH}系统版本:  ${FCTL}$os_info"
 	echo -e "${FCQH}主机名称:  ${FCTL}$hostname"
 	echo -e "${FCQH}运营商家:  ${FCTL}$ASNORG4"
-	echo -e "${FCQH}系统版本:  ${FCTL}$os_info"
-	echo -e "${FCYE}内核版本:  ${FCGR}$kernel_version"
-	echo -e "${FCQH}虚拟类型:  ${FCRE}$VIRT"
     generate_separator "…|$AZURE" 40 # 割线
-	echo -e "${FCQH}CPU核数:   ${FCTL}$cpu_cores"
 	echo -e "${FCQH}CPU架构:   ${FCTL}$DEVICE_ARCH"
-	echo -e "${FCYE}CPU频率:   ${FCGR}$cpu_freq"
+	echo -e "${FCQH}CPU核数:   ${FCRE}$cpu_cores@${FCGR}$cpu_freq"
 	echo -e "${FCQH}CPU型号:   ${FCTL}$cpu_info"
     generate_separator "…|$AZURE" 40 # 割线
 	echo -e "${FCQH}CPU占用:   ${FCTL}$cpu_usage_percent%"
 	echo -e "${FCQH}系统负载:  ${FCTL}$load"
+	echo -e "${FCQH}硬盘占用:  ${FCTL}$disk_info"
 	echo -e "${FCLS}物理内存:  ${FCTL}$mem_info"
 	echo -e "${FCYE}虚拟内存:  ${FCGR}$swap_info"
-	echo -e "${FCQH}硬盘占用:  ${FCTL}$disk_info"
     generate_separator "…|$FCYE" 40 # 割线
 
     if [[ $IPV4_SUPPORTED -eq 1 ]]; then
-		echo -e "${FCQH}IPv4地址:  ${FCGR}$WAN4"
+		echo -e "${FCHD}IPv4地址:  ${FCGR}$WAN4"
         [[ -n "$WAN4" ]] && echo -e "${FCTL}地理位置:  ${BLUE}$COUNTRY4,$IP_INFO4,$ASNORG4"
     else
-		echo -e "${FCQH}IPv4地址:  ${FCGR} Not Supported "
+		echo -e "${FCHD}IPv4地址:  ${FCGR} Not Supported "
 	fi
 
     if [[ $IPV6_SUPPORTED -eq 1 ]]; then
-		echo -e "${FCQH}IPv6地址:  ${FCGR}$WAN6"
+		echo -e "${FCHD}IPv6地址:  ${FCGR}$WAN6"
         [[ -n "$WAN6" ]] && echo -e "${FCTL}地理位置:  ${BLUE}$COUNTRY6,$IP_INFO6,$ASNORG6"
     else
-		echo -e "${FCQH}IPv6地址:  ${FCGR} Not Supported "
+		echo -e "${FCHD}IPv6地址:  ${FCGR} Not Supported "
 	fi
 
     generate_separator "~|$AZURE" 40 # 割线
@@ -1121,14 +1120,14 @@ function print_system_info() {
 	local congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
 	local queue_algorithm=$(sysctl -n net.core.default_qdisc)
 	echo -e "${FCQH}DNS地址:  ${BLUE}$dns_addresses"
-	echo -e "${FCQH}网络算法:  ${FCZS}$congestion_algorithm $queue_algorithm"
+	echo -e "${FCHD}网络算法:  ${FCRE}$congestion_algorithm $queue_algorithm"
 
     generate_separator "…|$AZURE" 40 # 割线
     local date_time="$(date "+%Y-%m-%d %H:%M")"
     local time_zone="$(timedatectl status 2>/dev/null | grep "Time zone" | awk -F ':' '{print$2}' | awk -F ' ' '{print$1}')"
     local runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
-	echo -e "${FCQH}系统时间:  ${FCZS}$time_zone $date_time"
 	echo -e "${FCQH}运行时长:  ${FCTL}$runtime"
+	echo -e "${FCQH}系统时间:  ${FCZS}$time_zone $date_time"
     generate_separator "↑|$FCYE" 40 # 割线
 
     _BREAK_INFO=" 系统信息获取完成"
