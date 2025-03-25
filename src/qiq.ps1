@@ -77,7 +77,7 @@ function Get_location_region {
         if ($userInput -match '^(y|yes)$') {
             # 此处放置同意后的执行代码
             $region = 'CN' 
-            write-host " Set Region: $region, LOCATION_REGION=$global:LOCATION_REGION" -ForegroundColor Green
+            write-host " Set Region: $region, LOCATION_REGION=$global:LOCATION_REGION" -ForegroundColor Red
         }
     }
     
