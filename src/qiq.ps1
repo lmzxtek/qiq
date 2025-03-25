@@ -9,8 +9,8 @@
 # 禁用进度条以提升下载速度
 # $ProgressPreference = 'SilentlyContinue'
 
-# 设置脚本运行区域，避免脚本运行时出现乱码
-$LOCATION_REGION = "Unknown"
+# 设置脚本运行区域全局变量，避免脚本运行时出现乱码
+$global:LOCATION_REGION = "Unknown"
 
 # 设置 PowerShell 输出编码，确保中文显示正常
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -34,7 +34,7 @@ function get_region {
     $region = "Unknown"
     try {
         $url = "ipinfo.io/country"
-        $region = Invoke-RestMethod -Uri $url -TimeoutSec 10 -UseBasicParsing
+        $region = Invoke-RestMethod -Uri $url -TimeoutSec 5 -UseBasicParsing
     }
     catch {
         Write-Host " Error querying $url :`n $_"
@@ -56,12 +56,13 @@ function get_region {
 }
 
 function Get_location_region {
-    if ( $LOCATION_REGION -eq "Unknown") {
-        $LOCATION_REGION = get_region 
-        write-host " Get Region: $LOCATION_REGION" -ForegroundColor Green
+    $region = $global:LOCATION_REGION 
+    if ( $region -eq "Unknown") {
+        $region = get_region 
+        write-host " Get Region: $region" -ForegroundColor Green
+        $global:LOCATION_REGION = $region 
     }
 
-    $region = $LOCATION_REGION 
     if ( $region -eq "Unknown") {        
         $prompt = " Get Unknow region, set to CN ? (Default:Y) [Y/N]"
         $confirmation = Read-Host $prompt
@@ -76,7 +77,7 @@ function Get_location_region {
         if ($userInput -match '^(y|yes)$') {
             # 此处放置同意后的执行代码
             $region = 'CN' 
-            write-host " Set Region: $region, LOCATION_REGION=$LOCATION_REGION" -ForegroundColor Green
+            write-host " Set Region: $region, LOCATION_REGION=$global:LOCATION_REGION" -ForegroundColor Green
         }
     }
     
@@ -1067,7 +1068,7 @@ function  main_menu {
             "5" { System_Settings }
             "6" { activate_win_office }
             "7" { Manage_Python }
-            "8" { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$LOCATION_REGION `n" -ForegroundColor Red ; Pause }
+            "8" { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$global:LOCATION_REGION `n" -ForegroundColor Red ; Pause }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
