@@ -342,7 +342,7 @@ function Manage_Python {
         # 安装 pyenv 
         write-host " Installing pyenv..." -ForegroundColor Green
         &"$targetFilePath"
-        write-host " Success: pyenv installed" -ForegroundColor Green
+        write-host " Success: pyenv installed, restart PowerShell to take effect." -ForegroundColor Green
     }
     # 设置 pip 源
     function Set-Pip-Mirror {
@@ -435,9 +435,9 @@ index-url = $mirrorURL
             }
             "3" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
             "4" { py_install_pyenv; Pause }
-            "5" { Install-Poetry; Pause }
+            "5" { Install-Poetry; Pause   }
             "6" { show_jill_usage; pip install jill; jill install; Pause }
-            "7" { Set-Pip-Mirror; Pause}
+            "7" { Set-Pip-Mirror; Pause   }
             "8" { Set-poetry-source; Pause}
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
