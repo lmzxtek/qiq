@@ -1019,7 +1019,7 @@ function  main_menu {
         Write-Host "  4. App Download         "  -ForegroundColor Green
         Write-Host "  5. Symtems Setting      "  
         Write-Host "  6. Activate Tool        "  -ForegroundColor Blue 
-        Write-Host "  7. Python Management    "  -ForegroundColor Purple 
+        Write-Host "  7. Python Management    "  -ForegroundColor Cyan 
         Write-Host "  8. Show region          "  -ForegroundColor Green
         Write-Host "  0. Exit                 "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
