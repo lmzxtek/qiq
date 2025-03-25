@@ -4651,6 +4651,7 @@ function python_management_menu(){
                 local CHOICE=$(echo -e "\n${BOLD}└─ 输入源URL: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
                 if [[ -n "$INPUT" ]]; then
+                    poetry source add custom $INPUT
                 else
                     _BREAK_INFO=" $WARN 请输入源URL为空 ..."
                 fi
