@@ -4667,7 +4667,7 @@ function python_management_menu(){
             echo -e "   0. 返回"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项(默认0): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
-            [[ -z "${INPUT}"]] && INPUT=0
+            [[ -z ${INPUT} ]] && INPUT=0
             case "${INPUT}" in
             1 ) curl -sSL https://install.python-poetry.org | python3 - --uninstall  ;;
             2 )  pip uninstall poetry ;;
@@ -4683,7 +4683,7 @@ function python_management_menu(){
             echo -e "   0. 返回"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
-            [[ -z "${INPUT}"]] && INPUT=1
+            [[ -z ${INPUT} ]] && INPUT=1
             case "${INPUT}" in
             1 )  curl -sSL https://install.python-poetry.org | python3 -  ;;
             2 )  pip install --user poetry ;;
