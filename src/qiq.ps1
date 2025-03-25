@@ -347,11 +347,11 @@ function Manage_Python {
     # 设置 pip 源
     function Set-Pip-Mirror {
         Write-Host " Select Source: "
-        Write-Host " 1. AliYun"
-        Write-Host " 2. TUNA"
-        Write-Host " 3. USTC"
-        Write-Host " 4. Custom"
-        Write-Host " 0. Back"
+        Write-Host " 1. AliYun  "
+        Write-Host " 2. TUNA    "
+        Write-Host " 3. USTC    "
+        Write-Host " 4. Custom  "
+        Write-Host " 0. Back    "
         $mirror_choice = Read-Host "Enter choice"
         $mirrorURL = switch ($mirror_choice) {
             "1" { "https://mirrors.aliyun.com/pypi/simple/" }
@@ -427,16 +427,18 @@ index-url = $mirrorURL
         Show_manage_python_menu
         $py_choice = Read-Host "Enter your choice (1-5)"        
         switch ($py_choice) {
-            "1" { Install-Software "Python.Python" "python" "https://www.python.org/downloads/" }
+            "1" { Install-Software "Python.Python" "python" "https://www.python.org/downloads/"; Pause }
             "2" { 
                 $py_version = Read-Host "Enter the Python version (e.g., 3.11.5)"
                 Install-Software "Python.Python --version $py_version" "python --version $py_version" "https://www.python.org/downloads/release/python-$py_version/"
+                Pause 
             }
             "3" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
-            "4" { Install-Poetry; Pause }
-            "5" { show_jill_usage; pip install jill; jill install; Pause }
-            "6" { Set-Pip-Mirror; Pause}
-            "7" { Set-poetry-source; Pause}
+            "4" { py_install_pyenv; Pause }
+            "5" { Install-Poetry; Pause }
+            "6" { show_jill_usage; pip install jill; jill install; Pause }
+            "7" { Set-Pip-Mirror; Pause}
+            "8" { Set-poetry-source; Pause}
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
