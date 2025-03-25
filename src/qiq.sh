@@ -2029,37 +2029,37 @@ function system_tools_menu(){
         local cur_time=$(date +"%Y-%m-%d %H:%M:%S")
         
         local tz_items_regions=(
-            "1|亚洲|$WHITE"
-            "2|欧洲|$WHITE"
-            "3|美洲|$WHITE"
-            "4|UTC|$WHITE"
+            "1.亚洲|$GREEN"
+            "2.欧洲|$WHITE"
+            "3.美洲|$WHITE"
+            "4.UTC|$WHITE"
         )
         local tz_items_asian=(
-            "1|中国上海|$WHITE"
-            "2|中国香港|$WHITE"
-            "3|日本东京|$WHITE"
-            "4|韩国首尔|$WHITE"
-            "5|新加坡|$WHITE"
-            "6|印度加尔各答|$WHITE"
-            "7|阿联酋迪拜|$WHITE"
-            "8|澳大利亚悉尼|$WHITE"
-            "9|泰国曼谷|$WHITE"
+            "1.中国上海|$GEEN"
+            "2.中国香港|$WHITE"
+            "3.日本东京|$WHITE"
+            "4.韩国首尔|$WHITE"
+            "5.新加坡|$WHITE"
+            "6.印度加尔各答|$WHITE"
+            "7.阿联酋迪拜|$WHITE"
+            "8.澳大利亚悉尼|$WHITE"
+            "9.泰国曼谷|$WHITE"
         )
         local tz_items_eu=(
-            "1|英国伦敦|$WHITE"
-            "2|法国巴黎|$WHITE"
-            "3|德国柏林|$WHITE"
-            "4|俄罗斯莫斯科|$WHITE"
-            "5|荷兰尤特赖赫特|$WHITE"
-            "6|西班牙马德里|$WHITE"
+            "1.英国伦敦|$WHITE"
+            "2.法国巴黎|$WHITE"
+            "3.德国柏林|$WHITE"
+            "4.俄罗斯莫斯科|$WHITE"
+            "5.荷兰尤特赖赫特|$WHITE"
+            "6.西班牙马德里|$WHITE"
         )
         local tz_items_us=(
-            "1|美国西部|$WHITE"
-            "2|美国东部|$WHITE"
-            "3|加拿大|$WHITE"
-            "4|墨西哥|$WHITE"
-            "5|巴西|$WHITE"
-            "6|阿根廷|$WHITE"
+            "1.美国西部|$GREEN"
+            "2.美国东部|$WHITE"
+            "3.加拿大|$WHITE"
+            "4.墨西哥|$WHITE"
+            "5.巴西|$WHITE"
+            "6.阿根廷|$WHITE"
         )
 
         function set_timedate() {
