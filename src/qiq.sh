@@ -7115,6 +7115,7 @@ function script_update(){
     chmod +x ${fname} && \
     echo -e "$TIP 脚本已更新至最新版本！\n"
     _IS_BREAK="true"
+    sleep 1
     case_end_tackle && _IS_BREAK="false"
     ./${fname} && _IS_BREAK="false" && exit 1; 
     # _IS_BREAK="false" && exit 1 && ./${fname} ; 
