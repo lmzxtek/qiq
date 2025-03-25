@@ -580,7 +580,7 @@ function App_download {
         Write-Host "   7. VSCode           " -NoNewline  
         Write-Host "  17. 1Remote          " 
         Write-Host "   8. 7zip             " -NoNewline  
-        Write-Host "  18. gm-api           " -ForegroundColor Green
+        Write-Host "  18. gm-api           " -ForegroundColor Blue
         Write-Host "  88. reinstall.bat    " -NoNewline
         Write-Host "  99. All              " -ForegroundColor Green
         Write-Host "   0. Exit             " -ForegroundColor Red
