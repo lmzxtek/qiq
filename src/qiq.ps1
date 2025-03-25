@@ -27,8 +27,8 @@ if (Get-Command choco -ErrorAction SilentlyContinue) {
 }
 
 
-function get_region {    
-    $ipapi = ""
+function get_region { 
+    $ipapi = "" 
     $region = "Unknown"
     try {
         $url = "ipinfo.io/country"
@@ -1019,7 +1019,8 @@ function  main_menu {
         Write-Host "  4. App Download         "  -ForegroundColor Green
         Write-Host "  5. Symtems Setting      "  
         Write-Host "  6. Activate Tool        "  -ForegroundColor Blue 
-        Write-Host "  7. Python Management    "  
+        Write-Host "  7. Python Management    "  -ForegroundColor Purple 
+        Write-Host "  8. Show region          "  -ForegroundColor Green
         Write-Host "  0. Exit                 "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
@@ -1035,6 +1036,7 @@ function  main_menu {
             "5" { System_Settings }
             "6" { activate_win_office }
             "7" { Manage_Python }
+            "8" { $region = get_region; Write-Host "`n It is: $region `n" -ForegroundColor Red ; Pause }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
