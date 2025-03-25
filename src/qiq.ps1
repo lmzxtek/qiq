@@ -9,6 +9,8 @@
 # 禁用进度条以提升下载速度
 # $ProgressPreference = 'SilentlyContinue'
 
+# 设置脚本运行区域，避免脚本运行时出现乱码
+$LOCATION_REGION = "Unknown"
 
 # 设置 PowerShell 输出编码，确保中文显示正常
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -32,9 +34,10 @@ function get_region {
     $region = "Unknown"
     try {
         $url = "ipinfo.io/country"
-        $region = Invoke-RestMethod -Uri $url -TimeoutSec 3 -UseBasicParsing
+        $region = Invoke-RestMethod -Uri $url -TimeoutSec 10 -UseBasicParsing
     }
     catch {
+        Write-Host " Error querying $url :`n $_"
         foreach ($url in ("https://dash.cloudflare.com/cdn-cgi/trace", "https://developers.cloudflare.com/cdn-cgi/trace", "https://1.0.0.1/cdn-cgi/trace")) {
             try {
                 $ipapi = Invoke-RestMethod -Uri $url -TimeoutSec 5 -UseBasicParsing
@@ -44,10 +47,39 @@ function get_region {
                 }
             }
             catch {
-                Write-Host "Error occurred while querying $url : $_"
+                Write-Host " Error querying $url :`n $_"
+                # $region = "CN"
             }
         }
     }
+    return $region
+}
+
+function Get_location_region {
+    if ( $LOCATION_REGION -eq "Unknown") {
+        $LOCATION_REGION = get_region 
+        write-host " Get Region: $LOCATION_REGION" -ForegroundColor Green
+    }
+
+    $region = $LOCATION_REGION 
+    if ( $region -eq "Unknown") {        
+        $prompt = " Get Unknow region, set to CN ? (Default:Y) [Y/N]"
+        $confirmation = Read-Host $prompt
+        
+        # 处理空输入（直接回车）和首尾空格
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) {
+            $userInput = 'Y'  # 设置默认值
+        }
+
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            # 此处放置同意后的执行代码
+            $region = 'CN' 
+            write-host " Set Region: $region, LOCATION_REGION=$LOCATION_REGION" -ForegroundColor Green
+        }
+    }
+    
     return $region
 }
 
@@ -59,8 +91,7 @@ function Get_proxy_url {
         [string]$proxy = "https://proxy.zwdk.org/proxy/"
     )
     
-    $region = get_region 
-
+    $region = Get_location_region
     if ($region -ne "CN") {
         # write-host "Region: $region" -ForegroundColor Green
         # write-host "Url   : $Url"    -ForegroundColor Green
@@ -1036,7 +1067,7 @@ function  main_menu {
             "5" { System_Settings }
             "6" { activate_win_office }
             "7" { Manage_Python }
-            "8" { $region = get_region; Write-Host "`n It is: $region `n" -ForegroundColor Red ; Pause }
+            "8" { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$LOCATION_REGION `n" -ForegroundColor Red ; Pause }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
