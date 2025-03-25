@@ -4658,6 +4658,42 @@ function python_management_menu(){
             _BREAK_INFO=" pipenv安装成功！"
         fi
     }
+    function py_subitem_install_poetry(){
+        if command -v poetry &>/dev/null; then
+            _BREAK_INFO=" poetry已安装，无需重新安装！"
+            echo -e "\n$TIP poetry卸载方式: \n"
+            echo -e "   1. 官方 "
+            echo -e "   2. pip "
+            echo -e "   0. 返回"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项(默认0): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "${INPUT}"]] && $INPUT=0
+            case "${INPUT}" in
+            1 ) curl -sSL https://install.python-poetry.org | python3 - --uninstall  ;;
+            2 )  pip uninstall poetry ;;
+            0 )  echo -e "\n$WARN 返回 ${RESET}" && _IS_BREAK="false"  && return 0  ;;
+            *)  _BREAK_INFO=" 请输入正确先项！" && _IS_BREAK="true" && return 0;;
+            esac
+            _BREAK_INFO=" poetry安装成功！"
+        else
+            echo -e "\n$TIP poetry安装方式: \n"
+            echo -e "   1. 官方 "
+            echo -e "   2. 安装到用户 "
+            echo -e "   3. 全局安装"
+            echo -e "   0. 返回"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "${INPUT}"]] && $INPUT=1
+            case "${INPUT}" in
+            1 ) curl -sSL https://install.python-poetry.org | python3 -  ;;
+            2 )  pip install --user poetry ;;
+            2 )  sudo pip install peotry  ;;
+            0 )  echo -e "\n$WARN 返回 ${RESET}" && _IS_BREAK="false"  && return 0  ;;
+            *)  _BREAK_INFO=" 请输入正确先项！" && _IS_BREAK="true" && return 0;;
+            esac
+            _BREAK_INFO=" poetry安装成功！"
+        fi
+    }
     function py_subitem_install_miniforge(){
         if command -v conda &>/dev/null; then
             _BREAK_INFO=" 系统已安装conda！"
@@ -4773,7 +4809,7 @@ function python_management_menu(){
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
         1 ) py_subitem_install_python ;;
-        2 ) curl -sSL https://install.python-poetry.org | python3 - && _BREAK_INFO=" poetry安装成功!" ;;
+        2 ) py_subitem_install_poetry ;;
         3 ) py_subitem_install_pipenv ;;
         4 ) py_subitem_install_julia ;;
         5 ) py_subitem_set_source_pip ;;
