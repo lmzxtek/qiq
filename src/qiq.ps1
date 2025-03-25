@@ -1059,7 +1059,7 @@ function  main_menu {
     # 菜单循环
     while ($true) {
         Show-Menu
-        $choice = Read-Host "Enter your choice (1-6)"
+        $choice = Read-Host "Enter your choice"
         switch ($choice) {
             "1" { Software_install }
             "2" { show_web_links; Pause }
