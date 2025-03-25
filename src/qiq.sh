@@ -2162,60 +2162,59 @@ function system_tools_menu(){
         esac 
     }
     function sys_setting_alter_sources(){
-            local source_list_options=(
-                "1.大陆地区"
-                "2.教育网"
-                "3.海外地区"
-                "0.返回"
-            )
+        local source_list_options=(
+            "1.大陆地区"
+            "2.教育网"
+            "3.海外地区"
+            "0.返回"
+        )
 
-            _IS_BREAK="true"
-            _BREAK_INFO=" 已修改系统源！"
-            print_items_list source_list_options[@] " ⚓ 系统源地区选择:"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择(默认为1): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            [[ -z "$INPUT" ]] && INPUT=1
-            case "${INPUT}" in
-            1)  bash <(curl -sSL https://linuxmirrors.cn/main.sh)          && _BREAK_INFO=" 已修改系统源为大陆地区！" ;;
-            2)  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu    && _BREAK_INFO=" 已修改系统源为教育网！ " ;;
-            3)  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroad && _BREAK_INFO=" 已修改系统源为海外地区！" ;;
-            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
-            *)  _BREAK_INFO=" 请输入正确选项！" ;;
-            esac 
-            
+        _IS_BREAK="true"
+        _BREAK_INFO=" 已修改系统源！"
+        print_items_list source_list_options[@] " ⚓ 系统源地区选择:"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择(默认为1): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && INPUT=1
+        case "${INPUT}" in
+        1)  bash <(curl -sSL https://linuxmirrors.cn/main.sh)          && _BREAK_INFO=" 已修改系统源为大陆地区！" ;;
+        2)  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu    && _BREAK_INFO=" 已修改系统源为教育网！ " ;;
+        3)  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroad && _BREAK_INFO=" 已修改系统源为海外地区！" ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+        *)  _BREAK_INFO=" 请输入正确选项！" ;;
+        esac 
     }
     function sys_setting_change_ports_manage(){
-            local ports_management_options=(
-                "1.查看端口状态"
-                "2.开放所有端口"
-                "3.关闭所有端口"
-                "4.开放指定端口"
-                "5.关闭指定端口"
-                "0.退出"
-            )
+        local ports_management_options=(
+            "1.查看端口状态"
+            "2.开放所有端口"
+            "3.关闭所有端口"
+            "4.开放指定端口"
+            "5.关闭指定端口"
+            "0.退出"
+        )
 
-            _IS_BREAK="true"
-            _BREAK_INFO=" 由端口管理子菜单返回！"
-            print_items_list ports_management_options[@] " ⚓ 选择:"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            case "${INPUT}" in
-            1)  clear  && ss -tulnape ;;
-            2) 
-                # permission_judgment 
-                if [ "$EUID" -ne 0 ] ; then 
-                    # echo -e "$WARN 该操作需要root权限！"
-                    _BREAK_INFO=" 开放所有端口需要root权限"
-                    case_end_tackle 
-                    continue 
-                fi 
-                iptables_open 
-                app_remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1
-                _BREAK_INFO=" 已开放全部端口"
-                ;;
-            3) 
-                current_port=$(grep -E '^ *Port [0-9]+' /etc/ssh/sshd_config | awk '{print $2}')
-                cat > /etc/iptables/rules.v4 << EOF
+        _IS_BREAK="true"
+        _BREAK_INFO=" 由端口管理子菜单返回！"
+        print_items_list ports_management_options[@] " ⚓ 选择:"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1)  clear  && ss -tulnape ;;
+        2) 
+            # permission_judgment 
+            if [ "$EUID" -ne 0 ] ; then 
+                # echo -e "$WARN 该操作需要root权限！"
+                _BREAK_INFO=" 开放所有端口需要root权限"
+                case_end_tackle 
+                continue 
+            fi 
+            iptables_open 
+            app_remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1
+            _BREAK_INFO=" 已开放全部端口"
+            ;;
+        3) 
+            current_port=$(grep -E '^ *Port [0-9]+' /etc/ssh/sshd_config | awk '{print $2}')
+            cat > /etc/iptables/rules.v4 << EOF
 *filter
 :INPUT DROP [0:0]
 :FORWARD DROP [0:0]
@@ -2227,30 +2226,29 @@ function system_tools_menu(){
 -A INPUT -p tcp --dport $current_port -j ACCEPT
 COMMIT
 EOF
-                iptables-restore < /etc/iptables/rules.v4
-                _BREAK_INFO=" 已关闭所有端口！"
-                ;;
-            4) 
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要开放的端口号: ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
+            iptables-restore < /etc/iptables/rules.v4
+            _BREAK_INFO=" 已关闭所有端口！"
+            ;;
+        4) 
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要开放的端口号: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
 
-                sed -i "/COMMIT/i -A INPUT -p tcp --dport $INPUT -j ACCEPT" /etc/iptables/rules.v4
-                sed -i "/COMMIT/i -A INPUT -p udp --dport $INPUT -j ACCEPT" /etc/iptables/rules.v4
-                iptables-restore < /etc/iptables/rules.v4
-                _BREAK_INFO=" 已开放端口: $INPUT！"
-                ;;
-            5) 
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要关闭的端口号: ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
+            sed -i "/COMMIT/i -A INPUT -p tcp --dport $INPUT -j ACCEPT" /etc/iptables/rules.v4
+            sed -i "/COMMIT/i -A INPUT -p udp --dport $INPUT -j ACCEPT" /etc/iptables/rules.v4
+            iptables-restore < /etc/iptables/rules.v4
+            _BREAK_INFO=" 已开放端口: $INPUT！"
+            ;;
+        5) 
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要关闭的端口号: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
 
-                sed -i "/--dport $INPUT/d" /etc/iptables/rules.v4
-                iptables-restore < /etc/iptables/rules.v4
-                _BREAK_INFO=" 已关闭端口: $INPUT！"
-                ;;
-            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
-            *) _BREAK_INFO=" 请输入正确选项！" ;;
-            esac 
-            
+            sed -i "/--dport $INPUT/d" /etc/iptables/rules.v4
+            iptables-restore < /etc/iptables/rules.v4
+            _BREAK_INFO=" 已关闭端口: $INPUT！"
+            ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+        *) _BREAK_INFO=" 请输入正确选项！" ;;
+        esac 
     }
     function sys_setting_dns_manage(){
             local dns_list_options=(
