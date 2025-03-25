@@ -7061,7 +7061,7 @@ MENU_MAIN_ITEMS=(
     "21|Caddy管理|$WHITE"
     "22|Docker管理|$YELLOW"
     "23|Python管理|$CYAN"
-    "24|Web-URLs|$BLUE"
+    "24|Web URLs|$WHITE"
 )
 ## ======================================================
 function main_menu(){
