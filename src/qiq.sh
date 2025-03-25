@@ -4450,15 +4450,16 @@ MENU_PYTHON_ITEMS=(
     "1|安装Python|$WHITE" 
     "2|安装Poetry|$WHITE" 
     "3|安装pipenv|$WHITE"
-    "4|安装julia|$WHITE" 
-    "5|设置pip源|$WHITE" 
-    "6|设置conda源|$WHITE" 
-    "7|安装miniForge|$YELLOW" 
-    "8|安装miniConda|$WHITE"  
+    "4|安装miniForge|$YELLOW" 
+    "5|安装miniConda|$WHITE"  
+    "6|设置pip源|$WHITE" 
+    "7|设置conda源|$WHITE" 
+    "8|设置poetry源|$WHITE" 
     "………………………|$WHITE"
     "31|安装hypercorn|$WHITE" 
     "32|安装gunicorn|$WHITE" 
-    "33|安装dash|$WHITE"
+    "33|安装julia|$WHITE" 
+    "34|安装dash|$WHITE"
 )
 
 function python_management_menu(){
@@ -4489,6 +4490,7 @@ function python_management_menu(){
         "3.腾讯云"
         "4.清华镜像"
         "5.中科大镜像"
+        "6.豆瓣IO"
         "9.自定义镜像"
         "0.退出"
     )
@@ -4595,6 +4597,10 @@ function python_management_menu(){
                 url="https://pypi.mirrors.ustc.edu.cn/simple"
                 host="pypi.mirrors.ustc.edu.cn"
                 ;;
+            6) 
+                url="https://pypi.doubanio.com/simple"
+                host="pypi.doubanio.com/simple"
+                ;;
             9) 
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请输入镜像源地址: \n ${PLAIN}")
                 read -rp "${CHOICE}" INPUT 
@@ -4625,6 +4631,33 @@ function python_management_menu(){
             fi
         else
             _BREAK_INFO=" pip尚未安装！"
+        fi
+    }
+    function py_subitem_set_source_poetry(){
+        if ! command -v poetry &>/dev/null; then
+            echo -e "\n$TIP poetry尚未安装, 请先安装 poetry ...\n"
+        else            
+            print_items_list pip_sources_list[@] " ⚓ poetry源列表"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 输入选项: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) poetry source add pypi      "https://pypi.org/simple/"                       --default ;; 
+            2) poetry source add aliyun    "https://mirrors.aliyun.com/pypi/simple/"        --default ;; 
+            3) poetry source add tencent   "https://mirrors.cloud.tencent.com/pypi/simple/" --default ;; 
+            4) poetry source add tsinghua  "https://pypi.tuna.tsinghua.edu.cn/simple/"      --default ;; 
+            5) poetry source add ustc      "https://pypi.mirrors.ustc.edu.cn/simple/"       --default ;; 
+            6) poetry source add doubanio  "https://pypi.doubanio.com/simple/"              --default ;; 
+            9) 
+                local CHOICE=$(echo -e "\n${BOLD}└─ 输入源URL: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                if [[ -n "$INPUT" ]]; then
+                else
+                    _BREAK_INFO=" $WARN 请输入源URL为空 ..."
+                fi
+                ;;
+            0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+            *) _BREAK_INFO=" 请输入正确选项！" ;;
+            esac 
         fi
     }
     function py_subitem_install_python(){
@@ -4685,7 +4718,11 @@ function python_management_menu(){
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT="1"
             case "${INPUT}" in
-            1 )  curl -sSL https://install.python-poetry.org | python3 -  ;;
+            1 )  
+                curl -sSL https://install.python-poetry.org | python3 -  
+                echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc  # 或 ~/.zshrc
+                source ~/.bashrc
+                ;;
             2 )  pip install --user poetry ;;
             3 )  sudo pip install peotry  ;;
             0 )  echo -e "\n$WARN 返回 ${RESET}" && _IS_BREAK="false"  && return 0  ;;
@@ -4811,14 +4848,15 @@ function python_management_menu(){
         1 ) py_subitem_install_python ;;
         2 ) py_subitem_install_poetry ;;
         3 ) py_subitem_install_pipenv ;;
-        4 ) py_subitem_install_julia ;;
-        5 ) py_subitem_set_source_pip ;;
-        6 ) py_subitem_set_source_conda ;;
-        7 ) py_subitem_install_miniforge ;;
-        8 ) py_subitem_install_miniconda ;;
+        4 ) py_subitem_install_miniforge ;;
+        5 ) py_subitem_install_miniconda ;;
+        6 ) py_subitem_set_source_pip ;;
+        7 ) py_subitem_set_source_poetry ;;
+        8 ) py_subitem_set_source_conda ;;
         31) py_subitem_install_hypercorn ;;
         32) py_subitem_install_gunicorn ;;
-        33) py_subitem_install_dash ;;
+        33) py_subitem_install_julia ;;
+        34) py_subitem_install_dash ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
