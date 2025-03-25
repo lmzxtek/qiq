@@ -4448,16 +4448,17 @@ EOF
 # Python管理
 MENU_PYTHON_ITEMS=(
     "1|安装Python|$WHITE" 
-    "2|安装pipenv|$WHITE" 
-    "3|安装miniForge|$YELLOW" 
-    "4|安装miniConda|$WHITE"  
+    "2|安装Poetry|$WHITE" 
+    "3|安装pipenv|$WHITE"
+    "4|安装julia|$WHITE" 
     "5|设置pip源|$WHITE" 
     "6|设置conda源|$WHITE" 
+    "7|安装miniForge|$YELLOW" 
+    "8|安装miniConda|$WHITE"  
     "………………………|$WHITE"
-    "31|安装dash|$WHITE"
-    "32|安装julia|$WHITE"
-    "33|安装gunicorn|$WHITE" 
-    "34|安装hypercorn|$WHITE" 
+    "31|安装hypercorn|$WHITE" 
+    "32|安装gunicorn|$WHITE" 
+    "33|安装dash|$WHITE"
 )
 
 function python_management_menu(){
@@ -4772,15 +4773,16 @@ function python_management_menu(){
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
         1 ) py_subitem_install_python ;;
-        2 ) py_subitem_install_pipenv ;;
-        3 ) py_subitem_install_miniforge ;;
-        4 ) py_subitem_install_miniconda ;;
+        2 ) curl -sSL https://install.python-poetry.org | python3 - && _BREAK_INFO=" poetry安装成功!" ;;
+        3 ) py_subitem_install_pipenv ;;
+        4 ) py_subitem_install_julia ;;
         5 ) py_subitem_set_source_pip ;;
         6 ) py_subitem_set_source_conda ;;
-        31) py_subitem_install_dash ;;
-        32) py_subitem_install_julia ;;
-        33) py_subitem_install_gunicorn ;;
-        34) py_subitem_install_hypercorn ;;
+        7 ) py_subitem_install_miniforge ;;
+        8 ) py_subitem_install_miniconda ;;
+        31) py_subitem_install_hypercorn ;;
+        32) py_subitem_install_gunicorn ;;
+        33) py_subitem_install_dash ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;

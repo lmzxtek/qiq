@@ -312,8 +312,9 @@ function Manage_Python {
         Write-Host " 1. Install Python Latest              "
         Write-Host " 2. Install Python by ver.             "
         Write-Host " 3. Install pipenv                     "
-        Write-Host " 4. Install Julia                      "
-        Write-Host " 5. Set Pip Source                     "
+        Write-Host " 4. Install Poetry                     "
+        Write-Host " 5. Install Julia                      "
+        Write-Host " 6. Set Pip Source                     "
         Write-Host " 0. Back                               "
         Write-Host "=======================================" -ForegroundColor Green
     }
@@ -368,8 +369,9 @@ index-url = $mirrorURL
                 Install-Software "Python.Python --version $py_version" "python --version $py_version" "https://www.python.org/downloads/release/python-$py_version/"
             }
             "3" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
-            "4" { show_jill_usage; pip install jill; jill install }
-            "5" { Set-Pip-Mirror }
+            "4" { (Invoke-WebRequest -Uri "https://install.python-poetry.org" -UseBasicParsing).Content | python - ; Pause }
+            "5" { show_jill_usage; pip install jill; jill install; Pause }
+            "6" { Set-Pip-Mirror; Pause}
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
