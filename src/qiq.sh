@@ -6761,7 +6761,7 @@ function docker_management_menu(){
             echo -e "$PRIGHT Docker安装选项"
             generate_separator "=" 40
             echo -e " 1.Official(官方)"
-            echo -e " 2.LinuxMirrors(推荐)"
+            echo -e " 2.LinuxMirrors(${YELLOW}推荐${PLAIN})"
             echo -e " 3.LinuxMirrors(GitHub)"
             echo -e " 4.LinuxMirrors(Gitee)"
             echo -e " 5.LinuxMirrors(jsDelivr)"
@@ -6863,14 +6863,18 @@ function docker_management_menu(){
         case_end_tackle
     }
     function docker_add_1panel_v4v6(){
-        echo -e "\n $TIP 添加1panel-v4v6之前，请先确保1Panel面板中开启了bridge网络的IPv6."
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入网络名称(默认:1panel-v4v6): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="1panel-v4v6"
+        
+        echo -e "\n $TIP 添加${INPUT}之前，请先确保容器网络${RED}开启了bridge网络的IPv6${PLAIN}"
         docker network create --driver=bridge \
             --subnet=172.16.10.0/24 \
             --gateway=172.16.10.1 \
             --subnet=2408:400e::/48 \
             --gateway=2408:400e::1 \
-            1panel-v4v6
-        echo -e "\n $TIP 添加1panel-v4v6完成.\n"
+            ${INPUT}
+        echo -e "\n $TIP 添加${INPUT}网络完成.\n"
     }
     function docker_service_restart(){
         if ! systemctl status ${{app_name} > /dev/null 2>&1; then
