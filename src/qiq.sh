@@ -855,53 +855,56 @@ function print_warp_ip_info() {
 
 
 function get_ip_info() {
-  local ip_version=$1
+    local ip_version=$1
 
-  if [[ "$ip_version" -ne 4 && "$ip_version" -ne 6 ]]; then
-    echo -e "\n$WARN Invalid IP version. Please use 4 or 6!"
-    return 1
-  fi
+    if [[ "$ip_version" -ne 4 && "$ip_version" -ne 6 ]]; then
+        echo -e "\n$WARN Invalid IP version. Please use 4 or 6!"
+        return 1
+    fi
 
-  if [[ IPV${ip_version}_SUPPORTED -eq 0 ]]; then
-    echo -e "$WARN IPv${ip_version} is not supported!"
-    return 1
-  fi 
+    if [[ IPV${ip_version}_SUPPORTED -eq 0 ]]; then
+        echo -e "$WARN IPv${ip_version} is not supported!"
+        return 1
+    fi 
 
-  echo -e " $WORKING Check IPv${ip_version} information ..."
+    echo -e " $WORKING Check IPv${ip_version} information ..."
 
-  local url
-  local response
-  local loc_ip
-  local loc_country
-  local loc_asn  local loc_asn_org
-  local ip_info
+    local url
+    local response
+    local loc_ip
+    local loc_country
+    local loc_asn  local loc_asn_org
+    local ip_info
 
-  url="https://ifconfig.co/json"
-  response=$(curl -${ip_version} -sS --retry 2 --max-time 1 "$url")
+    url="https://ifconfig.co/json"
+    response=$(curl -${ip_version} -sS --retry 2 --max-time 1 "$url")
 
-  if [[ -z "$response" ]]; then
-    echo -e "${WARN}  Failed to fetch IPv${ip_version} information from ifconfig.co \n"
-    return 1
-  fi
+    if [[ -z "$response" ]]; then
+        echo -e "${WARN}  Failed to fetch IPv${ip_version} information from ifconfig.co \n"
+        url="ip.sb"
+        response=$(curl -${ip_version} -sS --retry 2 --max-time 1 "$url")
+        [[ -n "$response" ]] && export WAN${ip_version}=$(printf "%s" ${response})
+        return 1
+    fi
 
-  # loc_ip=$(echo "$response" | jq -r '.ip')
-  # loc_country=$(echo "$response" | jq -r '.country')
-  # loc_asn=$(echo "$response" | jq -r '.asn')
-  # loc_asn_org=$(echo "$response" | jq -r '.asn_org')
+    # loc_ip=$(echo "$response" | jq -r '.ip')
+    # loc_country=$(echo "$response" | jq -r '.country')
+    # loc_asn=$(echo "$response" | jq -r '.asn')
+    # loc_asn_org=$(echo "$response" | jq -r '.asn_org')
 
-  loc_ip=$(echo "$response" | grep -o '"ip": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
-  loc_asn=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
-  loc_asn_org=$(echo "$response" | grep -o '"asn_org": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
-  loc_country=$(echo "$response" | grep -o '"country": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+    loc_ip=$(echo "$response" | grep -o '"ip": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+    loc_asn=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+    loc_asn_org=$(echo "$response" | grep -o '"asn_org": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+    loc_country=$(echo "$response" | grep -o '"country": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
 
-  ip_info=$(echo -e "${loc_country}, ${loc_asn}, ${loc_asn_org}")
+    ip_info=$(echo -e "${loc_country}, ${loc_asn}, ${loc_asn_org}")
 
-  # 设置全局变量
-  [[ -n "$loc_ip" ]]      && export WAN${ip_version}=$(printf "%s" ${loc_ip})
-  [[ -n "$loc_country" ]] && export COUNTRY${ip_version}=$loc_country
-  [[ -n "$loc_asn_org" ]] && export ASNORG${ip_version}=$loc_asn_org
-#   [[ -n "$ip_info" ]]     && export IP_INFO${ip_version}=$(printf "%s" ${ip_info})
-  [[ -n "$ip_info" ]]     && export IP_INFO${ip_version}=$loc_asn
+    # 设置全局变量
+    [[ -n "$loc_ip" ]]      && export WAN${ip_version}=$(printf "%s" ${loc_ip})
+    [[ -n "$loc_country" ]] && export COUNTRY${ip_version}=$loc_country
+    [[ -n "$loc_asn_org" ]] && export ASNORG${ip_version}=$loc_asn_org
+    # [[ -n "$ip_info" ]]     && export IP_INFO${ip_version}=$(printf "%s" ${ip_info})
+    [[ -n "$ip_info" ]]     && export IP_INFO${ip_version}=$loc_asn
 
 }
 
