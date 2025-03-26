@@ -880,9 +880,9 @@ function get_ip_info() {
     response=$(curl -${ip_version} -sS --retry 2 --max-time 1 "$url")
 
     if [[ -z "$response" ]]; then
-        echo -e "${WARN}  Failed to fetch IPv${ip_version} information from ifconfig.co \n"
+        echo -e "${WARN}  Failed to fetch IPv${ip_version} from ifconfig.co, try ip.sb ... \n"
         url="ip.sb"
-        response=$(curl -${ip_version} -sS --retry 2 --max-time 1 "$url")
+        response=$(curl -${ip_version} -sS --retry 2 --max-time 2 "$url")
         [[ -n "$response" ]] && export WAN${ip_version}=$(printf "%s" ${response})
         return 1
     fi
