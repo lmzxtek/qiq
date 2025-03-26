@@ -5417,11 +5417,12 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "4|AKTools|$CYAN"
     "5|SubLinkX|$WHITE"
     "6|Lucky|$WHITE"
-    "7|IPTVa|$WHITE"
-    "8|IPTVd|$WHITE"
-    "9|Docker-win|$WHITE"
-    "10|Docker-mac|$WHITE"
-    "11|WeChat(web)|$WHITE"
+    "7|Alist|$WHITE"
+    "8|IPTVa|$WHITE"
+    "9|IPTVd|$WHITE"
+    "10|Docker-win|$WHITE"
+    "11|Docker-mac|$WHITE"
+    "12|WeChat(web)|$WHITE"
     "………………………|$WHITE" 
     "21|Dash.|$WHITE" 
     "22|MyIP|$WHITE" 
@@ -5512,6 +5513,89 @@ EOF
         cd - &>/dev/null # 返回原来目录 
     }
 
+    function dc_deploy_alist(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45244
+        local dc_name='alist'
+        local dc_imag=xhofe/alist
+        local dc_desc="Alist聚合网盘"
+        local urlgit='https://github.com/AlistGo/alist'
+        local urldoc='https://alist.nn.ci/zh/guide'
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        local imgver='2025'
+        echo -e ""
+        echo -e "$PRIGHT 1.Latest"
+        echo -e "$PRIGHT 2.aio(ffmpen+aria2)"
+        echo -e "$PRIGHT 3.aria2"
+        echo -e "$PRIGHT 4.Custom(eg.:3.41.0)"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择镜像版本(默认为: Latest)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && INPUT=1        
+        case "${INPUT}" in
+        1) imgver='latest' ;;
+        2) imgver='aio' ;;
+        3) imgver='ffmpeg' ;;
+        4) imgver='aria2' ;;
+        4) 
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入镜像Tag: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] && INPUT="latest"
+            imgver=$INPUT 
+            ;;
+        *) echo -e "\n$WARN 输入错误,设置为默认latest"  ;;
+        esac
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: ${dc_imag}:${imgver}
+        volumes:
+        - '${fdat}:/opt/alist/data'
+        ports:
+        - '$dc_port:5244'
+        environment:
+        - PUID=0
+        - PGID=0
+        - UMASK=022
+        restart: unless-stopped
+EOF
+
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+        
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+        [[ -n $urldoc ]]  && content+="\nDocumentat  : $urldoc  "
+        content+="\n # 随机生成一个密码:  docker exec -it alist ./alist admin random " 
+        content+="\n # 手动设置一个密码: docker exec -it alist ./alist admin set NEW_PASSWORD  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - &>/dev/null # 返回原来目录 
+    }
     function dc_deploy_ittools(){    
         local base_root="/home/dcc.d"
         local dc_port=45380
@@ -6571,11 +6655,12 @@ EOF
         4 ) dc_deploy_aktools  ;;
         5 ) dc_deploy_sublinkx  ;;
         6 ) dc_deploy_lucky  ;;
-        7 ) dc_deploy_iptva  ;;
-        8 ) dc_deploy_iptvd  ;;
-        9 ) dc_deploy_docker_win  ;;
-        10) dc_deploy_docker_mac  ;;
-        11) dc_deploy_wechat  ;;
+        7 ) dc_deploy_alist  ;;
+        8 ) dc_deploy_iptva  ;;
+        9 ) dc_deploy_iptvd  ;;
+        10) dc_deploy_docker_win  ;;
+        11) dc_deploy_docker_mac  ;;
+        12) dc_deploy_wechat  ;;
         21) dc_deploy_dashdot  ;;
         22) dc_deploy_myip  ;;
         23) dc_deploy_neko  ;;
