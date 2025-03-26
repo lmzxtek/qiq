@@ -6774,8 +6774,8 @@ function docker_management_menu(){
             case "${INPUT}" in 
             1) docker_install_official ;; 
             2) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) ;; 
-            3) bash <(curl -sSL https://linuxmirrors.cn/docker.sh)  --edu  ;; 
-            4) bash <(curl -sSL https://linuxmirrors.cn/docker.sh ) --abroad  ;; 
+            3) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --edu  ;; 
+            4) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --abroad  ;; 
             0) _IS_BREAK='false' ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
