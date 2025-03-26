@@ -6761,21 +6761,23 @@ function docker_management_menu(){
             echo -e "$PRIGHT Docker安装选项"
             generate_separator "=" 40
             echo -e " 1.Official(官方)"
-            echo -e " 2.LinuxMirrors(大陆)"
-            echo -e " 3.LinuxMirrors(教育)"
-            echo -e " 4.LinuxMirrors(海外)"
+            echo -e " 2.LinuxMirrors(推荐)"
+            echo -e " 3.LinuxMirrors(GitHub)"
+            echo -e " 4.LinuxMirrors(Gitee)"
+            echo -e " 4.LinuxMirrors(jsDelivr)"
             echo -e " 0.返回"
             generate_separator "=" 40
 
             _IS_BREAK='true'
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择安装源？(默认官方): ${PLAIN}")
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择？(默认官方): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT=1
             case "${INPUT}" in 
             1) docker_install_official ;; 
             2) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) ;; 
-            3) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --edu  ;; 
-            4) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --abroad  ;; 
+            3) bash <(curl -sSL https://raw.githubusercontent.com/SuperManito/LinuxMirrors/main/DockerInstallation.sh) ;; 
+            4) bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh) ;; 
+            4) bash <(curl -sSL https://cdn.jsdelivr.net/gh/SuperManito/LinuxMirrors@main/DockerInstallation.sh) ;; 
             0) _IS_BREAK='false' ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
