@@ -2205,7 +2205,7 @@ function system_tools_menu(){
                 # echo -e "$WARN 该操作需要root权限！"
                 _BREAK_INFO=" 开放所有端口需要root权限"
                 case_end_tackle 
-                continue 
+                # continue 
             fi 
             iptables_open 
             app_remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1
@@ -2772,145 +2772,144 @@ EOF
         esac 
     }
     function sys_setting_bbrv3_manage(){        
-            local cpu_arch=$(uname -m)
-            if [ "$cpu_arch" = "aarch64" ]; then
-                bash <(curl -sL jhb.ovh/jb/bbrv3arm.sh)
-                _BREAK_INFO=" 系统为ARM架构,已使用jhb的bbrv3arm.sh安装BBRv3内核" 
-                _IS_BREAK="true" 
+        local cpu_arch=$(uname -m)
+        if [ "$cpu_arch" = "aarch64" ]; then
+            bash <(curl -sL jhb.ovh/jb/bbrv3arm.sh)
+            _BREAK_INFO=" 系统为ARM架构,已使用jhb的bbrv3arm.sh安装BBRv3内核" 
+            _IS_BREAK="true" 
+            case_end_tackle 
+            continue 
+        fi
+
+        if dpkg -l | grep -q 'linux-xanmod'; then
+            local bbrv3_1st_options=(
+                "1.更新BBRv3"
+                "2.卸载BBRv3"
+                "0.返回"
+            )
+            
+            _IS_BREAK="true"
+            local kernel_version=$(uname -r)
+            echo -e "\n$TIP 系统已安装xanmod的BBRv3内核"
+            echo -e "\n$PRIGHT 当前内核版本: $kernel_version"
+            print_items_list bbrv3_1st_options[@] " ⚓ BBRv3功能选项:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                apt purge -y 'linux-*xanmod1*'
+                update-grub
+
+                # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+                wget -qO - ${gh_proxy}raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+
+                # 步骤3：添加存储库
+                echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+
+                # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+                local version=$(wget -q ${gh_proxy}raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+                apt update -y
+                apt install -y linux-xanmod-x64v$version
+
+                echo "XanMod内核已更新。重启后生效"
+                rm -f /etc/apt/sources.list.d/xanmod-release.list
+                rm -f check_x86-64_psabi.sh*
+
+                _BREAK_INFO=" 已更新 linux-xammod1内核 ！"
+                _IS_BREAK="false"
                 case_end_tackle 
+                sys_reboot 
                 continue 
-            fi
-
-            if dpkg -l | grep -q 'linux-xanmod'; then
-                local bbrv3_1st_options=(
-                    "1.更新BBRv3"
-                    "2.卸载BBRv3"
-                    "0.返回"
-                )
-                
-                _IS_BREAK="true"
-                local kernel_version=$(uname -r)
-                echo -e "\n$TIP 系统已安装xanmod的BBRv3内核"
-                echo -e "\n$PRIGHT 当前内核版本: $kernel_version"
-                print_items_list bbrv3_1st_options[@] " ⚓ BBRv3功能选项:"
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                case "${INPUT}" in
-                1) 
-                    apt purge -y 'linux-*xanmod1*'
-                    update-grub
-
-                    # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
-                    wget -qO - ${gh_proxy}raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
-
-                    # 步骤3：添加存储库
-                    echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
-
-                    # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
-                    local version=$(wget -q ${gh_proxy}raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
-
-                    apt update -y
-                    apt install -y linux-xanmod-x64v$version
-
-                    echo "XanMod内核已更新。重启后生效"
-                    rm -f /etc/apt/sources.list.d/xanmod-release.list
-                    rm -f check_x86-64_psabi.sh*
-
-                    _BREAK_INFO=" 已更新 linux-xammod1内核 ！"
-                    _IS_BREAK="false"
-                    case_end_tackle 
-                    sys_reboot 
-                    continue 
-                    ;;
-                2) 
-                    apt purge -y 'linux-*xanmod1*'
-                    update-grub 
-                    echo "XanMod内核已卸载。重启后生效"
-                    _BREAK_INFO=" XanMod内核已卸载。重启后生效"
-                    _IS_BREAK="false"
-                    case_end_tackle 
-                    sys_reboot 
-                    continue 
-                    ;;
-                0) 
-                    echo -e "\n$TIP 返回主菜单 ..."
-                    _IS_BREAK="false"
-                    ;;
-                *)
-                    _BREAK_INFO=" 请输入正确选项！"
-                    ;; 
-                esac 
-            else
-                clear
-                echo -e "$PRIGHT 设置BBR3加速 "
-                echo -e "========================================================="
-                echo -e " 仅支持[Debian|Ubuntu|Alpine]"
-                echo -e " 请备份数据，将为你升级Linux内核开启BBR3"
-                echo -e " 若系统内存为${RED}512M${RESET}，请提前添加1G虚拟内存，以防机器失联！"
-                echo -e "========================================================="
-                local CHOICE=$(echo -e "\n${BOLD}└─ 确定继续安装BBRv3? [Y/n] ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
-                case "$INPUT" in
-                [Yy] | [Yy][Ee][Ss])
-                    if [ -r /etc/os-release ]; then
-                        . /etc/os-release
-                        if [ "$ID" == "alpine" ]; then
-                            bbr_on
-                            _BREAK_INFO=" 当前为Alpine系统"
-                            _IS_BREAK="false"
-                            case_end_tackle
-                            sys_reboot
-                            continue
-                        elif [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
-                            _BREAK_INFO=" 当前环境不支持, 仅支持Alpine,Debian和Ubuntu系统"
-                            _IS_BREAK="true"
-                            case_end_tackle
-                            continue
-                        fi                        
-                    else
-                        echo "无法确定操作系统类型"
-                        _BREAK_INFO=" 无法确定操作系统类型"
+                ;;
+            2) 
+                apt purge -y 'linux-*xanmod1*'
+                update-grub 
+                echo "XanMod内核已卸载。重启后生效"
+                _BREAK_INFO=" XanMod内核已卸载。重启后生效"
+                _IS_BREAK="false"
+                case_end_tackle 
+                sys_reboot 
+                continue 
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                ;; 
+            esac 
+        else
+            clear
+            echo -e "$PRIGHT 设置BBR3加速 "
+            echo -e "========================================================="
+            echo -e " 仅支持[Debian|Ubuntu|Alpine]"
+            echo -e " 请备份数据，将为你升级Linux内核开启BBR3"
+            echo -e " 若系统内存为${RED}512M${RESET}，请提前添加1G虚拟内存，以防机器失联！"
+            echo -e "========================================================="
+            local CHOICE=$(echo -e "\n${BOLD}└─ 确定继续安装BBRv3? [Y/n] ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+            case "$INPUT" in
+            [Yy] | [Yy][Ee][Ss])
+                if [ -r /etc/os-release ]; then
+                    . /etc/os-release
+                    if [ "$ID" == "alpine" ]; then
+                        bbr_on
+                        _BREAK_INFO=" 当前为Alpine系统"
+                        _IS_BREAK="false"
+                        case_end_tackle
+                        sys_reboot
+                        continue
+                    elif [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
+                        _BREAK_INFO=" 当前环境不支持, 仅支持Alpine,Debian和Ubuntu系统"
                         _IS_BREAK="true"
                         case_end_tackle
                         continue
-                    fi
-
-                    check_swap
-                    app_install wget gnupg
-
-                    local url=$(get_proxy_url "https://raw.githubusercontent.com/kejilion/sh/main/archive.key")
-                    wget -qO - ${url} | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
-
-                    # 步骤3：添加存储库
-                    echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
-
-                    local url=$(get_proxy_url "https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh")
-                    local version=$(wget -q ${url} && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
-
-                    apt update -y
-                    apt install -y linux-xanmod-x64v$version
-
-                    bbr_on
-
-                    rm -f /etc/apt/sources.list.d/xanmod-release.list
-                    rm -f check_x86-64_psabi.sh*
-                    _BREAK_INFO=" XanMod内核安装并BBR3启用成功。重启后生效"
-                    _IS_BREAK="false"
-                    sys_reboot
-                    continue
-                    ;;
-                [Nn] | [Nn][Oo])
-                    _BREAK_INFO=" 已取消"
-                    _IS_BREAK="false"
-                    ;;
-                *)
-                    _BREAK_INFO=" 无效的选择。"
+                    fi                        
+                else
+                    echo "无法确定操作系统类型"
+                    _BREAK_INFO=" 无法确定操作系统类型"
                     _IS_BREAK="true"
-                    ;;
-                esac
-            fi             
-            
+                    case_end_tackle
+                    continue
+                fi
+
+                check_swap
+                app_install wget gnupg
+
+                local url=$(get_proxy_url "https://raw.githubusercontent.com/kejilion/sh/main/archive.key")
+                wget -qO - ${url} | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+
+                # 步骤3：添加存储库
+                echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+
+                local url=$(get_proxy_url "https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh")
+                local version=$(wget -q ${url} && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+                apt update -y
+                apt install -y linux-xanmod-x64v$version
+
+                bbr_on
+
+                rm -f /etc/apt/sources.list.d/xanmod-release.list
+                rm -f check_x86-64_psabi.sh*
+                _BREAK_INFO=" XanMod内核安装并BBR3启用成功。重启后生效"
+                _IS_BREAK="false"
+                sys_reboot
+                continue
+                ;;
+            [Nn] | [Nn][Oo])
+                _BREAK_INFO=" 已取消"
+                _IS_BREAK="false"
+                ;;
+            *)
+                _BREAK_INFO=" 无效的选择。"
+                _IS_BREAK="true"
+                ;;
+            esac
+        fi             
     }
     function sys_setting_beautify_cmd_style(){
             function print_better_cmd_style_options(){
@@ -6860,7 +6859,7 @@ function docker_management_menu(){
         0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         *) _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
         esac
-        case_end_tackle
+        # case_end_tackle
     }
     function docker_add_1panel_v4v6(){
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入网络名称(默认:1panel-v4v6): ${PLAIN}")
@@ -7072,7 +7071,7 @@ function print_web_urls(){
     echo -e "      流量监测:" "https://wiziscool.github.io/Nezha-Traffic-Alarm-Generator"
     generate_separator "=" 45
     _IS_BREAK="true"
-    case_end_tackle
+    # case_end_tackle
 }
 
 # 定义主菜单数组
