@@ -7049,7 +7049,7 @@ function docker_management_menu(){
         12) docker_containers_list ;; 
         13) docker_images_list ;; 
         14) docker_network_list ;;
-        31) docker_deploy_menu && _IS_BREAK="false"  && break ;;
+        31) docker_deploy_menu && _IS_BREAK="false" ;;
         32) caddy_management_menu && _IS_BREAK="false"  && break ;;
         # 31) docker_deploy_menu && _IS_BREAK="false"  ;;
         # 32) caddy_management_menu && _IS_BREAK="false"  && continue ;;
