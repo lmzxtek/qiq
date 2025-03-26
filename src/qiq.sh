@@ -6635,12 +6635,12 @@ function docker_management_menu(){
     function docker_show_info() {
         echo -e "\n${BOLD} ┌─ Docker版本信息${PLAIN} ────────"
         if [[ ! -x "$(command -v docker)" ]] ; then
-            echo -e "$WARN  Docker环境未安装。"
+            echo -e "$WARN  ${RED}Docker环境未安装。${PLAIN}"
         else
             docker --version
         fi
         if [[ ! -x "$(command -v docker-compose)" ]] ; then
-            echo -e "$WARN  Docker-compose未安装。"
+            echo -e "$WARN  ${RED}docker-compose未安装。${PLAIN}"
         else
             docker-compose --version
         fi
@@ -6650,19 +6650,31 @@ function docker_management_menu(){
     function docker_show_containers() {
         # docker_show_info
         echo -e "\n${BOLD} ┌─ Docker容器列表${PLAIN} ────────"
-        docker ps -a
+        if [[ ! -x "$(command -v docker)" ]] ; then
+            echo -e "$WARN  ${RED}Docker环境未安装。${PLAIN}"
+        else
+            docker ps -a
+        fi
         echo -e "${BOLD} └─────────────────────────${PLAIN}"
     }
     function docker_show_images() {
         # docker_show_info
         echo -e "\n${BOLD} ┌─ Docker镜像列表${PLAIN} ────────"
-        docker images
+        if [[ ! -x "$(command -v docker)" ]] ; then
+            echo -e "$WARN  ${RED}Docker环境未安装。${PLAIN}"
+        else
+            docker images
+        fi
         echo -e "${BOLD} └─────────────────────────${PLAIN}"
     }
     function docker_show_networks() {
         # docker_show_info
         echo -e "\n${BOLD} ┌─ Docker容器网络${PLAIN} ────────"
-        docker network ls 
+        if [[ ! -x "$(command -v docker)" ]] ; then
+            echo -e "$WARN  ${RED}Docker环境未安装。${PLAIN}"
+        else
+            docker network ls 
+        fi
         echo -e "${BOLD} └─────────────────────────${PLAIN}"
     }
     
