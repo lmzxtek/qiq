@@ -149,13 +149,13 @@ function set_qiq_alias() {
                 read -rp "${CHOICE}" INPUT
                 [[ -z "$INPUT" ]] &&  INPUT="Y"
                 if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-                    rm -f /usr/local/bin/qiq
-                    ln -sf ~/qiq.sh /usr/local/bin/qiq
+                    sudo rm -f /usr/local/bin/qiq
+                    sudo ln -sf ${PWD}/qiq.sh /usr/local/bin/qiq
                 fi
             fi
         else
             echo -e "\n $WARN qiq 快捷命令未设置 ... \n"
-            ln -sf ~/qiq.sh /usr/local/bin/qiq
+            sudo ln -sf ${PWD}/qiq.sh /usr/local/bin/qiq
         fi
     fi
 }
@@ -1380,8 +1380,8 @@ function app_install() {
 				yum install -y epel-release
 				yum install -y "$package"
 			elif command -v apt &>/dev/null; then
-				apt update -y
-				apt install -y "$package"
+				sudo apt update -y
+				sudo apt install -y "$package"
 			elif command -v apk &>/dev/null; then
 				apk update
 				apk add "$package"
@@ -1412,13 +1412,13 @@ function app_remove() {
     fi
 
 	for package in "$@"; do
-		echo -e "${gl_huang}正在卸载 $package...${gl_bai}"
+		echo -e "${PRIGHT}正在卸载 $package...${RESET}"
 		if command -v dnf &>/dev/null; then
 			dnf remove -y "$package"
 		elif command -v yum &>/dev/null; then
 			yum remove -y "$package"
 		elif command -v apt &>/dev/null; then
-			apt purge -y "$package"
+			sudo apt purge -y "$package"
 		elif command -v apk &>/dev/null; then
 			apk del "$package"
 		elif command -v pacman &>/dev/null; then
@@ -6692,7 +6692,7 @@ function docker_management_menu(){
         case "$INPUT" in
         [Yy] | [Yy][Ee][Ss]) 
             docker rm $(docker ps -a -q) && docker rmi $(docker images -q) && docker network prune
-            remove docker docker-ce docker-compose > /dev/null 2>&1
+            app_remove docker docker-ce docker-compose > /dev/null 2>&1
             echo -e "$TIP Docker环境卸载完成"
             ;; 
         [Nn] | [Nn][Oo]) echo -e "$WARN 卸载取消 " && return 1  ;;
@@ -6719,12 +6719,22 @@ function docker_management_menu(){
             rc-update add docker default
             service docker start
         else
-            curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
-            systemctl start docker
-            systemctl enable docker
+            sudo curl -fsSL https://get.docker.com | sh && sudo ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
+            sudo systemctl start docker
+            sudo systemctl enable docker
+        fi
+    }
+    function docker_check_docker_compose(){
+        if command -v docker &>/dev/null; then
+            if ! command -v docker-compose &>/dev/null; then
+                if [ -f "/usr/libexec/docker/cli-plugins/docker-compose" ]; then
+                    sudo ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
+                fi
+            fi
         fi
     }
     function docker_install(){
+        docker_check_docker_compose
         docker_show_info
         if command -v docker &>/dev/null; then
             echo ''
@@ -6757,6 +6767,7 @@ function docker_management_menu(){
             0) _IS_BREAK='false' ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
+            docker_check_docker_compose
         fi
     }    
     function docker_enable_ipv6(){
