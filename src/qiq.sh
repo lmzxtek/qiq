@@ -6681,7 +6681,7 @@ MENU_DOCKER_MANAGE_ITEMS=(
     "2|卸载容器|$WHITE"
     "3|清理容器|$WHITE"
     "4|重启服务|$CYAN"
-    "11|状态查看|$WHITE"
+    "11|状态查看|$GREEN"
     "12|容器列表|$YELLOW" 
     "13|镜像列表|$WHITE" 
     "14|网络列表|$WHITE" 
@@ -6963,11 +6963,21 @@ function docker_management_menu(){
         echo -e "\n $TIP 添加${INPUT}网络完成.\n"
     }
     function docker_service_restart(){
-        if ! systemctl status ${{app_name} > /dev/null 2>&1; then
-            systemctl stop docker && systemctl start docker
-        else 
-            echo -e "\n$TIP 系统未安装docker服务！"
-        fi
+        if ! command -v systemctl > /dev/null 2>&1; then 
+            if ! systemctl status docker > /dev/null 2>&1; then
+                systemctl stop docker && systemctl start docker
+            else 
+                echo -e "\n$TIP 系统未安装docker服务！"
+            fi
+        elif ! command -v service > /dev/null 2>&1;  then
+            if ! service docker status > /dev/null 2>&1; then
+                service  docker stop && service  docker start
+            else 
+                echo -e "\n$TIP 系统未安装docker服务！"
+            fi
+        else
+            echo -e "\n$TIP 不支持的系统服务类型！"
+        fi  
     } 
     function docker_get_id(){
         local head=${1:-'ID'}

@@ -576,6 +576,7 @@ function App_download {
         Write-Host "  17. 1Remote          " 
         Write-Host "   8. 7zip             " -NoNewline  
         Write-Host "  18. gm-api           " -ForegroundColor Blue
+        Write-Host "   9. PotPlayer        " #-NoNewline  
         Write-Host "  88. reinstall.bat    " -NoNewline
         Write-Host "  99. All              " -ForegroundColor Green
         Write-Host "   0. Exit             " -ForegroundColor Red
@@ -663,6 +664,16 @@ function App_download {
         $file = "reinstall.bat"
         # $url_gh = "https://github.com/bin456789/reinstall"
         $url_dl = Get_proxy_url "https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.bat"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_potplayer {        
+        $file = "PotPlayerSetup64.exe"
+        $url_dl = Get_proxy_url "https://t1.daumcdn.net/potplayer/PotPlayer/Version/Latest/PotPlayerSetup64.exe"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
@@ -859,6 +870,7 @@ servertag = 'gm(demo)'
             "17" { download_1remote }
             "8"  { download_7zip_latest }
             "18" { download_gm_api }
+            "9"  { download_potplayer }
             "88" { download_reinstall; }
             "99" { download_all_software }
             "0"  { return }
