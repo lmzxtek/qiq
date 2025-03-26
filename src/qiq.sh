@@ -6949,9 +6949,9 @@ function docker_management_menu(){
             "1.删除网络"
             "2.清理网络"
             "3.删除所有"
-            "4.开启IPv6"
+            "4.开启IPv6|${GREEN}"
             "5.关闭IPv6"
-            "6.添加1panel-v4v6"
+            "6.添加网络(v4v6)|${CYAN}"
             "0.返回"
         )
 
