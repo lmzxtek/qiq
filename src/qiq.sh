@@ -855,19 +855,19 @@ function print_warp_ip_info() {
 
 
 function get_ip_info() {
-    local ip_version=$1
+    local ip_ver=$1
 
-    if [[ "$ip_version" -ne 4 && "$ip_version" -ne 6 ]]; then
+    if [[ "$ip_ver" -ne 4 && "$ip_ver" -ne 6 ]]; then
         echo -e "\n$WARN Invalid IP version. Please use 4 or 6!"
         return 1
     fi
 
-    if [[ IPV${ip_version}_SUPPORTED -eq 0 ]]; then
-        echo -e "$WARN IPv${ip_version} is not supported!"
+    if [[ IPV${ip_ver}_SUPPORTED -eq 0 ]]; then
+        echo -e "$WARN IPv${ip_ver} is not supported!"
         return 1
     fi 
 
-    echo -e " $WORKING Check IPv${ip_version} information ..."
+    echo -e " $WORKING Check IPv${ip_ver} information ..."
 
     local url
     local response
@@ -877,13 +877,13 @@ function get_ip_info() {
     local ip_info
 
     url="https://ifconfig.co/json"
-    response=$(curl -${ip_version} -sS --retry 2 --max-time 1 "$url")
+    response=$(curl -${ip_ver} -sS --retry 2 --max-time 1 "$url")
 
     if [[ -z "$response" ]]; then
-        echo -e "${WARN}  Failed to fetch IPv${ip_version} from ifconfig.co, try ip.sb ... \n"
+        echo -e "${WARN}  Failed to fetch IPv${ip_ver} from ifconfig.co, try ip.sb ... \n"
         url="ip.sb"
-        response=$(curl -${ip_version} -sS --retry 2 --max-time 2 "$url")
-        [[ -n "$response" ]] && export WAN${ip_version}=$(printf "%s" ${response})
+        response=$(curl -${ip_ver} -sS --retry 2 --max-time 2 "$url")
+        [[ -n "$response" ]] && export WAN${ip_ver}=$(printf "%s" ${response})
         return 1
     fi
 
@@ -900,11 +900,11 @@ function get_ip_info() {
     ip_info=$(echo -e "${loc_country}, ${loc_asn}, ${loc_asn_org}")
 
     # 设置全局变量
-    [[ -n "$loc_ip" ]]      && export WAN${ip_version}=$(printf "%s" ${loc_ip})
-    [[ -n "$loc_country" ]] && export COUNTRY${ip_version}=$loc_country
-    [[ -n "$loc_asn_org" ]] && export ASNORG${ip_version}=$loc_asn_org
-    # [[ -n "$ip_info" ]]     && export IP_INFO${ip_version}=$(printf "%s" ${ip_info})
-    [[ -n "$ip_info" ]]     && export IP_INFO${ip_version}=$loc_asn
+    [[ -n "$loc_ip" ]]      && export WAN${ip_ver}=$(printf "%s" ${loc_ip})
+    [[ -n "$loc_country" ]] && export COUNTRY${ip_ver}=$loc_country
+    [[ -n "$loc_asn_org" ]] && export ASNORG${ip_ver}=$loc_asn_org
+    # [[ -n "$ip_info" ]]     && export IP_INFO${ip_ver}=$(printf "%s" ${ip_info})
+    [[ -n "$ip_info" ]]     && export IP_INFO${ip_ver}=$loc_asn
 
 }
 
