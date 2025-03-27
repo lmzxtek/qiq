@@ -5640,7 +5640,7 @@ EOF
 services:
   ${dc_name}:
     container_name: ${dc_name}
-      image: ${dc_imag}:${imgver}
+      image: ${dc_imag}
     environment:
       - PUID=1000
       - PGID=1000
