@@ -5484,7 +5484,7 @@ function docker_deploy_menu(){
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         # read -rp "${CHOICE}" INPUT
         # [[ -n "$INPUT" ]] && dc_port=$INPUT
         
@@ -5534,7 +5534,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
         
@@ -5544,7 +5544,7 @@ EOF
         echo -e "$PRIGHT 2.aio(ffmpen+aria2)"
         echo -e "$PRIGHT 3.aria2"
         echo -e "$PRIGHT 4.Custom(eg.:3.41.0)"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择镜像版本(默认为: Latest)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择镜像版本(默认为: Latest): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] && INPUT=1        
         case "${INPUT}" in
@@ -5699,7 +5699,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
         
@@ -5749,7 +5749,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
         
@@ -5802,7 +5802,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
         
@@ -5856,7 +5856,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
         
@@ -5913,7 +5913,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         # read -rp "${CHOICE}" INPUT
         # [[ -n "$INPUT" ]] && dc_port=$INPUT
         HOST_ADDRESS='127.0.0.1'
@@ -5978,7 +5978,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6029,7 +6029,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6082,7 +6082,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6135,7 +6135,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6190,7 +6190,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6240,7 +6240,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6294,11 +6294,11 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC端口(默认为:${dc_vnc})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC端口(默认为:${dc_vnc}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_vnc=$INPUT
 
@@ -6362,7 +6362,7 @@ EOF
         [[ -f "$fyml"  ]] || touch $fyml
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6371,7 +6371,7 @@ EOF
         echo -e "$PRIGHT 1.Edge(dafault)"
         echo -e "$PRIGHT 2.Firefox"
         echo -e "$PRIGHT 3.Chromium"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择浏览器内核(默认为:Edge)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择浏览器内核(默认为:Edge): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] && INPUT=1
         
@@ -6383,17 +6383,17 @@ EOF
         esac
         
         local memsize=2
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && memsize=$INPUT
 
         local pssuser=neko
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pssuser})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pssuser}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && pssuser=$INPUT
 
         local pssadmin=admin
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理员密码(默认为:${pssadmin})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理员密码(默认为:${pssadmin}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && pssadmin=$INPUT
 
@@ -6452,7 +6452,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6466,7 +6466,7 @@ EOF
         echo -e "$PRIGHT 6.tiny11(Tiny 11)"
         echo -e "$PRIGHT 7.tiny10(Tiny 10)"
         echo -e "$PRIGHT 8.Custom iso url "
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择Windows版本(默认为: Win2025)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择Windows版本(默认为: Win2025): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] && INPUT=1        
         case "${INPUT}" in
@@ -6490,7 +6490,7 @@ EOF
         echo -e "\n" " 可选择的语言 "
         echo -e "  " " 1.Chinese "
         echo -e "  " " 2.English "
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择Windows语言(默认为: Chinese)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择Windows语言(默认为: Chinese): ${PLAIN}")
         read -rp "${CHOICE}" INPUT 
         [[ -z "$INPUT" ]] && INPUT=1 
         case "${INPUT}" in
@@ -6500,27 +6500,27 @@ EOF
         esac
         
         local numcpu=4
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入CPU核心数(默认为:${numcpu})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入CPU核心数(默认为:${numcpu}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && numcpu=$INPUT
 
         local memsize=4
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}GB)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}GB): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && memsize=$INPUT
 
         local disksize=30
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入硬盘大小(默认为:${disksize}GB)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入硬盘大小(默认为:${disksize}GB): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && disksize=$INPUT
 
         local user='dd'
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录账户(默认为:${user})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录账户(默认为:${user}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && user=$INPUT
 
         local pass='dd543212345'
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pass})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pass}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && pass=$INPUT
 
@@ -6607,7 +6607,7 @@ EOF
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
@@ -6617,7 +6617,7 @@ EOF
         echo -e "$PRIGHT 2.ventura(MacOS Ventura)"
         echo -e "$PRIGHT 3.monterey(MacOS Monterey)"
         echo -e "$PRIGHT 4.big-sur(MacOS Big Sur)"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择MacOS版本(默认为: sonoma)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择MacOS版本(默认为: sonoma): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] && INPUT=1        
         case "${INPUT}" in
@@ -6642,27 +6642,27 @@ EOF
         # esac
         
         local numcpu=4
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入CPU核心数(默认为:${numcpu})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入CPU核心数(默认为:${numcpu}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && numcpu=$INPUT
 
         local memsize=8
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}GB)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}GB): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && memsize=$INPUT
 
         local disksize=42
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入硬盘大小(默认为:${disksize}GB)]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入硬盘大小(默认为:${disksize}GB): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && disksize=$INPUT
 
         # local user='dd'
-        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录账户(默认为:${user})]: ${PLAIN}")
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录账户(默认为:${user}): ${PLAIN}")
         # read -rp "${CHOICE}" INPUT
         # [[ -n "$INPUT" ]] && user=$INPUT
 
         # local pass='dd543212345'
-        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pass})]: ${PLAIN}")
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pass}): ${PLAIN}")
         # read -rp "${CHOICE}" INPUT
         # [[ -n "$INPUT" ]] && pass=$INPUT
 
