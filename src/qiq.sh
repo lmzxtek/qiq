@@ -7094,22 +7094,6 @@ function docker_management_menu(){
         *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
         esac
     }
-    function docker_containers_rm_all(){
-        local CHOICE=$(echo -e "\n${BOLD}└─ 是否删除所有容器? [Y/n] ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
-        case "${INPUT}" in
-        [Yy] | [Yy][Ee][Ss])
-            echo -e "\n$TIP 删除所有容器 ..."
-            docker rm $(docker ps -a -q)
-            echo -e "\n$TIP 删除所有容器成功！"
-            ;;
-        [Nn] | [Nn][Oo])
-            echo -e "\n$TIP 取消删除所有容器！"
-            ;;
-        *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
-        esac
-    }
     function docker_containers_stop_all(){
         local CHOICE=$(echo -e "\n${BOLD}└─ 是否停止所有容器? [Y/n] ${PLAIN}")
         read -rp "${CHOICE}" INPUT
@@ -7126,10 +7110,27 @@ function docker_management_menu(){
         *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
         esac
     }
+    function docker_containers_rm_all(){
+        docker_containers_stop_all
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否删除所有容器? [Y/n] ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+        case "${INPUT}" in
+        [Yy] | [Yy][Ee][Ss])
+            echo -e "\n$TIP 删除所有容器 ..."
+            docker rm $(docker ps -a -q)
+            echo -e "\n$TIP 删除所有容器成功！"
+            ;;
+        [Nn] | [Nn][Oo])
+            echo -e "\n$TIP 取消删除所有容器！"
+            ;;
+        *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
+        esac
+    }
     function docker_network_list(){
         local dc_name=''
         local dc_items_list=(
-            "1.删除网络"
+            "1.删除网络|${RED}"
             "2.清理网络"
             "3.删除所有"
             "4.开启IPv6|${GREEN}"
@@ -7160,7 +7161,7 @@ function docker_management_menu(){
     function docker_images_list(){
         local dc_name=''
         local dc_items_list=(
-            "1.删除镜像"
+            "1.删除镜像|${RED}"
             "2.获取镜像"
             "3.更新镜像"
             "4.删除所有"
@@ -7187,12 +7188,12 @@ function docker_management_menu(){
     function docker_containers_list(){
         local dc_id=''
         local dc_items_list=(
-            "1.删除容器"
+            "1.删除容器|${RED}"
             "2.停止容器"
             "3.重启容器"
             "4.查看容器"
-            "5.删除所有"
-            "6.停止所有"
+            "5.停止所有"
+            "6.删除所有"
             "0.返回"
         )
 
@@ -7207,8 +7208,8 @@ function docker_management_menu(){
             2)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stop $dc_id ;;
             3)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker restart $dc_id ;;
             4)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stats $dc_id ;;
-            5)  docker_containers_rm_all ;;
-            6)  docker_containers_stop_all ;;
+            5)  docker_containers_stop_all ;;
+            6)  docker_containers_rm_all ;;
             0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
             *)  _BREAK_INFO=" 请输入有效选项！" ;;
             esac 
