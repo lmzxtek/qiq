@@ -6781,7 +6781,7 @@ function docker_management_menu(){
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ Docker管理 " $num_split 0 0 
-        split_menu_items MENU_DOCKER_MANAGE_ITEMS[@] 
+        split_menu_items MENU_DOCKER_MANAGE_ITEMS[@] 0
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
