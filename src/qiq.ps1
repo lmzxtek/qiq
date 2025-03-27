@@ -616,10 +616,10 @@ function App_download {
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_vscode {
-        Write-Host "======  Software Installation ======" -ForegroundColor Cyan
+        Write-Host "======  VSCode version ======" -ForegroundColor Cyan
         Write-Host "  1. VScode(User)                  "
         Write-Host "  2. VScode(Admin)                 "
-        Write-Host "======  Software Installation ======" -ForegroundColor Cyan
+        Write-Host "=============================" -ForegroundColor Cyan
         $soft_choice = Read-Host " Enter your choice(1-2), default[1]"  
         if ($soft_choice -eq "2") {
             $file = "vscode-x64.exe"
