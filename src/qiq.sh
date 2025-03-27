@@ -5431,7 +5431,8 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "23|Neko|$WHITE" 
     "24|IT-Tools|$YELLOW" 
     "25|Stirling PDF|$WHITE" 
-    "26|Code Server|$WHITE" 
+    "26|Code Server(LinuxServer)|$WHITE" 
+    "27|Code Server(Official)|$WHITE" 
 )
 function docker_deploy_menu(){
     function print_sub_item_menu_headinfo(){
@@ -5602,7 +5603,7 @@ EOF
     function dc_deploy_code_linuxserver(){    
         local base_root="/home/dcc.d"
         local dc_port=41003
-        local dc_name='codeserver'
+        local dc_name='code_server_linuxserver'
         local dc_imag=lscr.io/linuxserver/code-server:latest
         local dc_desc="Code-Server"
         local urlgit='https://github.com/coder/deploy-code-server'
@@ -5676,6 +5677,85 @@ EOF
         content+="\n # Password     : $login_password "
         content+="\n # Root password: $admin_password "
         content+="\n # Config path  : $path_config    "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_code_official(){    
+        local base_root="/home/dcc.d"
+        local dc_port=41004
+        local dc_name='code_server_official'
+        local dc_imag=lscr.io/linuxserver/code-server:latest
+        local dc_desc="Code-Server"
+        local urlgit='bencdr/code-server-deploy-container:latest'
+        local urldoc='https://github.com/coder/deploy-code-server/tree/main/deploy-container'
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml 
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        local dc_user='$USER'
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入账户(默认为:${dc_user}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_user=$INPUT
+        
+        local user_password='password'
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${user_password}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && user_password=$INPUT
+        
+        local path_config="${fdat}"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入项目目录(默认为:${path_config}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && admin_password=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: ${dc_imag}
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Shanghai
+      - DOCKER_USER=$dc_user 
+      - PASSWORD=$user_password 
+    volumes:
+      - ${path_config}:/home/coder/project
+      - START_DIR=/home/coder/project #optional
+    ports:
+      - '${dc_port}:8080'
+    restart: unless-stopped
+EOF
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+        
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+        [[ -n $urldoc ]]  && content+="\nDocumentat  : $urldoc  "
+        # content+="\n # Update: docker-compose up -d $dc_name  "
+        content+="\n # DOCKER_USER  : $dc_user       "
+        content+="\n # User password: $user_password "
+        content+="\n # START_DIR    : $path_config   "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -6753,6 +6833,7 @@ EOF
         24) dc_deploy_ittools  ;;
         25) dc_deploy_spdf  ;;
         26) dc_deploy_code_linuxserver  ;;
+        27) dc_deploy_code_official  ;;
         xx) sys_reboot ;;
         # 0)  echo -e "\n$TIP 返回上级菜单 ..." && _IS_BREAK="false"  && break  ;;
         0)  docker_management_menu && _IS_BREAK="false" && break  ;; 
