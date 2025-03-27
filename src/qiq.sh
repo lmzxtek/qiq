@@ -5429,6 +5429,7 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "23|Neko|$WHITE" 
     "24|IT-Tools|$YELLOW" 
     "25|Stirling PDF|$WHITE" 
+    "26|Code Server|$WHITE" 
 )
 function docker_deploy_menu(){
     function print_sub_item_menu_headinfo(){
@@ -5590,6 +5591,89 @@ EOF
         [[ -n $urldoc ]]  && content+="\nDocumentat  : $urldoc  "
         content+="\n # 随机生成一个密码:  docker exec -it alist ./alist admin random " 
         content+="\n # 手动设置一个密码: docker exec -it alist ./alist admin set NEW_PASSWORD  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_vscode_linuxserver(){    
+        local base_root="/home/dcc.d"
+        local dc_port=41003
+        local dc_name='codeserver'
+        local dc_imag=lscr.io/linuxserver/code-server:latest
+        local dc_desc="Code-Server"
+        local urlgit='https://github.com/coder/deploy-code-server'
+        local urldoc='https://docs.linuxserver.io/images/docker-code-server'
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $lfld) 
+        [[ -f "$fyml"  ]] || touch $fyml 
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        local login_password='password'
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${login_password})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && login_password=$INPUT
+        
+        local admin_password='password'
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入root密码(默认为:${admin_password})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && admin_password=$INPUT
+        
+        local path_config='${lfld}/config'
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置目录(默认为:${path_config})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && admin_password=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: ${dc_imag}:${imgver}
+        environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Asia/Shanghai
+        - PASSWORD=$login_password   #optional
+        # - HASHED_PASSWORD=    #optional
+        - SUDO_PASSWORD=$admin_password #optional
+        # - SUDO_PASSWORD_HASH= #optional
+        # - PROXY_DOMAIN=code-server.my.domain  #optional
+        - DEFAULT_WORKSPACE=/config/workspace #optional
+        volumes:
+        - ${path_config}:/config
+        ports:
+        - '${dc_port}:8443'
+        restart: unless-stopped
+EOF
+
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+        
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+        [[ -n $urldoc ]]  && content+="\nDocumentat  : $urldoc  "
+        # content+="\n # Update: docker-compose up -d $dc_name  "
+        content+="\n # Password     : $login_password "
+        content+="\n # Root password: $admin_password "
+        content+="\n # Config path  : $path_config    "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -6666,6 +6750,7 @@ EOF
         23) dc_deploy_neko  ;;
         24) dc_deploy_ittools  ;;
         25) dc_deploy_spdf  ;;
+        26) dc_deploy_vscode_linuxserver  ;;
         xx) sys_reboot ;;
         # 0)  echo -e "\n$TIP 返回上级菜单 ..." && _IS_BREAK="false"  && break  ;;
         0)  docker_management_menu && _IS_BREAK="false" && break  ;; 
