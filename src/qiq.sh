@@ -5631,7 +5631,7 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && admin_password=$INPUT
         
-        local path_config='${lfld}/config'
+        local path_config="${lfld}/config"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置目录(默认为:${path_config})]: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && admin_password=$INPUT
