@@ -615,9 +615,19 @@ function App_download {
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
-    function download_vscode_user {
-        $file = "vscode-win32-x64-user.exe"
-        $url_dl = "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user"
+    function download_vscode {
+        Write-Host "======  Software Installation ======" -ForegroundColor Cyan
+        Write-Host "  1. VScode(User)                  "
+        Write-Host "  2. VScode(Admin)                 "
+        Write-Host "======  Software Installation ======" -ForegroundColor Cyan
+        $soft_choice = Read-Host " Enter your choice(1-2), default[1]"  
+        if ($soft_choice -eq "2") {
+            $file = "vscode-x64.exe"
+            $url_dl = "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64"
+        }else{
+            $file = "vscode-x64-user.exe"
+            $url_dl = "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user"
+        }
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
@@ -845,7 +855,7 @@ servertag = 'gm(demo)'
         # download_nekobox_latest
         # download_powershell
         # download_hiddify
-        # download_vscode_user
+        # download_vscode
         # download_1remote
     }
     # 菜单循环
@@ -866,7 +876,7 @@ servertag = 'gm(demo)'
             "15" { download_wanho_gm; }
             "6"  { download_hiddify }
             "16" { download_git; }
-            "7"  { download_vscode_user; }
+            "7"  { download_vscode; }
             "17" { download_1remote }
             "8"  { download_7zip_latest }
             "18" { download_gm_api }
