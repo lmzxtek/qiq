@@ -5612,27 +5612,27 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $lfld) 
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml 
         cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
         
         local login_password='password'
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${login_password})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${login_password}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && login_password=$INPUT
         
         local admin_password='password'
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入root密码(默认为:${admin_password})]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入root密码(默认为:${admin_password}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && admin_password=$INPUT
         
-        local path_config="${lfld}/config"
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置目录(默认为:${path_config})]: ${PLAIN}")
+        local path_config="${fdat}"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置目录(默认为:${path_config}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && admin_password=$INPUT
 
