@@ -5597,7 +5597,7 @@ EOF
         
         cd - &>/dev/null # 返回原来目录 
     }
-    function dc_deploy_vscode_linuxserver(){    
+    function dc_deploy_code_linuxserver(){    
         local base_root="/home/dcc.d"
         local dc_port=41003
         local dc_name='codeserver'
@@ -5642,19 +5642,19 @@ services:
         container_name: ${dc_name}
         image: ${dc_imag}:${imgver}
         environment:
-        - PUID=1000
-        - PGID=1000
-        - TZ=Asia/Shanghai
-        - PASSWORD=$login_password   #optional
-        # - HASHED_PASSWORD=    #optional
-        - SUDO_PASSWORD=$admin_password #optional
-        # - SUDO_PASSWORD_HASH= #optional
-        # - PROXY_DOMAIN=code-server.my.domain  #optional
-        - DEFAULT_WORKSPACE=/config/workspace #optional
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Shanghai
+            - PASSWORD=$login_password   #optional
+            # - HASHED_PASSWORD=    #optional
+            - SUDO_PASSWORD=$admin_password #optional
+            # - SUDO_PASSWORD_HASH= #optional
+            # - PROXY_DOMAIN=code-server.my.domain  #optional
+            - DEFAULT_WORKSPACE=/config/workspace #optional
         volumes:
-        - ${path_config}:/config
+            - ${path_config}:/config
         ports:
-        - '${dc_port}:8443'
+            - '${dc_port}:8443'
         restart: unless-stopped
 EOF
 
@@ -6750,7 +6750,7 @@ EOF
         23) dc_deploy_neko  ;;
         24) dc_deploy_ittools  ;;
         25) dc_deploy_spdf  ;;
-        26) dc_deploy_vscode_linuxserver  ;;
+        26) dc_deploy_code_linuxserver  ;;
         xx) sys_reboot ;;
         # 0)  echo -e "\n$TIP 返回上级菜单 ..." && _IS_BREAK="false"  && break  ;;
         0)  docker_management_menu && _IS_BREAK="false" && break  ;; 
