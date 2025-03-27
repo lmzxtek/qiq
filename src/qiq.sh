@@ -19,7 +19,7 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.3
+SRC_VER=v0.7.4
 #==========================
 
 URL_PROXY='https://proxy.zwdk.org/proxy/'
