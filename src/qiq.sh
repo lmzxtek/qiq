@@ -5354,8 +5354,9 @@ MENU_CADDY_ITEMS=(
     "3|更新Caddy|$WHITE"
     "4|重启Caddy|$WHITE"
     "5|查看状态|$YELLOW"
-    "6|站点列表|$CYAN" 
-    "7|重置配置|$WHITE"
+    "6|查看端口|$WHITE"
+    "7|站点列表|$CYAN" 
+    "8|重置配置|$WHITE"
     "…………………………|$WHITE" 
     "21|添加反代|$YELLOW" 
     "22|添重定向|$WHITE" 
@@ -5388,8 +5389,9 @@ function caddy_management_menu(){
         3)  echo -e "\n$TIP Caddy更新暂未实现 ..." ;;
         4)  caddy_reload ;;
         5)  systemctl status caddy ;;
-        6)  caddy_domain_list ;;
-        7)  caddy_new_caddyfile && caddy_reload ;;
+        6)  clear && ss -tulpn && _BREAK_INFO=" 端口列表 " && _IS_BREAK="true" ;;
+        7)  caddy_domain_list ;;
+        8)  caddy_new_caddyfile && caddy_reload ;;
         21) caddy_add_reproxy && caddy_domain_list ;;
         22) caddy_add_url_redirect && caddy_domain_list ;;
         23) caddy_add_static_web && caddy_domain_list ;;
@@ -5401,7 +5403,7 @@ function caddy_management_menu(){
         28) docker_management_menu && _IS_BREAK="false"  && break  ;;
         # 28) docker_management_menu && _IS_BREAK="false"  ;;
         xx) sys_reboot ;;
-        # 0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK='false' && break ;;
+        0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK='false' && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
