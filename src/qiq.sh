@@ -5638,24 +5638,24 @@ EOF
 
         cat > "$fyml" << EOF
 services:
-    ${dc_name}:
-        container_name: ${dc_name}
-        image: ${dc_imag}:${imgver}
-        environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ=Asia/Shanghai
-            - PASSWORD=$login_password   #optional
-            # - HASHED_PASSWORD=    #optional
-            - SUDO_PASSWORD=$admin_password #optional
-            # - SUDO_PASSWORD_HASH= #optional
-            # - PROXY_DOMAIN=code-server.my.domain  #optional
-            - DEFAULT_WORKSPACE=/config/workspace #optional
-        volumes:
-            - ${path_config}:/config
-        ports:
-            - '${dc_port}:8443'
-        restart: unless-stopped
+  ${dc_name}:
+    container_name: ${dc_name}
+      image: ${dc_imag}:${imgver}
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Shanghai
+      - PASSWORD=$login_password   #optional
+      # - HASHED_PASSWORD=    #optional
+      - SUDO_PASSWORD=$admin_password #optional
+      # - SUDO_PASSWORD_HASH= #optional
+      # - PROXY_DOMAIN=code-server.my.domain  #optional
+      - DEFAULT_WORKSPACE=/config/workspace #optional
+    volumes:
+      - ${path_config}:/config
+    ports:
+      - '${dc_port}:8443'
+    restart: unless-stopped
 EOF
 
         docker-compose up -d 
