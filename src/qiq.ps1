@@ -622,7 +622,7 @@ function App_download {
         Write-Host "=============================" -ForegroundColor Cyan
         $soft_choice = Read-Host " Enter your choice(1-2), default[1]"  
         if ($soft_choice -eq "2") {
-            $file = "vscode-x64.exe"
+            $file = "vscode-x64-admin.exe"
             $url_dl = "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64"
         }else{
             $file = "vscode-x64-user.exe"
