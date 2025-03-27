@@ -5624,12 +5624,12 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
         
-        local login_password='password'
+        local login_password="password"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${login_password}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && login_password=$INPUT
         
-        local admin_password='password'
+        local admin_password="password"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入root密码(默认为:${admin_password}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && admin_password=$INPUT
@@ -5707,12 +5707,12 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
         
-        local dc_user='$USER'
+        local dc_user="$USER"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入账户(默认为:${dc_user}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_user=$INPUT
         
-        local user_password='password'
+        local user_password="password"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${user_password}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && user_password=$INPUT

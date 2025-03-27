@@ -34,7 +34,7 @@ echoT "   6.修正了时区调整显示问题"
 echoT "   7.优化显示系统信息"
 echoT "--------------------------------"
 echoR " -=> 2025-03-27   v0.7.4" " $VLATEST"
-echoY "   1.增加Code-Server的容器部署"
+echoY "   1.增加Code-Server的容器部署(LinuxServer and Official)"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 
