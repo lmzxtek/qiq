@@ -2138,6 +2138,7 @@ EOF
 
         while true; do 
             clear
+            _IS_BREAK="true" 
             print_sub_item_menu_headinfo
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
