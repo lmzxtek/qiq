@@ -1796,6 +1796,219 @@ EOF
 }
 
 
+# 系统服务管理 
+function srv_manage_menu(){
+    local srv_items_list=(
+        "1|安装服务👈|$WHITE"
+        "2|卸载服务👎|$WHITE"
+        "3|查看服务💡|$YELLOW"
+        "4|启动服务✅|$WHITE"
+        "5|停止服务⛔|$WHITE"
+        "6|重启服务♻️|$WHITE"
+        "=========|$GREEN" 
+        "0|返回🔙|$BLUE"
+    )
+    function print_sub_item_menu_headinfo(){
+        clear 
+        # print_menu_head $MAX_SPLIT_CHAR_NUM
+        print_sub_head " 💫 系统工具 " $MAX_SPLIT_CHAR_NUM 1 0 
+        split_menu_items srv_items_list[@] 
+        # print_main_menu_tail $MAX_SPLIT_CHAR_NUM
+        # print_sub_menu_tail $MAX_SPLIT_CHAR_NUM
+    }
+    function srv_install(){
+        if ! command -v systemctl >/dev/null 2>&1; then
+            echo -e "$PRIGHT systemctl 未安装，正在安装中..."
+            app_install systemctl
+        fi
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        local srv_name=$INPUT 
+        local srv_dir='/etc/systemd/system'
+        local srv_path=${srv_dir}/${srv_name}.service
+        if [ -f ${srv_path} ]; then
+            echo -e "$PRIGHT 服务已存在，请勿重复安装！"
+            return 0
+        fi
+        
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务服务运行命令(eg.: /usr/bin/frps -c /usr/bin/frps.toml): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        local srv_cmd=$INPUT
+        if [[ -z "${srv_cmd}" ]] ; then
+            echo -e "$PRIGHT 服务运行命令不能为空！"
+            return 0 
+        fi
+
+        cat > ${srv_path} << EOF
+[Unit]
+Description=${srv_name}
+After=network.target syslog.target
+Wants = network.target
+
+[Service]
+Type=simple
+ExecStart=${srv_cmd}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+        echo -e "$PRIGHT 服务配置信息创建成功！"
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务(Y/n): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "${INPUT}" ]] && INPUT="Y" 
+        case "$INPUT" in
+        [Yy] | [Yy][Ee][Ss])
+            sudo systemctl start ${srv_name} ;;
+        # [Nn] | [Nn][Oo])
+        #     _BREAK_INFO=" 取消安装${app_name}!" ;;
+        *)  ;;
+        esac
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务自启动(Y/n): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "${INPUT}" ]] && INPUT="Y" 
+        case "$INPUT" in
+        [Yy] | [Yy][Ee][Ss])
+            sudo systemctl enable ${srv_name} ;;
+        # [Nn] | [Nn][Oo])
+        #     _BREAK_INFO=" 取消安装${app_name}!" ;;
+        *)  ;;
+        esac
+    }
+    function srv_uninstall(){
+        if ! command -v systemctl >/dev/null 2>&1; then
+            echo -e "$PRIGHT systemctl 未安装，请先安装！"
+            return 0
+        fi
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -n "${INPUT}" ]] ; then 
+            local srv_name=$INPUT
+            local srv_dir='/etc/systemd/system'
+            local srv_path=${srv_dir}/${srv_name}.service
+            if [ -f ${srv_path} ]; then
+                sudo systemctl stop ${srv_name}
+                sudo systemctl disable ${srv_name}
+                sudo rm -f ${srv_path}
+                echo -e "$PRIGHT ${srv_name} 服务已卸载！"
+            else
+                echo -e "$PRIGHT ${srv_name} 服务不存在！"
+            fi
+        fi 
+    }
+    function srv_status(){
+        if ! command -v systemctl >/dev/null 2>&1; then
+            echo -e "$PRIGHT systemctl 未安装，请先安装！"
+            return 0
+        fi
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -n "${INPUT}" ]] ; then 
+            local srv_name=$INPUT
+            local srv_dir='/etc/systemd/system'
+            local srv_path=${srv_dir}/${srv_name}.service
+            if [ -f ${srv_path} ]; then
+                sudo systemctl status ${srv_name}
+            else
+                echo -e "$PRIGHT ${srv_name} 服务不存在！"
+            fi
+        fi 
+    }
+    function srv_stop(){
+        if ! command -v systemctl >/dev/null 2>&1; then
+            echo -e "$PRIGHT systemctl 未安装，请先安装！"
+            return 0
+        fi
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -n "${INPUT}" ]] ; then 
+            local srv_name=$INPUT
+            local srv_dir='/etc/systemd/system'
+            local srv_path=${srv_dir}/${srv_name}.service
+            if [ -f ${srv_path} ]; then
+                sudo systemctl stop ${srv_name}
+            else
+                echo -e "$PRIGHT ${srv_name} 服务不存在！"
+            fi
+        fi 
+    }
+    function srv_start(){
+        if ! command -v systemctl >/dev/null 2>&1; then
+            echo -e "$PRIGHT systemctl 未安装，请先安装！"
+            return 0
+        fi
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -n "${INPUT}" ]] ; then 
+            local srv_name=$INPUT
+            local srv_dir='/etc/systemd/system'
+            local srv_path=${srv_dir}/${srv_name}.service
+            if [ -f ${srv_path} ]; then
+                if [ "$(sudo systemctl is-active ${srv_name})" = "active" ]; then
+                    echo -e "$PRIGHT ${srv_name} 服务已启动！"
+                    local CHOICE=$(echo -e "\n${BOLD}└─ $WARN ${srv_name} 服务已启动, 是否先停止服务(Y/n): ${PLAIN}")
+                    read -rp "${CHOICE}" INPUT
+                    [[ -z "${INPUT}" ]] && INPUT="Y" 
+                    case "$INPUT" in                    
+                    [Yy] | [Yy][Ee][Ss])
+                        sudo systemctl stop ${srv_name} ;;
+                    [Nn] | [Nn][Oo])
+                        _BREAK_INFO=" 取消安装${app_name}!" ;;
+                    *)  ;;
+                    esac
+                fi
+                sudo systemctl start ${srv_name}
+            else
+                echo -e "$PRIGHT ${srv_name} 服务不存在！"
+            fi
+        fi 
+    }
+    function srv_restart(){
+        if ! command -v systemctl >/dev/null 2>&1; then
+            echo -e "$PRIGHT systemctl 未安装，请先安装！"
+            return 0
+        fi
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -n "${INPUT}" ]] ; then 
+            local srv_name=$INPUT
+            local srv_dir='/etc/systemd/system'
+            local srv_path=${srv_dir}/${srv_name}.service
+            if [ -f ${srv_path} ]; then
+                sudo systemctl restart ${srv_name}
+            else
+                echo -e "$PRIGHT ${srv_name} 服务不存在！"
+            fi
+        fi 
+    }
+
+    while true; do 
+        clear
+        _IS_BREAK="true" 
+        print_sub_item_menu_headinfo
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case $INPUT in
+        1)  srv_install   ;;
+        2)  srv_uninstall ;;
+        3)  srv_status    ;;
+        4)  srv_start     ;;
+        5)  srv_stop      ;;
+        6)  srv_restart   ;;
+        # xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
+        esac
+        case_end_tackle
+    done
+}
 
 function system_dd_usage(){
 echo -e " "
@@ -1943,219 +2156,6 @@ function system_tools_menu(){
         
     }
     
-    # 系统服务管理 
-    function srv_manage_menu(){
-        local srv_items_list=(
-            "1|安装服务👈|$WHITE"
-            "2|卸载服务👎|$WHITE"
-            "3|查看服务💡|$YELLOW"
-            "4|启动服务✅|$WHITE"
-            "5|停止服务⛔|$WHITE"
-            "6|重启服务♻️|$WHITE"
-            "=========|$GREEN" 
-            "0|返回🔙|$BLUE"
-        )
-        function print_sub_item_menu_headinfo(){
-            clear 
-            # print_menu_head $MAX_SPLIT_CHAR_NUM
-            print_sub_head " 💫 系统工具 " $MAX_SPLIT_CHAR_NUM 1 0 
-            split_menu_items srv_items_list[@] 
-            # print_main_menu_tail $MAX_SPLIT_CHAR_NUM
-            # print_sub_menu_tail $MAX_SPLIT_CHAR_NUM
-        }
-        function srv_install(){
-            if ! command -v systemctl >/dev/null 2>&1; then
-                echo -e "$PRIGHT systemctl 未安装，正在安装中..."
-                app_install systemctl
-            fi
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            if [[ -z "${INPUT}" ]] ; then 
-                echo -e "$PRIGHT 服务名称不能为空！" 
-                return 0 
-            fi 
-            local srv_name=$INPUT 
-            local srv_dir='/etc/systemd/system'
-            local srv_path=${srv_dir}/${srv_name}.service
-            if [ -f ${srv_path} ]; then
-                echo -e "$PRIGHT 服务已存在，请勿重复安装！"
-                return 0
-            fi
-            
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务服务运行命令(eg.: /usr/bin/frps -c /usr/bin/frps.toml): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            local srv_cmd=$INPUT
-            if [[ -z "${srv_cmd}" ]] ; then
-                echo -e "$PRIGHT 服务运行命令不能为空！"
-                return 0 
-            fi
-
-            cat > ${srv_path} << EOF
-[Unit]
-Description=${srv_name}
-After=network.target syslog.target
-Wants = network.target
-
-[Service]
-Type=simple
-ExecStart=${srv_cmd}
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-            echo -e "$PRIGHT 服务配置信息创建成功！"
-
-            local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务(Y/n): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            [[ -z "${INPUT}" ]] && INPUT="Y" 
-            case "$INPUT" in
-            [Yy] | [Yy][Ee][Ss])
-                sudo systemctl start ${srv_name} ;;
-            # [Nn] | [Nn][Oo])
-            #     _BREAK_INFO=" 取消安装${app_name}!" ;;
-            *)  ;;
-            esac
-
-            local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务自启动(Y/n): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            [[ -z "${INPUT}" ]] && INPUT="Y" 
-            case "$INPUT" in
-            [Yy] | [Yy][Ee][Ss])
-                sudo systemctl enable ${srv_name} ;;
-            # [Nn] | [Nn][Oo])
-            #     _BREAK_INFO=" 取消安装${app_name}!" ;;
-            *)  ;;
-            esac
-        }
-        function srv_uninstall(){
-            if ! command -v systemctl >/dev/null 2>&1; then
-                echo -e "$PRIGHT systemctl 未安装，请先安装！"
-                return 0
-            fi
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            if [[ -n "${INPUT}" ]] ; then 
-                local srv_name=$INPUT
-                local srv_dir='/etc/systemd/system'
-                local srv_path=${srv_dir}/${srv_name}.service
-                if [ -f ${srv_path} ]; then
-                    sudo systemctl stop ${srv_name}
-                    sudo systemctl disable ${srv_name}
-                    sudo rm -f ${srv_path}
-                    echo -e "$PRIGHT ${srv_name} 服务已卸载！"
-                else
-                    echo -e "$PRIGHT ${srv_name} 服务不存在！"
-                fi
-            fi 
-        }
-        function srv_status(){
-            if ! command -v systemctl >/dev/null 2>&1; then
-                echo -e "$PRIGHT systemctl 未安装，请先安装！"
-                return 0
-            fi
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            if [[ -n "${INPUT}" ]] ; then 
-                local srv_name=$INPUT
-                local srv_dir='/etc/systemd/system'
-                local srv_path=${srv_dir}/${srv_name}.service
-                if [ -f ${srv_path} ]; then
-                    sudo systemctl status ${srv_name}
-                else
-                    echo -e "$PRIGHT ${srv_name} 服务不存在！"
-                fi
-            fi 
-        }
-        function srv_stop(){
-            if ! command -v systemctl >/dev/null 2>&1; then
-                echo -e "$PRIGHT systemctl 未安装，请先安装！"
-                return 0
-            fi
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            if [[ -n "${INPUT}" ]] ; then 
-                local srv_name=$INPUT
-                local srv_dir='/etc/systemd/system'
-                local srv_path=${srv_dir}/${srv_name}.service
-                if [ -f ${srv_path} ]; then
-                    sudo systemctl stop ${srv_name}
-                else
-                    echo -e "$PRIGHT ${srv_name} 服务不存在！"
-                fi
-            fi 
-        }
-        function srv_start(){
-            if ! command -v systemctl >/dev/null 2>&1; then
-                echo -e "$PRIGHT systemctl 未安装，请先安装！"
-                return 0
-            fi
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            if [[ -n "${INPUT}" ]] ; then 
-                local srv_name=$INPUT
-                local srv_dir='/etc/systemd/system'
-                local srv_path=${srv_dir}/${srv_name}.service
-                if [ -f ${srv_path} ]; then
-                    if [ "$(sudo systemctl is-active ${srv_name})" = "active" ]; then
-                        echo -e "$PRIGHT ${srv_name} 服务已启动！"
-                        local CHOICE=$(echo -e "\n${BOLD}└─ $WARN ${srv_name} 服务已启动, 是否先停止服务(Y/n): ${PLAIN}")
-                        read -rp "${CHOICE}" INPUT
-                        [[ -z "${INPUT}" ]] && INPUT="Y" 
-                        case "$INPUT" in                    
-                        [Yy] | [Yy][Ee][Ss])
-                            sudo systemctl stop ${srv_name} ;;
-                        [Nn] | [Nn][Oo])
-                            _BREAK_INFO=" 取消安装${app_name}!" ;;
-                        *)  ;;
-                        esac
-                    fi
-                    sudo systemctl start ${srv_name}
-                else
-                    echo -e "$PRIGHT ${srv_name} 服务不存在！"
-                fi
-            fi 
-        }
-        function srv_restart(){
-            if ! command -v systemctl >/dev/null 2>&1; then
-                echo -e "$PRIGHT systemctl 未安装，请先安装！"
-                return 0
-            fi
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            if [[ -n "${INPUT}" ]] ; then 
-                local srv_name=$INPUT
-                local srv_dir='/etc/systemd/system'
-                local srv_path=${srv_dir}/${srv_name}.service
-                if [ -f ${srv_path} ]; then
-                    sudo systemctl restart ${srv_name}
-                else
-                    echo -e "$PRIGHT ${srv_name} 服务不存在！"
-                fi
-            fi 
-        }
-
-        while true; do 
-            clear
-            _IS_BREAK="true" 
-            print_sub_item_menu_headinfo
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            case $INPUT in
-            1)  srv_install   ;;
-            2)  srv_uninstall ;;
-            3)  srv_status    ;;
-            4)  srv_start     ;;
-            5)  srv_stop      ;;
-            6)  srv_restart   ;;
-            # xx) sys_reboot ;;
-            0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
-            *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
-            esac
-            case_end_tackle
-        done
-    }
     function sys_setting_users_manage(){
         local users_items_list=(
             "1.显示用户列表|$GREEN|🕺"
