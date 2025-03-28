@@ -1796,31 +1796,41 @@ EOF
 }
 
 function srv_install(){
+    local srv_name=${1:-""}
+    local srv_cmd=${2:-""}
+    local is2start=${3:-""}
+    local is2enable=${3:-""}
     if ! command -v systemctl >/dev/null 2>&1; then
         echo -e "$PRIGHT systemctl 未安装，正在安装中..."
         app_install systemctl
     fi
-    local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT
-    if [[ -z "${INPUT}" ]] ; then 
-        echo -e "$PRIGHT 服务名称不能为空！" 
-        return 0 
+    
+    if [[ -z "${srv_name}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -z "${INPUT}" ]] ; then
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        srv_name=$INPUT 
     fi 
-    local srv_name=$INPUT 
+
     local srv_dir='/etc/systemd/system'
     local srv_path=${srv_dir}/${srv_name}.service
     if [ -f ${srv_path} ]; then
-        echo -e "$PRIGHT 服务已存在，请勿重复安装！"
+        echo -e "$PRIGHT ${srv_name}服务已存在，请勿重复安装！"
         return 0
     fi
     
-    local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务服务运行命令(eg.: /usr/bin/frps -c /usr/bin/frps.toml): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT
-    local srv_cmd=$INPUT
-    if [[ -z "${srv_cmd}" ]] ; then
-        echo -e "$PRIGHT 服务运行命令不能为空！"
-        return 0 
-    fi
+    if [[ -z "${srv_cmd}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务服务运行命令(eg.: /usr/bin/frps -c /usr/bin/frps.toml): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -z "${srv_cmd}" ]] ; then
+            echo -e "$PRIGHT ${srv_name}服务运行命令不能为空！"
+            return 0 
+        fi
+        srv_cmd=$INPUT 
+    fi 
 
     cat > ${srv_path} << EOF
 [Unit]
@@ -1837,67 +1847,96 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
-    echo -e "$PRIGHT 服务配置信息创建成功！"
+    echo -e "$PRIGHT ${srv_name}服务配置信息创建成功！"
 
-    local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务(Y/n): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT
-    [[ -z "${INPUT}" ]] && INPUT="Y" 
+    case "$is2start" in
+    1) INPUT="Y" ;;
+    0) INPUT="N" ;;
+    *)  
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动${srv_name}服务(Y/n): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT 
+        [[ -z "${INPUT}" ]] && INPUT="Y" 
+        ;;
+    esac
     case "$INPUT" in
     [Yy] | [Yy][Ee][Ss])
-        sudo systemctl start ${srv_name} ;;
-    # [Nn] | [Nn][Oo])
-    #     _BREAK_INFO=" 取消安装${app_name}!" ;;
+        sudo systemctl start ${srv_name} 
+        _BREAK_INFO=" 已启动${app_name}服务!" ;;
+        ;;
+    [Nn] | [Nn][Oo])
+        _BREAK_INFO=" 不启动${app_name}服务!" ;;
     *)  ;;
     esac
-
-    local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务自启动(Y/n): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT
-    [[ -z "${INPUT}" ]] && INPUT="Y" 
+    
+    case "$is2enable" in
+    1) INPUT="Y" ;;
+    0) INPUT="N" ;;
+    *)  
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置${srv_name}服务自启动(Y/n): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "${INPUT}" ]] && INPUT="Y" 
+        ;;
+    esac
     case "$INPUT" in
     [Yy] | [Yy][Ee][Ss])
-        sudo systemctl enable ${srv_name} ;;
-    # [Nn] | [Nn][Oo])
-    #     _BREAK_INFO=" 取消安装${app_name}!" ;;
+        sudo systemctl enable ${srv_name} 
+        _BREAK_INFO=" 设置${app_name}服务自启动!" ;;
+    [Nn] | [Nn][Oo])
+        _BREAK_INFO=" 不设置${app_name}服务自启动!" ;;
     *)  ;;
     esac
 }
 function srv_uninstall(){
+    local srv_name=${1:-""}
     if ! command -v systemctl >/dev/null 2>&1; then
         echo -e "$PRIGHT systemctl 未安装，请先安装！"
         return 0
     fi
-    local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT
-    if [[ -z "${INPUT}" ]] ; then 
-        echo -e "$PRIGHT 服务名称不能为空！" 
-        return 0 
+    
+    if [[ -z "${srv_name}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        srv_name=$INPUT
     fi 
-    if [[ -n "${INPUT}" ]] ; then 
-        local srv_name=$INPUT
-        local srv_dir='/etc/systemd/system'
-        local srv_path=${srv_dir}/${srv_name}.service
-        if [ -f ${srv_path} ]; then
-            sudo systemctl stop ${srv_name}
-            sudo systemctl disable ${srv_name}
-            sudo rm -f ${srv_path}
-            echo -e "$PRIGHT ${srv_name} 服务已卸载！"
-        else
-            echo -e "$PRIGHT ${srv_name} 服务不存在！"
-        fi
+    
+    local srv_path=''
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
+    if [[ -n resp ]] ; then 
+        sudo systemctl stop ${srv_name}
+        sudo systemctl disable ${srv_name}
+
+        srv_path=/etc/systemd/system/${srv_name}.service
+        [[ -f ${srv_path} ]] && sudo rm -f ${srv_path}
+        srv_path=/lib/systemd/system/${srv_name}.service
+        [[ -f ${srv_path} ]] && sudo rm -f ${srv_path}
+
+        echo -e "$PRIGHT ${srv_name} 服务已卸载！"
+    else
+        echo -e "$PRIGHT 未找到 ${srv_name} 服务"
     fi 
 }
 function srv_status(){
+    local srv_name=${1:-""}
     if ! command -v systemctl >/dev/null 2>&1; then
         echo -e "$PRIGHT systemctl 未安装，请先安装！"
         return 0
     fi
-    local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT
-    if [[ -z "${INPUT}" ]] ; then 
-        echo -e "$PRIGHT 服务名称不能为空！" 
-        return 0 
+    
+    if [[ -z "${srv_name}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        srv_name=$INPUT
     fi 
-    local resp=$(systemctl list-unit-files --type-service | grep ${INPUT} )
+    
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
     if [[ -n resp ]] ; then 
         sudo systemctl status ${srv_name}
     else
@@ -1905,17 +1944,22 @@ function srv_status(){
     fi 
 }
 function srv_stop(){
+    local srv_name=${1:-""}
     if ! command -v systemctl >/dev/null 2>&1; then
         echo -e "$PRIGHT systemctl 未安装，请先安装！"
         return 0
     fi
-    local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT
-    if [[ -z "${INPUT}" ]] ; then 
-        echo -e "$PRIGHT 服务名称不能为空！" 
-        return 0 
+    
+    if [[ -z "${srv_name}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        srv_name=$INPUT
     fi 
-    local resp=$(systemctl list-unit-files --type-service | grep ${INPUT} )
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
     if [[ -n resp ]] ; then 
         sudo systemctl stop ${srv_name}
     else
@@ -1923,17 +1967,22 @@ function srv_stop(){
     fi 
 }
 function srv_start(){
+    local srv_name=${1:-""}
     if ! command -v systemctl >/dev/null 2>&1; then
         echo -e "$PRIGHT systemctl 未安装，请先安装！"
         return 0
     fi
-    local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT        
-    if [[ -z "${INPUT}" ]] ; then 
-        echo -e "$PRIGHT 服务名称不能为空！" 
-        return 0 
+    
+    if [[ -z "${srv_name}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        srv_name=$INPUT
     fi 
-    local resp=$(systemctl list-unit-files --type-service | grep ${INPUT} )
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
     if [[ -n resp ]] ; then 
         if [ "$(sudo systemctl is-active ${srv_name})" = "active" ]; then
             echo -e "$PRIGHT ${srv_name} 服务已启动！"
@@ -1954,17 +2003,22 @@ function srv_start(){
     fi 
 }
 function srv_restart(){
+    local srv_name=${1:-""}
     if ! command -v systemctl >/dev/null 2>&1; then
         echo -e "$PRIGHT systemctl 未安装，请先安装！"
         return 0
     fi
-    local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
-    read -rp "${CHOICE}" INPUT
-    if [[ -z "${INPUT}" ]] ; then 
-        echo -e "$PRIGHT 服务名称不能为空！" 
-        return 0 
+    
+    if [[ -z "${srv_name}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: docker): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        srv_name=$INPUT
     fi 
-    local resp=$(systemctl list-unit-files --type-service | grep ${INPUT} )
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
     if [[ -n resp ]] ; then 
         sudo systemctl restart ${srv_name}
     else
