@@ -1611,7 +1611,7 @@ MENU_TEST_ITEMS=(
     "32.融合怪测评(spiritysdx)"
 )
 function system_test_menu(){
-    function print_sub_item_menu_headinfo(){
+    function print_menu_system_test(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ 性能测试 " $MAX_SPLIT_CHAR_NUM 1 1 
@@ -1622,7 +1622,7 @@ function system_test_menu(){
 
     while true; do
         _IS_BREAK="true"
-        print_sub_item_menu_headinfo
+        print_menu_system_test
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -1889,6 +1889,10 @@ EOF
         fi
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
         if [[ -n "${INPUT}" ]] ; then 
             local srv_name=$INPUT
             local srv_dir='/etc/systemd/system'
@@ -1910,15 +1914,15 @@ EOF
         fi
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
-        if [[ -n "${INPUT}" ]] ; then 
-            local srv_name=$INPUT
-            local srv_dir='/etc/systemd/system'
-            local srv_path=${srv_dir}/${srv_name}.service
-            if [ -f ${srv_path} ]; then
-                sudo systemctl status ${srv_name}
-            else
-                echo -e "$PRIGHT ${srv_name} 服务不存在！"
-            fi
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        local resp=$(systemctl list-unit-files --type-service | grep ${INPUT} )
+        if [[ -n resp ]] ; then 
+            sudo systemctl status ${srv_name}
+        else
+            echo -e "$PRIGHT 未找到 ${srv_name} 服务"
         fi 
     }
     function srv_stop(){
@@ -1928,15 +1932,15 @@ EOF
         fi
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
-        if [[ -n "${INPUT}" ]] ; then 
-            local srv_name=$INPUT
-            local srv_dir='/etc/systemd/system'
-            local srv_path=${srv_dir}/${srv_name}.service
-            if [ -f ${srv_path} ]; then
-                sudo systemctl stop ${srv_name}
-            else
-                echo -e "$PRIGHT ${srv_name} 服务不存在！"
-            fi
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        local resp=$(systemctl list-unit-files --type-service | grep ${INPUT} )
+        if [[ -n resp ]] ; then 
+            sudo systemctl stop ${srv_name}
+        else
+            echo -e "$PRIGHT 未找到 ${srv_name} 服务"
         fi 
     }
     function srv_start(){
@@ -1945,30 +1949,31 @@ EOF
             return 0
         fi
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        if [[ -n "${INPUT}" ]] ; then 
-            local srv_name=$INPUT
-            local srv_dir='/etc/systemd/system'
-            local srv_path=${srv_dir}/${srv_name}.service
-            if [ -f ${srv_path} ]; then
-                if [ "$(sudo systemctl is-active ${srv_name})" = "active" ]; then
-                    echo -e "$PRIGHT ${srv_name} 服务已启动！"
-                    local CHOICE=$(echo -e "\n${BOLD}└─ $WARN ${srv_name} 服务已启动, 是否先停止服务(Y/n): ${PLAIN}")
-                    read -rp "${CHOICE}" INPUT
-                    [[ -z "${INPUT}" ]] && INPUT="Y" 
-                    case "$INPUT" in                    
-                    [Yy] | [Yy][Ee][Ss])
-                        sudo systemctl stop ${srv_name} ;;
-                    [Nn] | [Nn][Oo])
-                        _BREAK_INFO=" 取消安装${app_name}!" ;;
-                    *)  ;;
-                    esac
-                fi
-                sudo systemctl start ${srv_name}
-            else
-                echo -e "$PRIGHT ${srv_name} 服务不存在！"
-            fi
+        read -rp "${CHOICE}" INPUT        
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
         fi 
+        local resp=$(systemctl list-unit-files --type-service | grep ${INPUT} )
+        if [[ -n resp ]] ; then 
+            if [ "$(sudo systemctl is-active ${srv_name})" = "active" ]; then
+                echo -e "$PRIGHT ${srv_name} 服务已启动！"
+                local CHOICE=$(echo -e "\n${BOLD}└─ $WARN ${srv_name} 服务已启动, 是否先停止服务(Y/n): ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                [[ -z "${INPUT}" ]] && INPUT="Y" 
+                case "$INPUT" in                    
+                [Yy] | [Yy][Ee][Ss])
+                    sudo systemctl stop ${srv_name} ;;
+                [Nn] | [Nn][Oo])
+                    _BREAK_INFO=" 取消安装${app_name}!" ;;
+                *)  ;;
+                esac
+            fi
+            sudo systemctl start ${srv_name}
+        else
+            echo -e "$PRIGHT 未找到 ${srv_name} 服务"
+        fi 
+
     }
     function srv_restart(){
         if ! command -v systemctl >/dev/null 2>&1; then
@@ -1977,15 +1982,15 @@ EOF
         fi
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
-        if [[ -n "${INPUT}" ]] ; then 
-            local srv_name=$INPUT
-            local srv_dir='/etc/systemd/system'
-            local srv_path=${srv_dir}/${srv_name}.service
-            if [ -f ${srv_path} ]; then
-                sudo systemctl restart ${srv_name}
-            else
-                echo -e "$PRIGHT ${srv_name} 服务不存在！"
-            fi
+        if [[ -z "${INPUT}" ]] ; then 
+            echo -e "$PRIGHT 服务名称不能为空！" 
+            return 0 
+        fi 
+        local resp=$(systemctl list-unit-files --type-service | grep ${INPUT} )
+        if [[ -n resp ]] ; then 
+            sudo systemctl restart ${srv_name}
+        else
+            echo -e "$PRIGHT 未找到 ${srv_name} 服务"
         fi 
     }
 
@@ -3339,7 +3344,8 @@ function commonly_tools_menu(){
             ;;
         8) 
             local app_name='fail2ban'
-            if ! systemctl status ${app_name} > /dev/null 2>&1; then
+            local resp=$(systemctl list-unit-files --type-service | grep ${app_name} )
+            if [[ -z resp ]]; then
                 app_install ${app_name}
                 app_install rsyslog 
                 sudo systemctl start ${app_name}
