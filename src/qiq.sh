@@ -1899,48 +1899,48 @@ function system_tools_menu(){
             
     }
     function sys_setting_change_change_hostname(){
-            local cur_hostname=$(hostname)
+        local cur_hostname=$(hostname)
 
-            # 询问用户是否要更改主机名
-            echo "当前主机名: $cur_hostname"
-            read -p "是否要更改主机名？(y/n): " answer
+        # 询问用户是否要更改主机名
+        echo "当前主机名: $cur_hostname"
+        read -p "是否要更改主机名？(y/n): " answer
 
-            if [ "$answer" == "y" ]; then
-                # 获取新的主机名
-                read -p "请输入新的主机名: " new_hostname
-                if [ -n "$new_hostname" && [ "$new_hostname" != "0" ]]; then
-                    if [ -f /etc/alpine-release ]; then
-                        # Alpine
-                        echo "$new_hostname" > /etc/hostname
-                        hostname "$new_hostname"
-                    else
-                        # 其他系统，如 Debian, Ubuntu, CentOS 等
-                        hostnamectl set-hostname "$new_hostname"
-                        sed -i "s/$cur_hostname/$new_hostname/g" /etc/hostname
-                        systemctl restart systemd-hostnamed
-                    fi
-                    
-                    if grep -q "127.0.0.1" /etc/hosts; then
-                        sed -i "s/127.0.0.1 .*/127.0.0.1       $new_hostname localhost localhost.localdomain/g" /etc/hosts
-                    else
-                        echo "127.0.0.1       $new_hostname localhost localhost.localdomain" >> /etc/hosts
-                    fi
-
-                    if grep -q "^::1" /etc/hosts; then
-                        sed -i "s/^::1 .*/::1             $new_hostname localhost localhost.localdomain ipv6-localhost ipv6-loopback/g" /etc/hosts
-                    else
-                        echo "::1             $new_hostname localhost localhost.localdomain ipv6-localhost ipv6-loopback" >> /etc/hosts
-                    fi
-
-                    echo "主机名更改为: $new_hostname"
+        if [ "$answer" == "y" ]; then
+            # 获取新的主机名
+            read -p "请输入新的主机名: " new_hostname
+            if [ -n "$new_hostname" && [ "$new_hostname" != "0" ]]; then
+                if [ -f /etc/alpine-release ]; then
+                    # Alpine
+                    echo "$new_hostname" > /etc/hostname
+                    hostname "$new_hostname"
                 else
-                    echo "无效主机名。未更改主机名。"
-                    continue 
+                    # 其他系统，如 Debian, Ubuntu, CentOS 等
+                    hostnamectl set-hostname "$new_hostname"
+                    sed -i "s/$cur_hostname/$new_hostname/g" /etc/hostname
+                    systemctl restart systemd-hostnamed
                 fi
+                
+                if grep -q "127.0.0.1" /etc/hosts; then
+                    sed -i "s/127.0.0.1 .*/127.0.0.1       $new_hostname localhost localhost.localdomain/g" /etc/hosts
+                else
+                    echo "127.0.0.1       $new_hostname localhost localhost.localdomain" >> /etc/hosts
+                fi
+
+                if grep -q "^::1" /etc/hosts; then
+                    sed -i "s/^::1 .*/::1             $new_hostname localhost localhost.localdomain ipv6-localhost ipv6-loopback/g" /etc/hosts
+                else
+                    echo "::1             $new_hostname localhost localhost.localdomain ipv6-localhost ipv6-loopback" >> /etc/hosts
+                fi
+
+                echo "主机名更改为: $new_hostname"
             else
-                echo "未更改主机名。"
+                echo "无效主机名。未更改主机名。"
+                continue 
             fi
-            
+        else
+            echo "未更改主机名。"
+        fi
+        
     }
     
     # 系统服务管理 
@@ -1970,8 +1970,8 @@ function system_tools_menu(){
             fi
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
-            if [[ -z "${INPUT}" ]] ;
-            echo -e "$PRIGHT 服务名称不能为空！" ; 
+            if [[ -z "${INPUT}" ]] ; then 
+                echo -e "$PRIGHT 服务名称不能为空！" ; 
                 return 0 
             fi 
             local srv_name=$INPUT 
