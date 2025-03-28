@@ -3,8 +3,12 @@
 services:
   photopea:
     image: 'registry.cn-guangzhou.aliyuncs.com/os_cmty/os_cmty:Photopea' #最新版npm
+    # image: kovaszab/photopea:latest   # 部署也运行不了，404错误，下面的镜像也是一样，虽然这应该是最新的版本。这个项目的原作者已经放弃维护了。是一外乌克兰人。
+    # image: dennysubke/photopea:latest # https://gitflic.ru/project/photopea-v2/photopea-v-2.git
     restart: unless-stopped
     ports:
-      - '2887:2887'
+      - '42887:2887' # os_cmty/os_cmty:Photopea
+      # - '42887:8080' # dennysubke/photopea:latest 
+      # - '42887:8887' # kovaszab/photopea:latest
     volumes:
       - ./data:/data

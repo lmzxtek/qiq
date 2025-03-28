@@ -855,7 +855,7 @@ function fetch_script_from_url() {
 function download_file_url() {     
     local url="$1"
     local file="$2"
-    local path="${3:-'./'}"
+    local path="${3:-${PWD}}"
     local is_proxy=${3:-1}
 
     # 创建文件夹 
@@ -869,6 +869,69 @@ function download_file_url() {
     else
         _BREAK_INFO=" 请先安装curl或wget!"
     fi
+}
+
+function download_github_realease() {
+    # local app_name="$2"
+    local REPO_URL="$1"
+    local fpattern="$2"
+    local is_proxy=${3:-1}
+    local path="${4:-${PWD}}"
+
+    # 获取系统架构和类型
+    local ARCH=$(uname -m)
+    local SYSTEM=$(uname -s | tr '[:upper:]' '[:lower:]')
+    # 将架构转换为 frp 的命名格式
+    case "$ARCH" in
+        x86_64)    local FRP_ARCH="amd64" ;;
+        i386|i686) local FRP_ARCH="386"   ;;
+        aarch64)   local FRP_ARCH="arm64" ;;
+        armv7l)    local FRP_ARCH="armv7" ;;
+        *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
+    esac
+
+    # 获取最新发布的下载链接
+    local OWNER_REPO=$(echo "$REPO_URL" | sed 's|https://github.com/||; s|[/ ]*$||')
+    local OWNER=$(echo "$OWNER_REPO" | cut -d '/' -f1)
+    local REPO=$(echo "$OWNER_REPO" | cut -d '/' -f2)
+
+    # 构建GitHub API请求链接
+    local RELEASE_API="https://api.github.com/repos/${OWNER}/${REPO}/releases/latest"
+    [[ $is_proxy -eq 1 ]] && RELEASE_API=$(get_proxy_url "$RELEASE_API") 
+
+    RELEASE_INFO=$(curl -sL $RELEASE_API)
+    local ASSETS=$(echo "$RELEASE_INFO" | jq -r '.assets[].browser_download_url')
+    
+    # 匹配符合系统架构的文件
+    if [[ -n "$fpattern" ]] ; then 
+        echo -e "$TIP use pattern: $fpattern"
+        local DOWNLOAD_URL=$(echo "$ASSETS" | grep -E "$fpattern" | head -n1)
+    else
+        local DOWNLOAD_URL=$(echo "$ASSETS" | grep -E ".*${SYSTEM}_.*${FRP_ARCH}\.tar\.gz$" | head -n1)
+    fi
+
+    # 检查依赖工具
+    command -v curl >/dev/null 2>&1 || { echo "Error: curl 未安装"; app_install curl ; }
+    command -v jq >/dev/null   2>&1 || { echo "Error: jq 未安装"; app_install jq ; }
+
+    # 创建文件夹 
+    [[ ! -d ${path} ]] && mkdir -p ${path} 
+    if [ -z "$DOWNLOAD_URL" ]; then
+        echo "No matching release found for $SYSTEM $FRP_ARCH."
+        return 1
+    else
+        echo -e "$PRIGHT ${GREEN}File url: $DOWNLOAD_URL ${RESET}"
+    fi
+    [[ $is_proxy -eq 1 ]] && DOWNLOAD_URL=$(get_proxy_url "$DOWNLOAD_URL") 
+    
+    # 下载并解压文件
+    local FILENAME=$(basename "$DOWNLOAD_URL")
+    echo -e "$PRIGHT Downloading $FILENAME ..."
+    curl -LO "$DOWNLOAD_URL" || { echo "Download failed";  return 1; }
+    # echo -e "$PRIGHT  Extracting $FILENAME ..."
+    # tar -zxf "$FILENAME"     || { echo "Extraction failed"; return 1; }
+
+    echo -e "$SUCCESS Success! File Download: ${FILENAME%.tar.gz}"
 }
 
 function print_warp_ip_info() {
@@ -4002,113 +4065,114 @@ EOF
             fi 
     }
     function tools_install_frps(){
-            _IS_BREAK="true"
-            local app_name='frps'
-            local app_cmd='frps'
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
-                echo -e " - GitHub: https://github.com/fatedier/frp/ "
-                echo -e "" 
-                echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
-                echo -e " > systemctl start ${app_cmd}       # 查看${app_name}服务运行状态"
-                echo -e " > systemctl stop ${app_cmd}        # 查看${app_name}服务运行状态"
-                echo -e " > systemctl restart ${app_cmd}     # 查看${app_name}服务运行状态"
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:7500 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:7500 "
-                echo ""
-            }
-            function download_frp(){
-                local arch=$(uname -m)
-                local url='https://api.github.com/repos/fatedier/frp/releases/latest'
-                local frp_v=$(curl -s $(get_proxy_url $url) | grep -oP '"tag_name": "v\K.*?(?=")')
+        _IS_BREAK="true"
+        local app_name='frps'
+        local app_cmd='frps'
+        function print_app_usage(){
+            echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+            echo -e " - GitHub: https://github.com/fatedier/frp/ "
+            echo -e "" 
+            echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
+            echo -e " > systemctl start ${app_cmd}       # 查看${app_name}服务运行状态"
+            echo -e " > systemctl stop ${app_cmd}        # 查看${app_name}服务运行状态"
+            echo -e " > systemctl restart ${app_cmd}     # 查看${app_name}服务运行状态"
+            echo ""
+            [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:7500 "
+            [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:7500 "
+            echo ""
+        }
+        function download_frp(){
+            local arch=$(uname -m)
+            local url='https://api.github.com/repos/fatedier/frp/releases/latest'
+            local frp_v=$(curl -s $(get_proxy_url $url) | grep -oP '"tag_name": "v\K.*?(?=")')
 
-                if [[ "$arch" == "x86_64" ]]; then
-                    url=$(get_proxy_url 'https://github.com/fatedier/frp/releases/download')
-                    curl -L ${url}/v${frp_v}/frp_${frp_v}_linux_amd64.tar.gz -o frp_${frp_v}_linux_amd64.tar.gz
-                elif [[ "$arch" == "armv7l" || "$arch" == "aarch64" ]]; then
-                    curl -L ${url}/v${frp_v}/frp_${frp_v}_linux_arm.tar.gz -o frp_${frp_v}_linux_amd64.tar.gz
-                else
-                    echo " 不支持当前CPU架构: $arch"
-                    _BREAK_INFO=" 不支持当前CPU架构: $arch!"
-                    return 1 
-                fi
+            if [[ "$arch" == "x86_64" ]]; then
+                url=$(get_proxy_url 'https://github.com/fatedier/frp/releases/download')
+                curl -L ${url}/v${frp_v}/frp_${frp_v}_linux_amd64.tar.gz -o frp_${frp_v}_linux_amd64.tar.gz
+            elif [[ "$arch" == "armv7l" || "$arch" == "aarch64" ]]; then
+                curl -L ${url}/v${frp_v}/frp_${frp_v}_linux_arm.tar.gz -o frp_${frp_v}_linux_amd64.tar.gz
+            else
+                echo " 不支持当前CPU架构: $arch"
+                _BREAK_INFO=" 不支持当前CPU架构: $arch!"
+                return 1 
+            fi
 
-                # 解压 .tar.gz 文件
-                app_install tar
-                tar -zxvf frp_*.tar.gz
-                dir_name=$(tar -tzf frp_*.tar.gz | head -n 1 | cut -f 1 -d '/')
-                mv "$dir_name" frp_0.61.0_linux_amd64
-            }
+            # 解压 .tar.gz 文件
+            app_install tar
+            tar -zxvf frp_*.tar.gz
+            dir_name=$(tar -tzf frp_*.tar.gz | head -n 1 | cut -f 1 -d '/')
+            mv "$dir_name" frp_${frp_v}_linux_amd64
+        }
 
-            if systemctl status ${app_cmd} > /dev/null 2>&1; then
-                _BREAK_INFO=" ${app_name}服务已安装，无需重复安装!"
-                print_app_usage
-            else 
-                
-                print_app_usage
-                _BREAK_INFO=" 成功安装: ${app_name}!"
-            fi 
+        if systemctl status ${app_cmd} > /dev/null 2>&1; then
+            _BREAK_INFO=" ${app_name}服务已安装，无需重复安装!"
+            print_app_usage
+        else 
+            
+            print_app_usage
+            _BREAK_INFO=" 成功安装: ${app_name}!"
+        fi 
         
     }
     function tools_install_frpc(){
-            _IS_BREAK="true"
-            local app_name='Lucky'
-            local app_cmd='lucky'
-                _BREAK_INFO=" 尚未实现安装: ${app_name}!"
+        _IS_BREAK="true"
+        local app_name='frpc'
+        local app_cmd='frpc -c frpc.toml'
+
+        download_github_realease "https://github.com/fatedier/frp" 
+        # download_github_realease "https://github.com/fatedier/frp" ".*linux_amd64.tar.gz"
+        _BREAK_INFO=" 安装成功: ${app_name}!"
         
     }
     function tools_install_lucky(){
-            _IS_BREAK="true"
-            local app_name='Lucky'
-            local app_cmd='lucky'
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
-                echo -e " > WebURL: https://lucky666.cn "
-                echo -e " > GitHub: https://github.com/gdy666/lucky "
-                echo -e "" 
-                echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
-                echo -e " > systemctl start ${app_cmd}       # 查看${app_name}服务运行状态"
-                echo -e " > systemctl stop ${app_cmd}        # 查看${app_name}服务运行状态"
-                echo -e " > systemctl restart ${app_cmd}     # 查看${app_name}服务运行状态"
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:16601 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:16601 "
-                echo ""
-                echo -e " > Login account: 666@666"
-                echo ""
-            }
+        _IS_BREAK="true"
+        local app_name='Lucky'
+        local app_cmd='lucky'
+        function print_app_usage(){
+            echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+            echo -e " > WebURL: https://lucky666.cn "
+            echo -e " > GitHub: https://github.com/gdy666/lucky "
+            echo -e "" 
+            echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
+            echo -e " > systemctl start ${app_cmd}       # 查看${app_name}服务运行状态"
+            echo -e " > systemctl stop ${app_cmd}        # 查看${app_name}服务运行状态"
+            echo -e " > systemctl restart ${app_cmd}     # 查看${app_name}服务运行状态"
+            echo ""
+            [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:16601 "
+            [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:16601 "
+            echo ""
+            echo -e " > Login account: 666@666"
+            echo ""
+        }
 
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-                print_app_usage
-            else 
-                local file="lucky.sh"
-                local url="https://release.ilucky.net:66/install.sh"
-                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $file 0
-                
-                print_app_usage
-                _BREAK_INFO=" 成功安装: ${app_name}!"
-            fi 
-            # URL="https://release.ilucky.net:66"; curl -o /tmp/install.sh "$URL/install.sh" && sh /tmp/install.sh "$URL"
-            # URL="https://release.ilucky.net:66"; wget -O  /tmp/install.sh "$URL/install.sh" && sh /tmp/install.sh "$URL"
-            # curl -o /tmp/install.sh https://6.666666.host:66/files/golucky.sh  && sh /tmp/install.sh https://6.666666.host:66/files 2.11.2
+        if command -v ${app_cmd} &> /dev/null; then
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            print_app_usage
+        else 
+            local file="lucky.sh"
+            local url="https://release.ilucky.net:66/install.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $file 0
+            
+            print_app_usage
+            _BREAK_INFO=" 成功安装: ${app_name}!"
+        fi 
+        # URL="https://release.ilucky.net:66"; curl -o /tmp/install.sh "$URL/install.sh" && sh /tmp/install.sh "$URL"
+        # URL="https://release.ilucky.net:66"; wget -O  /tmp/install.sh "$URL/install.sh" && sh /tmp/install.sh "$URL"
+        # curl -o /tmp/install.sh https://6.666666.host:66/files/golucky.sh  && sh /tmp/install.sh https://6.666666.host:66/files 2.11.2
     }
     function tools_install_neza(){
-            local app_name='NeZha Monitor'
-            local app_cmd='nz'
-            _IS_BREAK="true"
-            
-            local fname="nezha.sh"
-            local url="https://raw.githubusercontent.com/nezhahq/scripts/refs/heads/main/install.sh"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 1
-            _BREAK_INFO=" 从${app_name}返回！"
-            echo -e "\n $TIP 后续可直接运行脚本: ./${fname}\n"
-            # curl -L https://raw.githubusercontent.com/nezhahq/scripts/refs/heads/main/install.sh -o nezha.sh && chmod +x nezha.sh && sudo ./nezha.sh 
-            
+        local app_name='NeZha Monitor'
+        local app_cmd='nz'
+        _IS_BREAK="true"
         
+        local fname="nezha.sh"
+        local url="https://raw.githubusercontent.com/nezhahq/scripts/refs/heads/main/install.sh"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 1
+        _BREAK_INFO=" 从${app_name}返回！"
+        echo -e "\n $TIP 后续可直接运行脚本: ./${fname}\n"
+        # curl -L https://raw.githubusercontent.com/nezhahq/scripts/refs/heads/main/install.sh -o nezha.sh && chmod +x nezha.sh && sudo ./nezha.sh 
     }
     function tools_install_chrome(){
             _IS_BREAK="true"
@@ -4506,6 +4570,7 @@ EOF
         23) tools_install_mariadb ;; 
         24) tools_install_postgresql ;; 
         25) tools_install_frps ;; 
+        26) tools_install_frpc ;; 
         27) tools_install_lucky ;; 
         28) tools_install_neza ;; 
         29) tools_install_chrome ;; 
@@ -7880,7 +7945,7 @@ set_qiq_alias
 # 初始化全局变量
 init_global_vars
  
-echo -e "\n Get region: $(get_region)\n"
+echo -e " Get region: $(get_region)\n"
 # 检测系统IP地址
 check_ip_status
 
