@@ -5595,6 +5595,7 @@ docker_deploy_photopea(){
   local dc_name=photopea
   local dc_imag=registry.cn-guangzhou.aliyuncs.com/os_cmty/os_cmty:Photopea
   # local dc_imag=kovaszab/photopea:latest
+  # local dc_imag=dennysubke/photopea:latest # https://gitflic.ru/project/photopea-v2/photopea-v-2.git
   
   local dc_desc="Photepea Online Editor"
 
