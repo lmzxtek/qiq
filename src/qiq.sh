@@ -1908,7 +1908,7 @@ function srv_uninstall(){
     
     local srv_path=''
     local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n resp ]] ; then 
+    if [[ -n "${resp}" ]] ; then 
         sudo systemctl stop ${srv_name}
         sudo systemctl disable ${srv_name}
 
@@ -1940,7 +1940,7 @@ function srv_status(){
     fi 
     
     local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n resp ]] ; then 
+    if [[ -n "${resp}" ]] ; then 
         sudo systemctl status ${srv_name}
     else
         echo -e "$PRIGHT 未找到 ${srv_name} 服务"
@@ -1963,7 +1963,7 @@ function srv_stop(){
         srv_name=$INPUT
     fi 
     local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n resp ]] ; then 
+    if [[ -n "${resp}" ]] ; then 
         sudo systemctl stop ${srv_name}
     else
         echo -e "$PRIGHT 未找到 ${srv_name} 服务"
@@ -1986,7 +1986,7 @@ function srv_start(){
         srv_name=$INPUT
     fi 
     local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n resp ]] ; then 
+    if [[ -n "${resp}" ]] ; then 
         if [ "$(sudo systemctl is-active ${srv_name})" = "active" ]; then
             echo -e "$PRIGHT ${srv_name} 服务已启动！"
             local CHOICE=$(echo -e "\n${BOLD}└─ $WARN ${srv_name} 服务已启动, 是否先停止服务(Y/n): ${PLAIN}")
@@ -2022,7 +2022,7 @@ function srv_restart(){
         srv_name=$INPUT
     fi 
     local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n resp ]] ; then 
+    if [[ -n "${resp}" ]] ; then 
         sudo systemctl restart ${srv_name}
     else
         echo -e "$PRIGHT 未找到 ${srv_name} 服务"
@@ -3401,7 +3401,7 @@ function commonly_tools_menu(){
         8) 
             local app_name='fail2ban'
             local resp=$(systemctl list-unit-files --type=service | grep ${app_name} )
-            if [[ -z resp ]]; then
+            if [[ -z "${resp}" ]]; then
                 app_install ${app_name}
                 app_install rsyslog 
                 sudo systemctl start ${app_name}
