@@ -188,8 +188,9 @@ function gradient_text() {
   echo "$result"
 }
 
+
 function init_global_vars(){
-    
+    _REGION='Unknown' # 机器所在国家的区域代码
     blue_green_gradient=("118" "154" "82" "34" "36" "46" ) # 蓝色到绿色的渐变颜色代码
     CONSTSTR='QiQ Tools'
     CONSTSTR=$(gradient_text "${CONSTSTR}" blue_green_gradient[@])
@@ -802,8 +803,20 @@ function check_warp_status() {
   fi 
 }
 
+function get_region(){
+    local country=$(curl -s --connect-timeout 1 --max-time 3 ipinfo.io/country)
+    if [[ -n "$country" ]] ; then
+        # echo -e "\n $SUCCESS ${GREEN}Get location region: ${RED}$country ${PLAIN}\n"
+        _REGION=$country
+    else 
+        country="Unknown"
+    fi
+    echo "$country"
+}
+
 function check_ip_china() {
     local country=$(curl -s --connect-timeout 1 --max-time 3 ipinfo.io/country)
+    [[ -n "$country" ]] && _REGION=$country
     if [ "$country" = "CN" ]; then
         _IS_CN=1
     else
@@ -814,8 +827,11 @@ function check_ip_china() {
 ## 判断IP所在地，给url设置代理 
 function get_proxy_url() {
     local url="$1"
-    check_ip_china
-    [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
+    local region=${2:-${_REGION}} 
+    [ "$region" = 'Unknown' ] && region="$(get_region )"
+    # check_ip_china
+    # [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
+    [ "$region" = 'CN' ] && url="${URL_PROXY}${url}"
     echo "$url"
 }
 
@@ -831,26 +847,46 @@ function fetch_script_from_url() {
     elif command -v wget &>/dev/null; then 
         wget -O ${file} ${url} && chmod +x ${file} && bash ${file}
     else
-        _BREAK_INFO=" 请先安装curl或wget！"
+        _BREAK_INFO=" 请先安装curl或wget!"
+    fi
+}
+
+## 下载文件 
+function download_file_url() {     
+    local url="$1"
+    local file="$2"
+    local path="${3:-'./'}"
+    local is_proxy=${3:-1}
+
+    # 创建文件夹 
+    [[ ! -d ${path} ]] && mkdir -p ${path} 
+
+    [[ $is_proxy -eq 1 ]] && url=$(get_proxy_url "$url") 
+    if command -v curl &>/dev/null; then 
+        curl -sSL -o ${path}/${file} "${url}" 
+    elif command -v wget &>/dev/null; then 
+        wget -qO ${path}/${file} ${url} 
+    else
+        _BREAK_INFO=" 请先安装curl或wget!"
     fi
 }
 
 function print_warp_ip_info() {
-  local ip_version=$1
-  local result=""
+    local ip_version=$1
+    local result=""
 
-  if [ "$ip_version" -eq 4 ]; then
-      local result="${GREEN}IPv4${PLAIN}: $WAN4 ${PURPLE}$WARP_LOC4${PLAIN}"
-  elif [ "$ip_version" -eq 6 ]; then
-      local result="${GREEN}IPv6${PLAIN}: $WAN6 ${PURPLE}$WARP_LOC6${PLAIN}"
-  else
-      echo -e " $WARN Invalid ip version. Please enter 4 or 6."
-      return 1
-  fi
+    if [ "$ip_version" -eq 4 ]; then
+        local result="${GREEN}IPv4${PLAIN}: $WAN4 ${PURPLE}$WARP_LOC4${PLAIN}"
+    elif [ "$ip_version" -eq 6 ]; then
+        local result="${GREEN}IPv6${PLAIN}: $WAN6 ${PURPLE}$WARP_LOC6${PLAIN}"
+    else
+        echo -e " $WARN Invalid ip version. Please enter 4 or 6."
+        return 1
+    fi
 
-  result=$(echo -en "${result}")
-  [[ WARPSTATUS${ip_version} -eq 1 ]] && result+=$(echo -en ", ${RED}warp${PLAIN}")
-  echo "$result"
+    result=$(echo -en "${result}")
+    [[ WARPSTATUS${ip_version} -eq 1 ]] && result+=$(echo -en ", ${RED}warp${PLAIN}")
+    echo "$result"
 }
 
 
@@ -1907,8 +1943,8 @@ function srv_uninstall(){
     fi 
     
     local srv_path=''
-    local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n "${resp}" ]] ; then 
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
+    if [[ -n resp ]] ; then 
         sudo systemctl stop ${srv_name}
         sudo systemctl disable ${srv_name}
 
@@ -1939,8 +1975,8 @@ function srv_status(){
         srv_name=$INPUT
     fi 
     
-    local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n "${resp}" ]] ; then 
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
+    if [[ -n resp ]] ; then 
         sudo systemctl status ${srv_name}
     else
         echo -e "$PRIGHT 未找到 ${srv_name} 服务"
@@ -1962,8 +1998,8 @@ function srv_stop(){
         fi 
         srv_name=$INPUT
     fi 
-    local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n "${resp}" ]] ; then 
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
+    if [[ -n resp ]] ; then 
         sudo systemctl stop ${srv_name}
     else
         echo -e "$PRIGHT 未找到 ${srv_name} 服务"
@@ -1985,8 +2021,8 @@ function srv_start(){
         fi 
         srv_name=$INPUT
     fi 
-    local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n "${resp}" ]] ; then 
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
+    if [[ -n resp ]] ; then 
         if [ "$(sudo systemctl is-active ${srv_name})" = "active" ]; then
             echo -e "$PRIGHT ${srv_name} 服务已启动！"
             local CHOICE=$(echo -e "\n${BOLD}└─ $WARN ${srv_name} 服务已启动, 是否先停止服务(Y/n): ${PLAIN}")
@@ -2021,8 +2057,8 @@ function srv_restart(){
         fi 
         srv_name=$INPUT
     fi 
-    local resp=$(systemctl list-unit-files --type=service | grep "${srv_name}" )
-    if [[ -n "${resp}" ]] ; then 
+    local resp=$(systemctl list-unit-files --type-service | grep ${srv_name} )
+    if [[ -n resp ]] ; then 
         sudo systemctl restart ${srv_name}
     else
         echo -e "$PRIGHT 未找到 ${srv_name} 服务"
@@ -3400,8 +3436,8 @@ function commonly_tools_menu(){
             ;;
         8) 
             local app_name='fail2ban'
-            local resp=$(systemctl list-unit-files --type=service | grep ${app_name} )
-            if [[ -z "${resp}" ]]; then
+            local resp=$(systemctl list-unit-files --type-service | grep ${app_name} )
+            if [[ -z resp ]]; then
                 app_install ${app_name}
                 app_install rsyslog 
                 sudo systemctl start ${app_name}
@@ -3547,6 +3583,7 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "6|HestiaCP|$CYAN"
     "7|CloudPanel|$CYAN"
     "8|Cyberpanel|$WHITE"
+    "9|OpenLiteSpeed|$WHITE"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
@@ -4437,6 +4474,18 @@ EOF
             echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
             fetch_script_from_url $url $fname 1  
     }
+    function tools_install_openlitespeed(){
+            _IS_BREAK="true"
+            local app_name='OpenLiteSpeed(ols1clk)'
+            local app_cmd='openlitespeed'
+             _BREAK_INFO=" 由${app_name}返回！"
+            local fname="ols1clk.sh"
+            local ghurl="https://github.com/litespeedtech/ols1clk"
+            local url="https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $fname 1  
+            # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
+    }
 
     while true; do
         print_menu_service_tools
@@ -4451,6 +4500,7 @@ EOF
         6 ) tools_install_hestiacp ;;
         7 ) tools_install_cloudpanel ;;
         8 ) tools_install_cyberpanel ;;
+        9 ) tools_install_openlitespeed ;;
         21) tools_install_redis ;; 
         22) tools_install_mysql ;; 
         23) tools_install_mariadb ;; 
@@ -4558,9 +4608,6 @@ function other_scripts_menu(){
         21) 
             # local country=$(curl -s --connect-timeout 1 --max-time 3 ipinfo.io/country)
             local url=$(get_proxy_url "https://raw.githubusercontent.com/BlueSkyXN/SKY-BOX/main/box.sh")
-            # check_ip_china
-            # [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
-            # app_install wget 
             if command -v wget &> /dev/null ; then 
                 wget -O box.sh "${url}" && chmod +x box.sh && clear && ./box.sh
             elif command -v curl &> /dev/null ; then 
@@ -5037,8 +5084,6 @@ function python_management_menu(){
             local file="Miniconda3-latest-$(uname)-$(uname -m).sh"
             local url="https://repo.anaconda.com/miniconda/$file"
             url=$(get_proxy_url $url)
-            # check_ip_china
-            # [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
 
             _BREAK_INFO=" miniConda安装成功！"
             if command -v curl &>/dev/null; then
@@ -5692,16 +5737,17 @@ function caddy_management_menu(){
 MENU_DOCKER_DEPLOY_ITEMS=(
     "1|WatchTower|$Yellow"
     "2|RustDesk|$WHITE"
-    "3|DeepLX|$WHITE"
-    "4|AKTools|$CYAN"
-    "5|SubLinkX|$WHITE"
-    "6|Lucky|$WHITE"
-    "7|Alist|$WHITE"
-    "8|IPTVa|$WHITE"
-    "9|IPTVd|$WHITE"
-    "10|Docker-win|$WHITE"
-    "11|Docker-mac|$WHITE"
-    "12|WeChat(web)|$WHITE"
+    "3|OpenLiteSpeed|$WHITE"
+    "4|DeepLX|$WHITE"
+    "5|AKTools|$CYAN"
+    "6|SubLinkX|$WHITE"
+    "7|Lucky|$WHITE"
+    "8|Alist|$WHITE"
+    "9|IPTVa|$WHITE"
+    "10|IPTVd|$WHITE"
+    "11|Docker-win|$WHITE"
+    "12|Docker-mac|$WHITE"
+    "13|WeChat(web)|$WHITE"
     "………………………|$WHITE" 
     "21|Dash.|$WHITE" 
     "22|MyIP|$WHITE" 
@@ -6148,6 +6194,58 @@ services:
         image: $dc_imag
         ports:
             - '$dc_port:80'
+        restart: always
+EOF
+
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+        
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_openlitespeed(){    
+        local base_root="/home/dcc.d"
+        local dc_port=47080
+        local dc_name='openlitespeed'
+        local dc_imag=litespeedtech/openlitespeed:latest
+        local dc_desc="OpenLiteSpeed"
+        local urlgit='https://openlitespeed.org/#install'
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        ports:
+            - '80:80'
+            - '443:443'
+            - '$dc_port:7080'
         restart: always
 EOF
 
@@ -7173,16 +7271,17 @@ EOF
         case "${INPUT}" in
         1 ) dc_deploy_watchtower  ;;
         2 ) dc_deploy_rustdesk  ;;
-        3 ) dc_deploy_deeplx  ;;
-        4 ) dc_deploy_aktools  ;;
-        5 ) dc_deploy_sublinkx  ;;
-        6 ) dc_deploy_lucky  ;;
-        7 ) dc_deploy_alist  ;;
-        8 ) dc_deploy_iptva  ;;
-        9 ) dc_deploy_iptvd  ;;
-        10) dc_deploy_docker_win  ;;
-        11) dc_deploy_docker_mac  ;;
-        12) dc_deploy_wechat  ;;
+        3 ) dc_deploy_openlitespeed  ;;
+        4 ) dc_deploy_deeplx  ;;
+        5 ) dc_deploy_aktools  ;;
+        6 ) dc_deploy_sublinkx  ;;
+        7 ) dc_deploy_lucky  ;;
+        8 ) dc_deploy_alist  ;;
+        9 ) dc_deploy_iptva  ;;
+        10) dc_deploy_iptvd  ;;
+        11) dc_deploy_docker_win  ;;
+        12) dc_deploy_docker_mac  ;;
+        13) dc_deploy_wechat  ;;
         21) dc_deploy_dashdot  ;;
         22) dc_deploy_myip  ;;
         23) dc_deploy_neko  ;;
@@ -7690,6 +7789,9 @@ function print_web_urls(){
     echo -e "   JSON生成器:" "https://nezhainfojson.pages.dev"
     echo -e "    自定义代码:" "https://nezhadash-docs.buycoffee.top/custom-code"
     echo -e "      流量监测:" "https://wiziscool.github.io/Nezha-Traffic-Alarm-Generator"
+    echo -e ""
+    echo -e "  2. 云盘:" "https://ypora.zwdk.im"
+    echo -e "    Zfile:" "https://zf.zwdk.im"
     generate_separator "=" 45
     _IS_BREAK="true"
     # case_end_tackle
@@ -7774,7 +7876,9 @@ function script_update(){
 # set_qiq_alias 1
 set_qiq_alias
 # 初始化全局变量
-init_global_vars 
+init_global_vars
+ 
+echo -e "\n Get region: $(get_region)\n"
 # 检测系统IP地址
 check_ip_status
 
