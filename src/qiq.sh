@@ -4084,7 +4084,7 @@ EOF
                 print_app_usage
             else 
                 local file="lucky.sh"
-                local url="https://release.ilucky.net:66"
+                local url="https://release.ilucky.net:66/install.sh"
                 echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
                 fetch_script_from_url $url $file 0
                 
@@ -6501,7 +6501,8 @@ EOF
         local dc_name='lucky'
         local dc_imag=gdy666/lucky
         local dc_desc="Lucky"
-        local urlgit=''
+        local urlgit='https://github.com/gdy666/lucky'
+        local urlweb='https://lucky666.cn/'
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -6540,6 +6541,7 @@ EOF
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
         [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+        [[ -n $urlweb ]]  && content+="\nWebSite     : $urlweb  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
