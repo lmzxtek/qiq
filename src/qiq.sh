@@ -1971,7 +1971,7 @@ function system_tools_menu(){
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(eg.: frps): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             if [[ -z "${INPUT}" ]] ; then 
-                echo -e "$PRIGHT 服务名称不能为空！" ; 
+                echo -e "$PRIGHT 服务名称不能为空！" 
                 return 0 
             fi 
             local srv_name=$INPUT 
