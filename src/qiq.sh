@@ -5616,9 +5616,7 @@ function caddy_management_menu(){
         25) caddy_domain_list && caddy_alter_domain && caddy_domain_list ;;
         26) caddy_domain_list && caddy_del_domain && caddy_domain_list ;;
         27) caddy_domain_list && caddy_clean_all_domain && caddy_domain_list ;;
-        # 28) docker_management_menu && _IS_BREAK="false"  && continue  ;;
-        28) docker_management_menu && _IS_BREAK="false"  && break  ;;
-        # 28) docker_management_menu && _IS_BREAK="false"  ;;
+        28) docker_management_menu && _IS_BREAK="false"  ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK='false' && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
@@ -7609,15 +7607,12 @@ function docker_management_menu(){
         12) docker_containers_list ;; 
         13) docker_images_list ;; 
         14) docker_network_list ;;
-        31) docker_deploy_menu && _IS_BREAK="false" && break ;;
-        32) caddy_management_menu && _IS_BREAK="false" && break ;;
-        # 31) docker_deploy_menu && _IS_BREAK="false"  ;;
-        # 32) caddy_management_menu && _IS_BREAK="false"  && continue ;;
-        # 32) caddy_management_menu && _IS_BREAK="false" ;;
+        31) docker_deploy_menu && _IS_BREAK="false"  ;;
+        32) caddy_management_menu && _IS_BREAK="false" ;;
         33) docker_set_1ckl && _IS_BREAK="true" ;;
         xx) sys_reboot ;;
-        # 0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && break  ;;
-        0)  main_menu && _IS_BREAK="false"  && break  ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && break  ;;
+        # 0)  main_menu && _IS_BREAK="false"  && break  ;;
         *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
