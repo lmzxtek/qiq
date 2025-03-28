@@ -1861,10 +1861,11 @@ EOF
     case "$INPUT" in
     [Yy] | [Yy][Ee][Ss])
         sudo systemctl start ${srv_name} 
-        _BREAK_INFO=" 已启动${app_name}服务!" ;;
+        _BREAK_INFO=" 已启动${app_name}服务!"
         ;;
     [Nn] | [Nn][Oo])
-        _BREAK_INFO=" 不启动${app_name}服务!" ;;
+        _BREAK_INFO=" 不启动${app_name}服务!" 
+        ;;
     *)  ;;
     esac
     
@@ -1880,9 +1881,11 @@ EOF
     case "$INPUT" in
     [Yy] | [Yy][Ee][Ss])
         sudo systemctl enable ${srv_name} 
-        _BREAK_INFO=" 设置${app_name}服务自启动!" ;;
+        _BREAK_INFO=" 设置${app_name}服务自启动!" 
+        ;;
     [Nn] | [Nn][Oo])
-        _BREAK_INFO=" 不设置${app_name}服务自启动!" ;;
+        _BREAK_INFO=" 不设置${app_name}服务自启动!" 
+        ;;
     *)  ;;
     esac
 }
