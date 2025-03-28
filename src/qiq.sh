@@ -1944,7 +1944,7 @@ function system_tools_menu(){
     }
     
     # 系统服务管理 
-    function service_manage_menu(){
+    function srv_manage_menu(){
         local srv_items_list=(
             "1|安装服务👈|$WHITE"
             "2|卸载服务👎|$WHITE"
@@ -2150,7 +2150,7 @@ EOF
             5)  srv_stop      ;;
             6)  srv_restart   ;;
             # xx) sys_reboot ;;
-            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
+            0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
             *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
             esac
             case_end_tackle
@@ -3226,7 +3226,7 @@ EOF
         7 ) sys_setting_alter_timezone ;;
         8 ) sys_setting_users_manage ;;
         9 ) sys_setting_change_ports_manage ;;
-        10) service_manage_menu ;;
+        10) srv_manage_menu ;;
         21) sys_setting_dd_system ;;
         22) sys_setting_alter_swap ;;
         23) sys_setting_enable_ssh_reproxy ;;
