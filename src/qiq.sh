@@ -1808,7 +1808,7 @@ function srv_manage_menu(){
         "=========|$GREEN" 
         "0|返回🔙|$BLUE"
     )
-    function print_srv_item_menu_headinfo(){
+    function print_menu_srv_manage(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         print_sub_head " 💫 系统服务工具 " $MAX_SPLIT_CHAR_NUM 1 0 
@@ -1992,7 +1992,7 @@ EOF
     while true; do 
         clear
         _IS_BREAK="true" 
-        print_srv_item_menu_headinfo
+        print_menu_srv_manage
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case $INPUT in
@@ -2063,7 +2063,7 @@ MENU_SYSTEM_TOOLS_ITEMS=(
     "29|删除qiq命令|$WHITE"
 )
 function system_tools_menu(){
-    function print_sys_tools_item_menu_headinfo(){
+    function print_menu_system_tools(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ 系统工具 " $MAX_SPLIT_CHAR_NUM 1 0 
@@ -3213,7 +3213,7 @@ EOF
     }
 
     while true; do
-        print_sys_tools_item_menu_headinfo
+        print_menu_system_tools
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -3272,7 +3272,7 @@ MENU_COMMONLY_TOOLS_ITEMS=(
 )
 
 function commonly_tools_menu(){
-    function print_com_tools_item_menu_headinfo(){
+    function print_menu_common_tools(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         # local num_split=$MAX_SPLIT_CHAR_NUM
@@ -3284,7 +3284,7 @@ function commonly_tools_menu(){
     }
 
     while true; do
-        print_com_tools_item_menu_headinfo
+        print_menu_common_tools
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
 
         read -rp "${CHOICE}" INPUT
@@ -3512,7 +3512,7 @@ MENU_SERVICE_TOOLS_ITEMS=(
 )
 
 function service_tools_menu(){
-    function print_service_tools_item_menu_headinfo(){
+    function print_menu_service_tools(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         # local num_split=$MAX_SPLIT_CHAR_NUM
@@ -4377,7 +4377,7 @@ EOF
     }
 
     while true; do
-        print_service_tools_item_menu_headinfo
+        print_menu_service_tools
 
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
@@ -4436,7 +4436,7 @@ MENU_OTHER_SCRIPTS_ITEMS=(
 
 
 function other_scripts_menu(){
-    function print_other_scripts_item_menu_headinfo(){
+    function print_menu_other_scripts(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
@@ -4447,7 +4447,7 @@ function other_scripts_menu(){
     }
 
     while true; do
-        print_other_scripts_item_menu_headinfo
+        print_menu_other_scripts
         _IS_BREAK="true"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
@@ -4681,7 +4681,7 @@ MENU_PYTHON_ITEMS=(
 )
 
 function python_management_menu(){
-    function print_py_manage_item_menu_headinfo(){
+    function print_menu_python(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
@@ -5060,7 +5060,7 @@ function python_management_menu(){
 
     while true; do
         _IS_BREAK="true"
-        print_py_manage_item_menu_headinfo
+        print_menu_python
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -5585,7 +5585,7 @@ MENU_CADDY_ITEMS=(
     "28|容器管理|$BLUE" 
 )
 function caddy_management_menu(){
-    function print_caddy_item_menu_headinfo(){
+    function print_menu_caddy(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
@@ -5597,7 +5597,7 @@ function caddy_management_menu(){
 
     while true; do
         _IS_BREAK='true' 
-        print_caddy_item_menu_headinfo
+        print_menu_caddy
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT 
         case "${INPUT}" in 
@@ -5651,7 +5651,7 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "28|Code Server(Official,NOT recommend)|$WHITE" 
 )
 function docker_deploy_menu(){
-    function print_docker_deploy_item_menu_headinfo(){
+    function print_menu_docker_deploy(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
@@ -7105,7 +7105,7 @@ EOF
     #================================
     while true; do
         _IS_BREAK="true"
-        print_docker_deploy_item_menu_headinfo
+        print_menu_docker_deploy
         local CHOICE=$(echo -e "\n${BOLD}└─ 请选择要部署的容器: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -7153,7 +7153,7 @@ MENU_DOCKER_MANAGE_ITEMS=(
     "33|设置dcc|$WHITE" 
 )
 function docker_management_menu(){
-    function print_dcc_manage_item_menu_headinfo(){
+    function print_menu_dcc_manage(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
@@ -7595,7 +7595,7 @@ function docker_management_menu(){
 
     while true; do
         _IS_BREAK="true"
-        print_dcc_manage_item_menu_headinfo
+        print_menu_dcc_manage
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -7651,7 +7651,7 @@ MENU_MAIN_ITEMS=(
 )
 ## ======================================================
 function main_menu(){
-    function print_main_menu(){
+    function print_menu_main(){
         clear 
         # 调用拆分函数
         print_menu_head $MAX_SPLIT_CHAR_NUM
@@ -7660,7 +7660,7 @@ function main_menu(){
     }
 
     while true; do
-        print_main_menu
+        print_menu_main
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
