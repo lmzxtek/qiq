@@ -840,12 +840,13 @@ function fetch_script_from_url() {
     local url="$1"
     local file="$2"
     local is_proxy=${3:-1}
+    local extra_par=$4
 
     [[ $is_proxy -eq 1 ]] && url=$(get_proxy_url "$url")
     if command -v curl &>/dev/null; then 
-        curl -L -o ${file} "${url}" && chmod +x ${file} && bash ${file}
+        curl -L -o ${file} "${url}" && chmod +x ${file} && bash ${file} $extra_par
     elif command -v wget &>/dev/null; then 
-        wget -O ${file} ${url} && chmod +x ${file} && bash ${file}
+        wget -O ${file} ${url} && chmod +x ${file} && bash ${file} $extra_par
     else
         _BREAK_INFO=" 请先安装curl或wget!"
     fi
@@ -3646,7 +3647,8 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "6|HestiaCP|$CYAN"
     "7|CloudPanel|$CYAN"
     "8|Cyberpanel|$WHITE"
-    "9|OpenLiteSpeed|$WHITE"
+    "9|NginxGUI|$GREEN"
+    "10|OpenLiteSpeed|$WHITE"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
@@ -4175,380 +4177,391 @@ EOF
         # curl -L https://raw.githubusercontent.com/nezhahq/scripts/refs/heads/main/install.sh -o nezha.sh && chmod +x nezha.sh && sudo ./nezha.sh 
     }
     function tools_install_chrome(){
-            _IS_BREAK="true"
-            local app_name='Chrome'
-            local app_cmd='chrome'
+        _IS_BREAK="true"
+        local app_name='Chrome'
+        local app_cmd='chrome'
 
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-            else 
-                _BREAK_INFO=" 成功安装${app_name}！"
-                local fname="google-chrome-stable_current_amd64.deb"
-                local url="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-                sudo apt-get install -f -y && wget ${url} && sudo dpkg -i ${fname}
-                # sudo apt-get install -f -y
-                # wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
-                # sudo dpkg -i google-chrome-stable_current_amd64.deb
-            fi 
-        
+        if command -v ${app_cmd} &> /dev/null; then
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+        else 
+            _BREAK_INFO=" 成功安装${app_name}！"
+            local fname="google-chrome-stable_current_amd64.deb"
+            local url="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+            sudo apt-get install -f -y && wget ${url} && sudo dpkg -i ${fname}
+            # sudo apt-get install -f -y
+            # wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+            # sudo dpkg -i google-chrome-stable_current_amd64.deb
+        fi         
     }
     function tools_install_coder(){
-            local app_name='Coder Server'
-            local app_cmd='coder server'
-            _IS_BREAK="true"
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
-                echo -e " > WebURL: https://coder.com/   "
-                echo -e " > WebURL: https://github.com/coder/coder   "
-                echo -e " > Docker: https://github.com/coder/coder/blob/main/docker-compose.yaml   "
-                echo -e "\n > ${app_cmd}      # 临时启动${app_name}"
-                echo -e "\n > sudo systemctl enable --now code-server@$USER # 以当前用户开启${app_name}服务"
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:3000 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:3000 "
-            }
-            
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-                print_app_usage
-            else 
-                _BREAK_INFO=" 成功安装${app_name}服务！"
+        local app_name='Coder Server'
+        local app_cmd='coder server'
+        _IS_BREAK="true"
+        function print_app_usage(){
+            echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+            echo -e " > WebURL: https://coder.com/   "
+            echo -e " > WebURL: https://github.com/coder/coder   "
+            echo -e " > Docker: https://github.com/coder/coder/blob/main/docker-compose.yaml   "
+            echo -e "\n > ${app_cmd}      # 临时启动${app_name}"
+            echo -e "\n > sudo systemctl enable --now code-server@$USER # 以当前用户开启${app_name}服务"
+            echo ""
+            [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:3000 "
+            [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:3000 "
+        }
+        
+        if command -v ${app_cmd} &> /dev/null; then
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            print_app_usage
+        else 
+            _BREAK_INFO=" 成功安装${app_name}服务！"
 
-                local file="coder.sh"
-                local url="https://coder.com/install.sh"
-                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $file 0
-                
-                print_app_usage
-            fi 
-            # curl -L https://coder.com/install.sh | sh ;;
+            local file="coder.sh"
+            local url="https://coder.com/install.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $file 0
+            
+            print_app_usage
+        fi 
+        # curl -L https://coder.com/install.sh | sh ;;
     }
     function tools_install_codeserver(){
-            local app_name='Code Server'
-            local app_cmd='code-server'
-            _IS_BREAK="true"
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
-                echo -e " > WebURL: https://coder.com/   "
-                echo -e " > WebURL: https://github.com/coder/coder   "
-                echo -e " > GitHub: https://github.com/coder/code-server  "
-                echo -e "\n > ${app_cmd}      # 临时启动${app_name}"
-                echo -e "\n > sudo systemctl enable --now code-server@$USER # 以当前用户开启${app_name}服务"
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:8080 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:8080 "
-            }
-            
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-                print_app_usage
-            else 
-                _BREAK_INFO=" 成功安装${app_name}服务！"
+        local app_name='Code Server'
+        local app_cmd='code-server'
+        _IS_BREAK="true"
+        function print_app_usage(){
+            echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+            echo -e " > WebURL: https://coder.com/   "
+            echo -e " > WebURL: https://github.com/coder/coder   "
+            echo -e " > GitHub: https://github.com/coder/code-server  "
+            echo -e "\n > ${app_cmd}      # 临时启动${app_name}"
+            echo -e "\n > sudo systemctl enable --now code-server@$USER # 以当前用户开启${app_name}服务"
+            echo ""
+            [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:8080 "
+            [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:8080 "
+        }
+        
+        if command -v ${app_cmd} &> /dev/null; then
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            print_app_usage
+        else 
+            _BREAK_INFO=" 成功安装${app_name}服务！"
 
-                local file="code-server.sh"
-                local url="https://code-server.dev/install.sh"
-                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $file 0
-                
-                print_app_usage
-            fi 
-            # curl -fsSL https://code-server.dev/install.sh | sh  ;;
+            local file="code-server.sh"
+            local url="https://code-server.dev/install.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $file 0
+            
+            print_app_usage
+        fi 
+        # curl -fsSL https://code-server.dev/install.sh | sh  ;;
     }
     function tools_install_akilemonitor(){
-            local app_name='Akile Monitor'
-            local app_cmd='akm'
-            _IS_BREAK="true"
-            _BREAK_INFO=" 由${app_name}返回！"
-            local file="ak-setup.sh"
-            local url="https://raw.githubusercontent.com/akile-network/akile_monitor/refs/heads/main/${file}"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $file 1
+        local app_name='Akile Monitor'
+        local app_cmd='akm'
+        _IS_BREAK="true"
+        _BREAK_INFO=" 由${app_name}返回！"
+        local file="ak-setup.sh"
+        local url="https://raw.githubusercontent.com/akile-network/akile_monitor/refs/heads/main/${file}"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $file 1
     }
     function tools_install_rustdesk(){
-            _IS_BREAK="true"
-            local app_name='RustDesk'
-            local app_cmd='rustdesk'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="rustdesk.sh"
-            local url="https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 0 
-            # wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
+        _IS_BREAK="true"
+        local app_name='RustDesk'
+        local app_cmd='rustdesk'
+            _BREAK_INFO=" 由${app_name}返回！"
+        local fname="rustdesk.sh"
+        local url="https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 0 
+        # wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
     }
     function tools_install_sublinkx(){
-            _IS_BREAK="true"
-            local app_name='SubLinkX'
-            local app_cmd='sublink'
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}"
-                echo -e "\n - GitHub: https://github.com/gooaclok819/sublinkX"
-                echo -e "\n - ${app_cmd}      # 查看${app_name}管理菜单"
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:8000 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:8000 "
-            }
+        _IS_BREAK="true"
+        local app_name='SubLinkX'
+        local app_cmd='sublink'
+        function print_app_usage(){
+            echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}"
+            echo -e "\n - GitHub: https://github.com/gooaclok819/sublinkX"
+            echo -e "\n - ${app_cmd}      # 查看${app_name}管理菜单"
+            echo ""
+            [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:8000 "
+            [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:8000 "
+        }
 
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-                print_app_usage
-            else 
-                _BREAK_INFO=" 成功安装${app_name}服务！"
-                local fname="sublinkx.sh"
-                local url="https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh"
-                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $fname 1 
-                
-                print_app_usage
-            fi 
-            # curl -s https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh | sudo bash
-    }
-    function tools_install_deeplx(){
-            _IS_BREAK="true"
-            local app_name='DeepLX'
-            local app_cmd='deeplx'
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
-                echo -e " - WebURL: https://deeplx.owo.network/"
-                echo -e " - GitHub: https://github.com/OwO-Network/DeepLX"
-                echo ""
-                echo -e " > ${app_cmd}      # 查看${app_name}运行状态"
-                echo ""
-                if [[ -n "$WAN4" ]] ; then
-                    echo ""
-                    echo -e " URL: http://$WAN4:1188"
-                    echo -e " URL: http://$WAN4:1188/translate"
-                    echo -e " URL: http://$WAN4:1188/v1/translate"
-                    echo -e " URL: http://$WAN4:1188/v2/translate"
-                fi
-                if [[ -n "$WAN6" ]] ; then
-                    echo ""
-                    echo -e " URL: http://[$WAN6]:1188"
-                    echo -e " URL: http://[$WAN6]:1188/translate"
-                    echo -e " URL: http://[$WAN6]:1188/v1/translate"
-                    echo -e " URL: http://[$WAN6]:1188/v2/translate"
-                fi
-                # [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:1188 "
-            }
-
-            if command -v deeplx &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-                print_app_usage
-            else 
-                _BREAK_INFO=" 成功安装${app_name}服务！"
-                local fname="deeplx.sh"
-                local url="https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh"
-                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $fname 1 
-                
-                print_app_usage
-            fi 
-            # bash <(curl -Ls https://ssa.sx/dx)
-            # bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh)
-    }
-    function tools_install_iycms(){
-            _IS_BREAK="true"
-            local app_name='爱影CMS'
-            local app_cmd='iycms'
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
-                echo -e " - WebURL: https://iycms.com/index.html"
-                echo -e "" 
-                echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
-                echo -e " > systemctl start ${app_cmd}       # 查看${app_name}服务运行状态"
-                echo -e " > systemctl stop ${app_cmd}        # 查看${app_name}服务运行状态"
-                echo -e " > systemctl restart ${app_cmd}     # 查看${app_name}服务运行状态"
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:21007 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:21007 "
-            }
-
-            if systemctl status iycms > /dev/null 2>&1; then
-                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-                print_app_usage
-            else 
-                local file="lucky.sh"
-                local url="https://www.iycms.com/api/static/down/linux/ubuntu/install_x86_64.sh"
-                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $file 0
-                
-                print_app_usage
-                _BREAK_INFO=" 成功安装: ${app_name}"
-            fi 
-    }
-    function tools_install_v2raya(){
-            _IS_BREAK="true"
-            local app_name='V2RayA'
-            local app_cmd='v2raya'
-             _BREAK_INFO=" 由${app_name}返回！"
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
-                echo -e " - WebURL: https://v2raya.org/"
-                echo -e " - GitHub: https://github.com/v2rayA/v2rayA-installer"
-                echo ""
-                echo -e " > ${app_cmd}      # 查看${app_name}管理菜单"
-                echo -e " > sudo systemctl start v2raya.service      # 启动${app_name}服务"
-                echo -e " > sudo systemctl enable v2raya.service     # 设置${app_name}自启动"
-                echo -e " > v2raya-reset-password                    # 重新设置${app_name}密码"
-                echo -e " > /usr/local/etc/v2raya                    # 配置文件目录"
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:2017 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:2017 "
-            }
-
-            # wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/keyrings/v2raya.asc
-            # echo "deb [signed-by=/etc/apt/keyrings/v2raya.asc] https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
-            # sudo apt update
-            # sudo apt install v2raya v2ray ## 也可以使用 xray 包
-            # sudo systemctl start v2raya.service
-            # sudo systemctl enable v2raya.service
-            function start_v2ray_service(){
-                
-                local CHOICE=$(echo -e "\n${BOLD}└─ 是否启动${app_name}服务? [Y/n] ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
-                case "${INPUT}" in
-                [Yy] | [Yy][Ee][Ss])
-                    echo -e "\n$TIP 启动服务 ...\n"
-                    sudo systemctl start v2raya.service
-                    _BREAK_INFO=" 服务启动中 ..."
-                    ;;
-                [Nn] | [Nn][Oo])
-                    echo -e "\n$TIP 不启动服务！"
-                    ;;
-                *)
-                    echo -e "\n$WARN 输入错误！"
-                    _BREAK_INFO=" 输入错误，不重启系统！"
-                    _IS_BREAK="true"
-                    ;;
-                esac
-
-                local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置${app_name}服务自启动? [Y/n] ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
-                case "${INPUT}" in
-                [Yy] | [Yy][Ee][Ss])
-                    echo -e "\n$TIP 设置自启动服务 ...\n"
-                    sudo systemctl enable v2raya.service
-                    _BREAK_INFO=" 设置服务自启动成功 ..."
-                    ;;
-                [Nn] | [Nn][Oo])
-                    echo -e "\n$TIP 不启动服务！"
-                    ;;
-                *)
-                    echo -e "\n$WARN 输入错误！"
-                    _BREAK_INFO=" 输入错误，不重启系统！"
-                    _IS_BREAK="true"
-                    ;;
-                esac
-            }
-
-            local v2raya_options_list=(
-                "1. 安装 V2RayA(v2ray)"
-                "2. 安装 V2RayA(xray)"
-                "3. 卸载 V2RayA"
-                "0. 退出"
-            )
-
-            local fname="v2raya-installer.sh"
-            local url="https://github.com/v2rayA/v2rayA-installer/raw/main/installer.sh"
-            url=$(get_proxy_url "$url")
-
-            print_items_list v2raya_options_list[@] " ⚓ ${app_name}菜单"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 输入选项: ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            case "${INPUT}" in
-            1) 
-                _BREAK_INFO=" 成功安装${app_name}(v2ray内核)！"                
-                sudo sh -c "$(wget -qO- ${url})" @ --with-v2ray
-                print_app_usage
-                start_v2ray_service
-                ;;
-            2) 
-                _BREAK_INFO=" 成功安装${app_name}(xray内核)！"
-                sudo sh -c "$(wget -qO- ${url})" @ --with-xray
-                print_app_usage
-                start_v2ray_service
-                ;;
-            3) 
-                local fname="v2raya-uninstaller.sh"
-                local url="https://github.com/v2rayA/v2rayA-installer/raw/main/uninstaller.sh"
-                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $fname 1 
-
-                # sudo sh -c "$(wget -qO- ${url})"
-                _BREAK_INFO=" 成功卸载${app_name}！"
-                ;;
-            0) 
-                echo -e "\n$TIP 返回主菜单 ..."
-                _IS_BREAK="false"
-                ;;
-            *)
-                _BREAK_INFO=" 请输入正确选项！"
-                ;;
-            esac             
-    }
-    function tools_install_sbfarsman(){
-            _IS_BREAK="true"
-            local app_name='Singbox'
-            local app_cmd='sb'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="sing-box.sh"
-            local url="https://raw.githubusercontent.com/fscarmen/sing-box/main/${fname}"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 1
-    }
-    function tools_install_sbygkkk(){
-            _IS_BREAK="true"
-            local app_name='Singbox(yg)'
-            local app_cmd='sb'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="sb.sh"
-            local url="https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh"
+        if command -v ${app_cmd} &> /dev/null; then
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            print_app_usage
+        else 
+            _BREAK_INFO=" 成功安装${app_name}服务！"
+            local fname="sublinkx.sh"
+            local url="https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh"
             echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
             fetch_script_from_url $url $fname 1 
+            
+            print_app_usage
+        fi 
+        # curl -s https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh | sudo bash
+    }
+    function tools_install_deeplx(){
+        _IS_BREAK="true"
+        local app_name='DeepLX'
+        local app_cmd='deeplx'
+        function print_app_usage(){
+            echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+            echo -e " - WebURL: https://deeplx.owo.network/"
+            echo -e " - GitHub: https://github.com/OwO-Network/DeepLX"
+            echo ""
+            echo -e " > ${app_cmd}      # 查看${app_name}运行状态"
+            echo ""
+            if [[ -n "$WAN4" ]] ; then
+                echo ""
+                echo -e " URL: http://$WAN4:1188"
+                echo -e " URL: http://$WAN4:1188/translate"
+                echo -e " URL: http://$WAN4:1188/v1/translate"
+                echo -e " URL: http://$WAN4:1188/v2/translate"
+            fi
+            if [[ -n "$WAN6" ]] ; then
+                echo ""
+                echo -e " URL: http://[$WAN6]:1188"
+                echo -e " URL: http://[$WAN6]:1188/translate"
+                echo -e " URL: http://[$WAN6]:1188/v1/translate"
+                echo -e " URL: http://[$WAN6]:1188/v2/translate"
+            fi
+            # [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:1188 "
+        }
+
+        if command -v deeplx &> /dev/null; then
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            print_app_usage
+        else 
+            _BREAK_INFO=" 成功安装${app_name}服务！"
+            local fname="deeplx.sh"
+            local url="https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $fname 1 
+            
+            print_app_usage
+        fi 
+        # bash <(curl -Ls https://ssa.sx/dx)
+        # bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh)
+    }
+    function tools_install_iycms(){
+        _IS_BREAK="true"
+        local app_name='爱影CMS'
+        local app_cmd='iycms'
+        function print_app_usage(){
+            echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+            echo -e " - WebURL: https://iycms.com/index.html"
+            echo -e "" 
+            echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
+            echo -e " > systemctl start ${app_cmd}       # 查看${app_name}服务运行状态"
+            echo -e " > systemctl stop ${app_cmd}        # 查看${app_name}服务运行状态"
+            echo -e " > systemctl restart ${app_cmd}     # 查看${app_name}服务运行状态"
+            echo ""
+            [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:21007 "
+            [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:21007 "
+        }
+
+        if systemctl status iycms > /dev/null 2>&1; then
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            print_app_usage
+        else 
+            local file="lucky.sh"
+            local url="https://www.iycms.com/api/static/down/linux/ubuntu/install_x86_64.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $file 0
+            
+            print_app_usage
+            _BREAK_INFO=" 成功安装: ${app_name}"
+        fi 
+    }
+    function tools_install_v2raya(){
+        _IS_BREAK="true"
+        local app_name='V2RayA'
+        local app_cmd='v2raya'
+            _BREAK_INFO=" 由${app_name}返回！"
+        function print_app_usage(){
+            echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+            echo -e " - WebURL: https://v2raya.org/"
+            echo -e " - GitHub: https://github.com/v2rayA/v2rayA-installer"
+            echo ""
+            echo -e " > ${app_cmd}      # 查看${app_name}管理菜单"
+            echo -e " > sudo systemctl start v2raya.service      # 启动${app_name}服务"
+            echo -e " > sudo systemctl enable v2raya.service     # 设置${app_name}自启动"
+            echo -e " > v2raya-reset-password                    # 重新设置${app_name}密码"
+            echo -e " > /usr/local/etc/v2raya                    # 配置文件目录"
+            echo ""
+            [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:2017 "
+            [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:2017 "
+        }
+
+        # wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/keyrings/v2raya.asc
+        # echo "deb [signed-by=/etc/apt/keyrings/v2raya.asc] https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
+        # sudo apt update
+        # sudo apt install v2raya v2ray ## 也可以使用 xray 包
+        # sudo systemctl start v2raya.service
+        # sudo systemctl enable v2raya.service
+        function start_v2ray_service(){
+            
+            local CHOICE=$(echo -e "\n${BOLD}└─ 是否启动${app_name}服务? [Y/n] ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+            case "${INPUT}" in
+            [Yy] | [Yy][Ee][Ss])
+                echo -e "\n$TIP 启动服务 ...\n"
+                sudo systemctl start v2raya.service
+                _BREAK_INFO=" 服务启动中 ..."
+                ;;
+            [Nn] | [Nn][Oo])
+                echo -e "\n$TIP 不启动服务！"
+                ;;
+            *)
+                echo -e "\n$WARN 输入错误！"
+                _BREAK_INFO=" 输入错误，不重启系统！"
+                _IS_BREAK="true"
+                ;;
+            esac
+
+            local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置${app_name}服务自启动? [Y/n] ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+            case "${INPUT}" in
+            [Yy] | [Yy][Ee][Ss])
+                echo -e "\n$TIP 设置自启动服务 ...\n"
+                sudo systemctl enable v2raya.service
+                _BREAK_INFO=" 设置服务自启动成功 ..."
+                ;;
+            [Nn] | [Nn][Oo])
+                echo -e "\n$TIP 不启动服务！"
+                ;;
+            *)
+                echo -e "\n$WARN 输入错误！"
+                _BREAK_INFO=" 输入错误，不重启系统！"
+                _IS_BREAK="true"
+                ;;
+            esac
+        }
+
+        local v2raya_options_list=(
+            "1. 安装 V2RayA(v2ray)"
+            "2. 安装 V2RayA(xray)"
+            "3. 卸载 V2RayA"
+            "0. 退出"
+        )
+
+        local fname="v2raya-installer.sh"
+        local url="https://github.com/v2rayA/v2rayA-installer/raw/main/installer.sh"
+        url=$(get_proxy_url "$url")
+
+        print_items_list v2raya_options_list[@] " ⚓ ${app_name}菜单"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 输入选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1) 
+            _BREAK_INFO=" 成功安装${app_name}(v2ray内核)！"                
+            sudo sh -c "$(wget -qO- ${url})" @ --with-v2ray
+            print_app_usage
+            start_v2ray_service
+            ;;
+        2) 
+            _BREAK_INFO=" 成功安装${app_name}(xray内核)！"
+            sudo sh -c "$(wget -qO- ${url})" @ --with-xray
+            print_app_usage
+            start_v2ray_service
+            ;;
+        3) 
+            local fname="v2raya-uninstaller.sh"
+            local url="https://github.com/v2rayA/v2rayA-installer/raw/main/uninstaller.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $fname 1 
+
+            # sudo sh -c "$(wget -qO- ${url})"
+            _BREAK_INFO=" 成功卸载${app_name}！"
+            ;;
+        0) 
+            echo -e "\n$TIP 返回主菜单 ..."
+            _IS_BREAK="false"
+            ;;
+        *)
+            _BREAK_INFO=" 请输入正确选项！"
+            ;;
+        esac             
+    }
+    function tools_install_sbfarsman(){
+        _IS_BREAK="true"
+        local app_name='Singbox'
+        local app_cmd='sb'
+            _BREAK_INFO=" 由${app_name}返回！"
+        local fname="sing-box.sh"
+        local url="https://raw.githubusercontent.com/fscarmen/sing-box/main/${fname}"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 1
+    }
+    function tools_install_sbygkkk(){
+        _IS_BREAK="true"
+        local app_name='Singbox(yg)'
+        local app_cmd='sb'
+            _BREAK_INFO=" 由${app_name}返回！"
+        local fname="sb.sh"
+        local url="https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 1 
     }
     function tools_install_warpfarsman(){
-            _IS_BREAK="true"
-            local app_name='Warp'
-            local app_cmd='warp'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="menu.sh"
-            local url="https://gitlab.com/fscarmen/warp/-/raw/main/${fname}"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 0 
+        _IS_BREAK="true"
+        local app_name='Warp'
+        local app_cmd='warp'
+            _BREAK_INFO=" 由${app_name}返回！"
+        local fname="menu.sh"
+        local url="https://gitlab.com/fscarmen/warp/-/raw/main/${fname}"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 0 
     }
     function tools_install_warpygkkk(){
-            _IS_BREAK="true"
-            local app_name='Warp(yg)'
-            local app_cmd='sb'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="sb-yg.sh"
-            local url="https://gitlab.com/rwkgyg/CFwarp/raw/main/CFwarp.sh"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 0 
+        _IS_BREAK="true"
+        local app_name='Warp(yg)'
+        local app_cmd='sb'
+            _BREAK_INFO=" 由${app_name}返回！"
+        local fname="sb-yg.sh"
+        local url="https://gitlab.com/rwkgyg/CFwarp/raw/main/CFwarp.sh"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 0 
     }
     function tools_install_warphamid(){
-            _IS_BREAK="true"
-            local app_name='Warp(hamid)'
-            local app_cmd='warp'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="warp_proxy.sh"
-            local ghurl="https://github.com/hamid-gh98"
-            local url="https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 1  
+        _IS_BREAK="true"
+        local app_name='Warp(hamid)'
+        local app_cmd='warp'
+            _BREAK_INFO=" 由${app_name}返回！"
+        local fname="warp_proxy.sh"
+        local ghurl="https://github.com/hamid-gh98"
+        local url="https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 1  
     }
     function tools_install_openlitespeed(){
-            _IS_BREAK="true"
-            local app_name='OpenLiteSpeed(ols1clk)'
-            local app_cmd='openlitespeed'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="ols1clk.sh"
-            local ghurl="https://github.com/litespeedtech/ols1clk"
-            local url="https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 1  
-            # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
+        _IS_BREAK="true"
+        local app_name='OpenLiteSpeed(ols1clk)'
+        local app_cmd='openlitespeed'
+            _BREAK_INFO=" 由${app_name}返回！"
+        local fname="ols1clk.sh"
+        local ghurl="https://github.com/litespeedtech/ols1clk"
+        local url="https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 1  
+        # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
+    }
+    function tools_install_nginxgui(){
+        _IS_BREAK="true"
+        local app_name='NginxGUI'
+        local app_cmd='nginxgui'
+            _BREAK_INFO=" 由${app_name}返回！"
+        local fname="nginxgui_install.sh"
+        local ghurl="https://github.com/0xJacky/nginx-ui"
+        local url="https://raw.githubusercontent.com/0xJacky/nginx-ui/main/install.sh"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        fetch_script_from_url $url $fname 1  " @ install"
+        # bash -c "$(curl -L https://raw.githubusercontent.com/0xJacky/nginx-ui/main/install.sh)" @ install
     }
 
     while true; do
@@ -4564,7 +4577,8 @@ EOF
         6 ) tools_install_hestiacp ;;
         7 ) tools_install_cloudpanel ;;
         8 ) tools_install_cyberpanel ;;
-        9 ) tools_install_openlitespeed ;;
+        9 ) tools_install_nginxgui  ;;
+        10) tools_install_openlitespeed ;;
         21) tools_install_redis ;; 
         22) tools_install_mysql ;; 
         23) tools_install_mariadb ;; 
@@ -5802,17 +5816,18 @@ function caddy_management_menu(){
 MENU_DOCKER_DEPLOY_ITEMS=(
     "1|WatchTower|$Yellow"
     "2|RustDesk|$WHITE"
-    "3|OpenLiteSpeed|$WHITE"
-    "4|DeepLX|$WHITE"
-    "5|AKTools|$CYAN"
-    "6|SubLinkX|$WHITE"
-    "7|Lucky|$WHITE"
-    "8|Alist|$WHITE"
-    "9|IPTVa|$WHITE"
-    "10|IPTVd|$WHITE"
-    "11|Docker-win|$WHITE"
-    "12|Docker-mac|$WHITE"
-    "13|WeChat(web)|$WHITE"
+    "3|NginxGUI|$WHITE"
+    "4|OpenLiteSpeed|$WHITE"
+    "5|DeepLX|$WHITE"
+    "6|AKTools|$CYAN"
+    "7|SubLinkX|$WHITE"
+    "8|Lucky|$WHITE"
+    "9|Alist|$WHITE"
+    "10|IPTVa|$WHITE"
+    "11|IPTVd|$WHITE"
+    "12|Docker-win|$WHITE"
+    "13|Docker-mac|$WHITE"
+    "14|WeChat(web)|$WHITE"
     "………………………|$WHITE" 
     "21|Dash.|$WHITE" 
     "22|MyIP|$WHITE" 
@@ -6259,6 +6274,60 @@ services:
         image: $dc_imag
         ports:
             - '$dc_port:80'
+        restart: always
+EOF
+
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+        
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_nginxgui(){    
+        local base_root="/home/dcc.d"
+        local dc_port=49000
+        local dc_name='nginxgui'
+        local dc_imag=uozi/nginx-ui:latest
+        local dc_desc="NginxGUI"
+        local urlgit='https://openlitespeed.org/#install'
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc}(PS: 需要先安装 Nginx ) ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        ports:
+            - '80:80'
+            - '443:443'
+            - '$dc_port:9000'
+        volumes:
+            - /etc/nginx:/etc/nginx
         restart: always
 EOF
 
@@ -7338,17 +7407,18 @@ EOF
         case "${INPUT}" in
         1 ) dc_deploy_watchtower  ;;
         2 ) dc_deploy_rustdesk  ;;
-        3 ) dc_deploy_openlitespeed  ;;
-        4 ) dc_deploy_deeplx  ;;
-        5 ) dc_deploy_aktools  ;;
-        6 ) dc_deploy_sublinkx  ;;
-        7 ) dc_deploy_lucky  ;;
-        8 ) dc_deploy_alist  ;;
-        9 ) dc_deploy_iptva  ;;
-        10) dc_deploy_iptvd  ;;
-        11) dc_deploy_docker_win  ;;
-        12) dc_deploy_docker_mac  ;;
-        13) dc_deploy_wechat  ;;
+        3 ) dc_deploy_nginxgui  ;;
+        4 ) dc_deploy_openlitespeed  ;;
+        5 ) dc_deploy_deeplx  ;;
+        6 ) dc_deploy_aktools  ;;
+        7 ) dc_deploy_sublinkx  ;;
+        8 ) dc_deploy_lucky  ;;
+        9 ) dc_deploy_alist  ;;
+        10) dc_deploy_iptva  ;;
+        11) dc_deploy_iptvd  ;;
+        12) dc_deploy_docker_win  ;;
+        13) dc_deploy_docker_mac  ;;
+        14) dc_deploy_wechat  ;;
         21) dc_deploy_dashdot  ;;
         22) dc_deploy_myip  ;;
         23) dc_deploy_neko  ;;
