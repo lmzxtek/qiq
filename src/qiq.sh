@@ -4208,12 +4208,17 @@ EOF
             [[ -z "$INPUT" ]] &&  INPUT=1
             case "${INPUT}" in 
             1) 
+                local pfld='$PWD/frp'
+                [[ -d "$pfld" ]] && mkdir -p $pfld
                 echo -e "\n$TIP 开始下载: 1.frp最新程序..."
-                download_github_realease "https://github.com/fatedier/frp"  
+                download_github_realease "https://github.com/fatedier/frp"  "" 1 $pfld
                 echo -e "\n$TIP 开始下载: 2.frp配置文件..."
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml" "frpc.toml" 
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml" "frps.toml" 
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "frps.service"  
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml"    "${pfld}/frpc.toml" 
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml"    "${pfld}/frps.toml" 
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "${pfld}/frps.service"  
+                echo -e "\n$TIP 解压程序: 3.tar -zxf ${pfld}/frp_*.tar.gz"
+                tat -zxf "${pfld}/frp_*.tar.gz"
+                echo -e "\n$TIP 解压完成: 4.修改配置文件，再启动服务 ..."
                 ;; 
             0) _IS_BREAK='false' && break ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
@@ -7172,6 +7177,9 @@ services:
         container_name: ${dc_name}
         image: m1k1o/neko:${brkernel}
         shm_size: "${memsize}gb"
+        # privileged: true 
+        cap_add:
+            - SYS_ADMIN
         environment:
             PUID: 1000
             PGID: 1000
@@ -7181,7 +7189,7 @@ services:
             NEKO_PASSWORD: ${pssuser}
             NEKO_PASSWORD_ADMIN: ${pssadmin}
             NEKO_EPR: 52000-52100
-            NEKO_ICELITE: 1
+            # NEKO_ICELITE: 1
             # NEKO_NAT1TO1: '104.28.254.16'
             NEKO_FILE_TRANSFER_ENABLED: true
             NEKO_FILE_TRANSFER_PATH: /home/neko/Downloads
