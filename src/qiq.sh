@@ -5941,7 +5941,7 @@ function docker_deploy_menu(){
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ Docker部署 " $num_split 0 0 
-        split_menu_items MENU_DOCKER_DEPLOY_ITEMS[@] 
+        split_menu_items MENU_DOCKER_DEPLOY_ITEMS[@] 1 33
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
@@ -8088,8 +8088,8 @@ function docker_management_menu(){
         while true; do
             clear 
             docker_show_networks
-            print_items_list dc_items_list[@] " 🌏 网络操作"
             generate_separator "=" 25
+            print_items_list dc_items_list[@] " 🌏 网络操作"
             generate_separator "=" 25
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
