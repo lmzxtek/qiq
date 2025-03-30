@@ -4116,12 +4116,71 @@ EOF
         fi 
         
     }
+    
+    function tools_frp_new_frps_cfg() {
+        # 生成随机端口和凭证
+        local bind_port=8055
+        local dashboard_port=8056
+        local token=$(openssl rand -hex 16)
+        local dashboard_user="user_$(openssl rand -hex 4)"
+        local dashboard_pwd=$(openssl rand -hex 8)
+
+        # 创建 frps.toml 文件
+        cat <<EOF > /home/frp/frps.toml
+[common]
+bind_port    = $bind_port
+quicBindPort = $bind_port
+
+auth.method = 'token'
+auth.token  = $token
+
+webServer.addr = '0.0.0.0'
+webServer.port = $dashboard_port
+webServer.user = $dashboard_user
+webServer.password  = $dashboard_pwd
+EOF
+    }
+    function tools_frp_new_frpc_cfg() {
+        
+        # 生成随机端口和凭证
+        local bind_port=8055
+        local dashboard_port=8056
+        local token=$(openssl rand -hex 16)
+        local dashboard_user="user_$(openssl rand -hex 4)"
+        local dashboard_pwd=$(openssl rand -hex 8)
+
+        # 创建 frpc.toml 文件
+        cat <<EOF > /home/frp/frpc.toml
+[common]
+serverAddr = "x.x.x.x"
+serverPort = $bind_port
+transport.protocol = "quic"
+
+auth.method = 'token'
+auth.token  = $token
+
+
+[[proxies]]
+name = "gma(demo)"
+type = "tcp"
+# localIP = "[::1]"
+localIP = "127.0.0.1"
+# localIP = "localhost"
+localPort = 5000
+remotePort = 16003
+transport.useEncryption = true
+# transport.useCompression = true
+
+EOF
+
+
+    }
     function tools_install_frpc(){
         _IS_BREAK="true"
         local app_name='frpc'
         local app_cmd='frpc -c frpc.toml'
 
-        download_github_realease "https://github.com/fatedier/frp" 
+        # download_github_realease "https://github.com/fatedier/frp" 
         # download_github_realease "https://github.com/fatedier/frp" ".*linux_amd64.tar.gz"
         _BREAK_INFO=" 安装成功: ${app_name}!"
         
@@ -4146,15 +4205,11 @@ EOF
         while true; do
             _IS_BREAK="true"
             print_tools_manage_frp
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择？(默认官方): ${PLAIN}")
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT=1
             case "${INPUT}" in 
-            1) docker_install_official ;; 
-            2) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) ;; 
-            3) bash <(curl -sSL https://raw.githubusercontent.com/SuperManito/LinuxMirrors/main/DockerInstallation.sh) ;; 
-            4) bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh) ;; 
-            5) bash <(curl -sSL https://cdn.jsdelivr.net/gh/SuperManito/LinuxMirrors@main/DockerInstallation.sh) ;; 
+            1) download_github_realease "https://github.com/fatedier/frp"  ;; 
             0) _IS_BREAK='false' ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
@@ -8092,7 +8147,7 @@ set_qiq_alias
 # 初始化全局变量
 init_global_vars
 
-echo -e " Get region: $(get_region)\n"
+echo -e " $SUCCESS Get region: $(get_region)\n"
 # 检测系统IP地址
 check_ip_status
 

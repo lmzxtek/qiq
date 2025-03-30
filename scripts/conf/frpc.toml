@@ -1,0 +1,42 @@
+serverAddr = "101.200.214.242"
+serverPort = 7000
+transport.protocol = "quic"
+
+auth.method = "token"
+auth.token = "token12345"
+
+webServer.addr = "0.0.0.0"
+webServer.port = 7400
+webServer.user = "admin"
+webServer.password = "admin_password"
+
+
+[[proxies]]
+name = "proxy(demo)"
+type = "tcp"
+# localIP = "[::1]"
+localIP = "127.0.0.1"
+# localIP = "localhost"
+localPort = 5000
+remotePort = 16003
+transport.useEncryption = true
+# transport.useCompression = true
+
+# #===== balance =========================
+# # frpc.toml
+# [[proxies]]
+# name = "test1"
+# type = "tcp"
+# localPort = 8080
+# remotePort = 80
+# loadBalancer.group = "web"
+# loadBalancer.groupKey = "123"
+
+# [[proxies]]
+# name = "test2"
+# type = "tcp"
+# localPort = 8081
+# remotePort = 80
+# loadBalancer.group = "web"
+# loadBalancer.groupKey = "123"
+# #======================================

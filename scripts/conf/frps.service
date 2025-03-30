@@ -1,0 +1,26 @@
+# $ sudo vim /etc/systemd/system/frps.service
+
+[Unit]
+# 服务名称，可自定义
+Description = frp server
+After = network.target syslog.target
+Wants = network.target
+
+[Service]
+Type = simple
+# 启动frps的命令，需修改为您的frps的安装路径
+ExecStart = /home/frp/frps -c /home/frp/frps.toml
+
+# [Install]
+# WantedBy = multi-user.target
+# # 启动frp
+# sudo systemctl start frps
+# # 停止frp
+# sudo systemctl stop frps
+# # 重启frp
+# sudo systemctl restart frps
+# # 查看frp状态
+# sudo systemctl status frps
+
+# 开机启动frp
+# sudo systemctl enable frps
