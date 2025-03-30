@@ -4189,19 +4189,29 @@ EOF
     function tools_frp_download(){
         local pfld="$PWD/frp"
         [[ -d "$pfld" ]] && mkdir -p $pfld
+        cd $pfld
         # echo -e "\n$TIP    目录: ${pfld}"
         echo -e "\n$TIP 开始下载: 1.frp最新程序..."
         download_github_realease "https://github.com/fatedier/frp" 
         echo -e "\n$TIP 开始下载: 2.frp配置文件..."
-        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml"    "frpc.toml" $pfld
-        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml"    "frps.toml" $pfld
-        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "frps.service"  $pfld
-        tarfile=$(ls -1 ./frp_*.tar.gz)
-        mv $tarfile "${pfld}/frp.tar.gz"
-        tarfile=${pfld}/frp.tar.gz
+        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml"    "frpc.toml" 
+        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml"    "frps.toml" 
+        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "frps.service"  
+        
+        local tarfile=$(ls -1 ./frp_*.tar.gz)
+        # mv $tarfile "${pfld}/frp.tar.gz"
+        # tarfile=${pfld}/frp.tar.gz
         echo -e "\n$TIP 解压程序: ${tarfile}"
-        tar -zxf "${tarfile}"
-        # echo -e "\n$TIP 解压完成: 4.修改配置文件，再启动服务 ..."
+        tar -zxf ${tarfile}
+        rm -rf $tarfile 
+        
+        echo -e "\n$TIP 解压完成: 4.修改配置文件，再启动服务 ..."
+        local tardir=$(ls -1 -d frp_*.tar.gz)
+        mv $tardir/frps ./ 
+        mv $tardir/frpc ./ 
+        rm -rf $tardir 
+
+        cd -  >/dev/null 2>&1 
     }
     function tools_manage_frp(){
         local frp_items_list=(
