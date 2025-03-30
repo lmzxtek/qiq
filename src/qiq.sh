@@ -7837,7 +7837,7 @@ function docker_management_menu(){
         echo -e "\n $TIP 开启容器IPv6网络"
         local CONFIG_FILE="/etc/docker/daemon.json"
         # local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64"}'
-        local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "fd00:dead:beef::/64",  "ip6tables": "true", "experimental": "true"}'
+        local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "fd00:dead:beef::/64", "ip6tables": "true", "experimental": "true"}'
 
         app_install jq
 
@@ -7855,10 +7855,10 @@ function docker_management_menu(){
             # 更新配置，开启 IPv6
             if [[ "$CURRENT_IPV6" == "false" ]]; then
                 # local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {ipv6: true, "fixed-cidr-v6": "2001:db8:1::/64"}')
-                local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {ipv6: true, "fixed-cidr-v6": "fd00:dead:beef::/64"}')
+                local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {ipv6: true, "fixed-cidr-v6": "fd00:dead:beef::/64", "ip6tables": "true", "experimental": "true"}')
             else
                 # local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {"fixed-cidr-v6": "2001:db8:1::/64"}')
-                local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {"fixed-cidr-v6": "fd00:dead:beef::/64"}')
+                local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {"fixed-cidr-v6": "fd00:dead:beef::/64", "ip6tables": "true", "experimental": "true"}')
             fi
 
             # 对比原始配置与新配置
@@ -8084,7 +8084,7 @@ function docker_management_menu(){
             "4.开启IPv6|${GREEN}|🔓"
             "5.关闭IPv6|${WHITE}|🔒"
             "6.查看IPv6|${BLUE}|💡"
-            "7.添加v4v6|${Yellow}|🌐"
+            "7.添加v4v6|${YELLOW}|🌐"
             "0.返回|$RED|🔙"
         )
 
