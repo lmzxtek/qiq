@@ -7998,13 +7998,13 @@ function docker_management_menu(){
         # case_end_tackle
     }
     function docker_service_restart(){
-        if ! command -v systemctl > /dev/null 2>&1; then 
+        if command -v systemctl > /dev/null 2>&1; then 
             if ! systemctl status docker > /dev/null 2>&1; then
                 systemctl stop docker && systemctl start docker
             else 
                 echo -e "\n$TIP 系统未安装docker服务！"
             fi
-        elif ! command -v service > /dev/null 2>&1;  then
+        elif command -v service > /dev/null 2>&1;  then
             if ! service docker status > /dev/null 2>&1; then
                 service  docker stop && service  docker start
             else 
