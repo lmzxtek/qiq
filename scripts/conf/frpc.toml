@@ -1,3 +1,5 @@
+# https://github.com/fatedier/frp/releases
+
 serverAddr = "101.200.214.242"
 serverPort = 7000
 transport.protocol = "quic"
