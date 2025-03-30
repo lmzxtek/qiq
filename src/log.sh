@@ -33,9 +33,10 @@ echoT "   5.修改虚拟内存时显示当前虚拟内情情况"
 echoT "   6.修正了时区调整显示问题"
 echoT "   7.优化显示系统信息"
 echoT "--------------------------------"
-echoR " -=> 2025-03-28   v0.7.4" " $VLATEST"
+echoR " -=> 2025-03-30   v0.7.4" " $VLATEST"
 echoY "   1.增加Code-Server的容器部署(LinuxServer and Official)"
 echoY "   2.增加系统服务管理菜单"
+echoY "   3.增加frp管理菜单"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 
