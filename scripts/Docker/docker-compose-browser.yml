@@ -1,0 +1,27 @@
+networks:
+    1panel-v4v6:
+        external: true
+services:
+    browser:
+        container_name: browser
+        image: lscr.io/linuxserver/msedge:latest
+        # image: lscr.io/linuxserver/firefox:latest
+        # image: lscr.io/linuxserver/chromium:latest
+        shm_size: "1gb"
+        security_opt:
+            - seccomp:unconfined #optional
+        networks:
+            - 1panel-v4v6
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Shanghai
+            - FIREFOX_CLI=https://www.google.com/ #optional
+            - CHROME_CLI=https://www.google.com/ #optional
+            - EDGE_CLI=https://www.google.com/ #optional
+        volumes:
+            - /home/dcc.d/browser/data:/config
+        ports:
+            - '45428:3000'
+            - '45429:3001'
+        restart: unless-stopped

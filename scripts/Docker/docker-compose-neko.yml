@@ -8,7 +8,7 @@ services:
     # image: "m1k1o/neko:firefox"
     image: "m1k1o/neko:microsoft-edge"
     restart: "unless-stopped"
-    shm_size: "4gb"
+    shm_size: "2gb"
     networks:
         - 1panel-v4v6
     ports:
@@ -17,11 +17,15 @@ services:
     cap_add:
       - SYS_ADMIN
     environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Etc/UTC
+      # TZ: Asia/Shanghai
       NEKO_SCREEN: '1920x1080@30'
-      NEKO_PASSWORD: neko7777777
-      NEKO_PASSWORD_ADMIN: admin543212345
+      NEKO_PASSWORD: neko
+      NEKO_PASSWORD_ADMIN: admin
       NEKO_EPR: 52000-52100
-      NEKO_NAT1TO1: 23.146.40.191
+      # NEKO_NAT1TO1: '23.146.40.191'
       NEKO_FILE_TRANSFER_ENABLED: true
       NEKO_FILE_TRANSFER_PATH: /home/neko/Downloads
       # NEKO_FILE_TRANSFER_PATH: /mnt/db4/neko_data/Downloads
