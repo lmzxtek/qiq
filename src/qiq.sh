@@ -7978,11 +7978,6 @@ function docker_management_menu(){
     )
     function docker_manage_ipv6(){
         generate_separator "=" 40
-        # echo -e " 1.开启IPv6网络"
-        # echo -e " 2.关闭IPv6网络"
-        # echo -e " 3.查看网络信息"
-        # echo -e " 4.添加v4v6网络"
-        # echo -e " 0.返回"
         print_items_list docker_ipv6_options[@] 
         generate_separator "=" 40
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
@@ -8081,18 +8076,20 @@ function docker_management_menu(){
             "1.删除网络|${RED}|❌"
             "2.清理网络||📛"
             "3.删除所有||🚫"
-            "4.开启IPv6|${GREEN}|🔓"
-            "5.关闭IPv6|${WHITE}|🔒"
-            "6.查看IPv6|${BLUE}|💡"
-            "7.添加v4v6|${YELLOW}|🌐"
+            "4.查看网格|$YELLOW|"
+            "==================☘️|${CYAN}|☘️"
+            "5.开启IPv6|${GREEN}|🔓"
+            "6.关闭IPv6|${WHITE}|🔒"
+            "7.查看IPv6|${BLUE}|💡"
+            "8.添加v4v6|${YELLOW}|🌐"
             "0.返回|$RED|🔙"
         )
 
         while true; do
             clear 
             docker_show_networks
-            generate_separator "=" 25
             print_items_list dc_items_list[@] " 🌏 网络操作"
+            generate_separator "=" 25
             generate_separator "=" 25
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
@@ -8100,10 +8097,11 @@ function docker_management_menu(){
             1)  dc_name=$(docker_get_id '网络名') && [[ -n ${dc_name} ]] && docker network rm $dc_name ;;
             2)  docker network prune ;; # 清理网络
             3)  docker_images_rm_all ;;
-            4)  docker_enable_ipv6 ;;
-            5)  docker_disable_ipv6 ;;
-            6)  dc_verify_config ;;
-            7)  docker_add_network_v4v6 ;;
+            4)  dc_name=$(docker_get_id '网络名') && [[ -n ${dc_name} ]] && docker network inspect $dc_name ;;
+            5)  docker_enable_ipv6 ;;
+            6)  docker_disable_ipv6 ;;
+            7)  dc_verify_config ;;
+            8)  docker_add_network_v4v6 ;;
             0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
             *)  _BREAK_INFO=" 请输入有效选项！" ;;
             esac 
