@@ -3654,14 +3654,13 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "22|MySQL|$WHITE"
     "23|MariaDB|$WHITE"
     "24|PostgreSQL|$WHITE"
-    "25|frps|$WHITE"
-    "26|frpc|$WHITE"
-    "27|Lucky|$WHITE"
-    "28|Nezha|$WHITE"
-    "29|Chrome|$WHITE"
-    "30|Coder|$WHITE"
-    "31|Code Server|$YELLOW"
-    "32|Akile Monitor|$WHITE"
+    "25|frp|$WHITE"
+    "26|Lucky|$WHITE"
+    "27|Nezha|$WHITE"
+    "28|Chrome|$WHITE"
+    "29|Coder|$WHITE"
+    "30|Code Server|$YELLOW"
+    "31|Akile Monitor|$WHITE"
     "………………………|$WHITE" 
     "41|RustDesk|$WHITE"
     "42|SubLinkX|$WHITE"
@@ -4209,7 +4208,14 @@ EOF
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT=1
             case "${INPUT}" in 
-            1) download_github_realease "https://github.com/fatedier/frp"  ;; 
+            1) 
+                echo -e "\n$TIP 开始下载: 1.frp最新程序..."
+                download_github_realease "https://github.com/fatedier/frp"  
+                echo -e "\n$TIP 开始下载: 2.frp配置文件..."
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml" 
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml" 
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" 
+                ;; 
             0) _IS_BREAK='false' ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
@@ -4674,14 +4680,14 @@ EOF
         22) tools_install_mysql ;; 
         23) tools_install_mariadb ;; 
         24) tools_install_postgresql ;; 
-        25) tools_install_frps ;; 
-        26) tools_install_frpc ;; 
-        27) tools_install_lucky ;; 
-        28) tools_install_neza ;; 
-        29) tools_install_chrome ;; 
-        30) tools_install_coder ;; 
-        31) tools_install_codeserver ;; 
-        32) tools_install_akilemonitor ;; 
+        25) tools_manage_frp ;; 
+        # 26) tools_install_frpc ;; 
+        26) tools_install_lucky ;; 
+        27) tools_install_neza ;; 
+        28) tools_install_chrome ;; 
+        29) tools_install_coder ;; 
+        30) tools_install_codeserver ;; 
+        31) tools_install_akilemonitor ;; 
         41) tools_install_rustdesk ;; 
         42) tools_install_sublinkx ;; 
         43) tools_install_deeplx ;; 
