@@ -4208,7 +4208,7 @@ EOF
             [[ -z "$INPUT" ]] &&  INPUT=1
             case "${INPUT}" in 
             1) 
-                local pfld='$PWD/frp'
+                local pfld="$PWD/frp"
                 [[ -d "$pfld" ]] && mkdir -p $pfld
                 echo -e "\n$TIP 开始下载: 1.frp最新程序..."
                 download_github_realease "https://github.com/fatedier/frp"  "" 1 $pfld
@@ -4217,7 +4217,7 @@ EOF
                 download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml"    "${pfld}/frps.toml" 
                 download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "${pfld}/frps.service"  
                 echo -e "\n$TIP 解压程序: 3.tar -zxf ${pfld}/frp_*.tar.gz"
-                tat -zxf "${pfld}/frp_*.tar.gz"
+                tar -zxf "${pfld}/frp_*.tar.gz"
                 echo -e "\n$TIP 解压完成: 4.修改配置文件，再启动服务 ..."
                 ;; 
             0) _IS_BREAK='false' && break ;; 
