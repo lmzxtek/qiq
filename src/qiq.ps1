@@ -576,7 +576,10 @@ function App_download {
         Write-Host "  17. 1Remote          " 
         Write-Host "   8. 7zip             " -NoNewline  
         Write-Host "  18. gm-api           " -ForegroundColor Blue
-        Write-Host "   9. PotPlayer        " #-NoNewline  
+        Write-Host "   9. WinSW            " -NoNewline
+        Write-Host "  19. shawl            " #-NoNewline  
+        Write-Host "  10. PotPlayer        " -NoNewline  
+        # Write-Host "  20. shawl            " #-NoNewline  
         Write-Host "  88. reinstall.bat    " -NoNewline
         Write-Host "  99. All              " -ForegroundColor Green
         Write-Host "   0. Exit             " -ForegroundColor Red
@@ -731,6 +734,22 @@ function App_download {
             Write-Host " Download failed" -ForegroundColor Red
         }
     }
+    function download_winsw {
+        $url_gh = "https://github.com/winsw/winsw"
+        $fpattern = ".*WinSW-x64.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_shawl {
+        $url_gh = "https://github.com/mtkennerly/shawl"
+        $fpattern = ".*-win64.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
     function download_pot_desktop {
         $url_gh = "https://github.com/pot-app/pot-desktop"
         $fpattern = ".*-x64-setup.exe"
@@ -880,7 +899,9 @@ servertag = 'gm(demo)'
             "17" { download_1remote }
             "8"  { download_7zip_latest }
             "18" { download_gm_api }
-            "9"  { download_potplayer }
+            "9"  { download_winsw  }
+            "19" { download_shawl  }
+            "10" { download_potplayer }
             "88" { download_reinstall; }
             "99" { download_all_software }
             "0"  { return }
