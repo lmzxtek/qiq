@@ -7175,7 +7175,8 @@ services:
         environment:
             - PUID=1000
             - PGID=1000
-            - TZ=Asia/Shanghai
+            - TZ=Etc/UTC
+            # - TZ=Asia/Shanghai
             NEKO_SCREEN: 1920x1080@30
             NEKO_PASSWORD: ${pssuser}
             NEKO_PASSWORD_ADMIN: ${pssadmin}
@@ -7274,7 +7275,8 @@ services:
         environment:
             - PUID=1000
             - PGID=1000
-            - TZ=Asia/Shanghai
+            - TZ=Etc/UTC
+            # - TZ=Asia/Shanghai
             - FIREFOX_CLI=https://www.google.com/ #optional
             - CHROME_CLI=https://www.google.com/ #optional
             - EDGE_CLI=https://www.google.com/ #optional
