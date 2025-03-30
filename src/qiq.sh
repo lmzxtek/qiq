@@ -7647,7 +7647,7 @@ MENU_DOCKER_MANAGE_ITEMS=(
     "11|状态查看|$GREEN"
     "12|容器列表|$YELLOW" 
     "13|镜像列表|$WHITE" 
-    "14|网络列表|$WHITE" 
+    "14|网络列表|$BLUE" 
     "………………………|$WHITE" 
     "31|站点部署|$YELLOW" 
     "32|站点管理|$WHITE" 
@@ -7901,6 +7901,7 @@ function docker_management_menu(){
     # 验证配置
     function dc_verify_config() {
         echo -e "\n当前配置文件内容："
+        local CONFIG_FILE="/etc/docker/daemon.json"
         cat "$CONFIG_FILE" 2>/dev/null || echo "配置文件不存在"
         
         echo -e "\nDocker服务状态："
@@ -7968,19 +7969,29 @@ function docker_management_menu(){
             ${INPUT}
         echo -e "\n $TIP 添加${INPUT}网络完成.\n"
     }
+    local docker_ipv6_options=(
+        " 1.开启IPv6网络"
+        " 2.关闭IPv6网络"
+        " 3.查看网络信息"
+        " 4.添加v4v6网络"
+        " 0.返回"
+    )
     function docker_manage_ipv6(){
         generate_separator "=" 40
-        echo -e " 1.开启IPv6网络"
-        echo -e " 2.关闭IPv6网络"
-        echo -e " 3.添加v4v6网络"
-        echo -e " 0.返回"
+        # echo -e " 1.开启IPv6网络"
+        # echo -e " 2.关闭IPv6网络"
+        # echo -e " 3.查看网络信息"
+        # echo -e " 4.添加v4v6网络"
+        # echo -e " 0.返回"
+        print_items_list docker_ipv6_options[@] 
         generate_separator "=" 40
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
         1) docker_enable_ipv6 ;;
         2) docker_disable_ipv6 ;;
-        3) docker_add_network_v4v6 ;;
+        3) dc_verify_config ;;
+        4) docker_add_network_v4v6 ;;
         0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         *) _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
         esac
@@ -8067,26 +8078,32 @@ function docker_management_menu(){
     function docker_network_list(){
         local dc_name=''
         local dc_items_list=(
-            "1.删除网络|${RED}"
-            "2.清理网络"
-            "3.删除所有"
-            "4.管理IPv6|${GREEN}"
-            "0.返回"
+            "1.删除网络|${RED}|❌"
+            "2.清理网络||📛"
+            "3.删除所有||🚫"
+            "4.开启IPv6|${GREEN}|🔓"
+            "5.关闭IPv6|${WHITE}|🔒"
+            "6.查看IPv6|${BLUE}|💡"
+            "7.添加v4v6|${Yellow}|🌐"
+            "0.返回|$RED|🔙"
         )
 
         while true; do
             clear 
             docker_show_networks
-            print_items_list dc_items_list[@] " ⚓ 网络操作"
+            generate_separator "=" 25
+            print_items_list dc_items_list[@] " 🌏 网络操作"
+            generate_separator "=" 25
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
             1)  dc_name=$(docker_get_id '网络名') && [[ -n ${dc_name} ]] && docker network rm $dc_name ;;
             2)  docker network prune ;; # 清理网络
             3)  docker_images_rm_all ;;
-            4)  docker_manage_ipv6 ;;
-            # 5)  docker_disable_ipv6 ;;
-            # 6)  docker_add_network_v4v6 ;;
+            4)  docker_enable_ipv6 ;;
+            5)  docker_disable_ipv6 ;;
+            6)  dc_verify_config ;;
+            7)  docker_add_network_v4v6 ;;
             0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
             *)  _BREAK_INFO=" 请输入有效选项！" ;;
             esac 
