@@ -8138,13 +8138,13 @@ function docker_management_menu(){
     function docker_containers_list(){
         local dc_id=''
         local dc_items_list=(
-            "1.删除容器|${RED}"
+            "1.删除容器|${RED}|♨️"
             "2.停止容器"
             "3.重启容器"
-            "4.查看容器"
+            "4.查看容器|${GREEN}|🎯"
             "5.停止所有"
             "6.删除所有"
-            "0.返回"
+            "0.返回||🔙"
         )
 
         while true; do
@@ -8154,10 +8154,10 @@ function docker_management_menu(){
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
-            1)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stop $dc_id && docker rm $dc_id ;;
-            2)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stop $dc_id ;;
-            3)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker restart $dc_id ;;
-            4)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stats $dc_id ;;
+            1)  clear && print_items_list dc_items_list[@] " ✨ 容器列表" && dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stop $dc_id && docker rm $dc_id ;;
+            2)  clear && print_items_list dc_items_list[@] " ✨ 容器列表" && dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stop $dc_id ;;
+            3)  clear && print_items_list dc_items_list[@] " ✨ 容器列表" && dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker restart $dc_id ;;
+            4)  clear && print_items_list dc_items_list[@] " ✨ 容器列表" && dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker inspect $dc_id ;;
             5)  docker_containers_stop_all ;;
             6)  docker_containers_rm_all ;;
             0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
