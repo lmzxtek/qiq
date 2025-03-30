@@ -7151,7 +7151,7 @@ EOF
         *) echo -e "\n$WARN 输入错误[Y/n],设置为默认Edge浏览器内核"  ;;
         esac
         
-        local memsize=2
+        local memsize=1
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && memsize=$INPUT
@@ -7173,16 +7173,18 @@ services:
         image: m1k1o/neko:${brkernel}
         shm_size: "${memsize}gb"
         environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ=Etc/UTC
-            # - TZ=Asia/Shanghai
+            PUID=1000
+            PGID=1000
+            TZ=Etc/UTC
+            # TZ=Asia/Shanghai
             NEKO_SCREEN: 1920x1080@30
             NEKO_PASSWORD: ${pssuser}
             NEKO_PASSWORD_ADMIN: ${pssadmin}
             NEKO_EPR: 52000-52100
             NEKO_ICELITE: 1
+            # NEKO_NAT1TO1: '104.28.254.16'
             NEKO_FILE_TRANSFER_ENABLED: true
+        volumes:
             - /home/dc_neko_data/neko.yaml:/etc/neko/neko.yaml
         ports:
             - '${dc_port}:8080'
