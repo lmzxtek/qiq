@@ -5928,11 +5928,12 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "21|Dash.|$WHITE" 
     "22|MyIP|$WHITE" 
     "23|Neko|$WHITE" 
-    "24|IT-Tools|$YELLOW" 
-    "25|Stirling PDF|$WHITE" 
-    "26|OpenCode Server|$WHITE" 
-    "27|Code Server(LinuxServer)|$YELLOW" 
-    "28|Code Server(Official,NOT recommend)|$WHITE" 
+    "24|Browser(KasmVNC)|$WHITE" 
+    "25|IT-Tools|$YELLOW" 
+    "26|Stirling PDF|$WHITE" 
+    "27|OpenCode Server|$WHITE" 
+    "28|Code Server(LinuxServer)|$YELLOW" 
+    "29|Code Server(Official,NOT recommend)|$WHITE" 
 )
 function docker_deploy_menu(){
     function print_menu_docker_deploy(){
@@ -7168,15 +7169,20 @@ EOF
         cat > "$fyml" << EOF
 services:
     ${dc_name}:
-        container_name: m1k1o/neko:${brkernel}
-        image: $dc_imag
+        container_name: ${dc_name}
+        image: m1k1o/neko:${brkernel}
         shm_size: "${memsize}gb"
         environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Shanghai
             NEKO_SCREEN: 1920x1080@30
             NEKO_PASSWORD: ${pssuser}
             NEKO_PASSWORD_ADMIN: ${pssadmin}
             NEKO_EPR: 52000-52100
             NEKO_ICELITE: 1
+            NEKO_FILE_TRANSFER_ENABLED: true
+            - /home/dc_neko_data/neko.yaml:/etc/neko/neko.yaml
         ports:
             - '${dc_port}:8080'
             - "52000-52100:52000-52100/udp"
@@ -7201,6 +7207,102 @@ EOF
         cd -  &>/dev/null # 返回原来目录 
     }
 
+    function dc_deploy_browser_kasmvnc(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45427
+        local dc_name='browser'
+        local dc_imag=lscr.io/linuxserver/firefox:latest
+        # local dc_imag=lscr.io/linuxserver/msedge:latest
+        # local dc_imag=lscr.io/linuxserver/chromium:latest
+        local dc_desc="Browser(KasmVNC)"
+        local urlgit=''
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        brkernel='microsoft-edge'
+        echo -e ""
+        echo -e "$PRIGHT 1.Edge(dafault)"
+        echo -e "$PRIGHT 2.Firefox"
+        echo -e "$PRIGHT 3.Chromium"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择浏览器内核(默认为:Edge): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && INPUT=1
+        
+        case "${INPUT}" in
+        1) brkernel='msedge' ;;
+        2) brkernel='firefox' ;;
+        3) brkernel='chromium' ;;
+        *) echo -e "\n$WARN 输入错误[Y/n],设置为默认Edge浏览器内核"  ;;
+        esac
+        
+        local memsize=2
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && memsize=$INPUT
+
+        local pssuser=neko
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pssuser}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && pssuser=$INPUT
+
+        local pssadmin=admin
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理员密码(默认为:${pssadmin}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && pssadmin=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: lscr.io/linuxserver/${brkernel}:latest
+        shm_size: "${memsize}gb"
+        security_opt:
+            - seccomp:unconfined #optional
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Shanghai
+            # - FIREFOX_CLI=https://www.google.com/ #optional
+            # - CHROME_CLI=https://www.google.com/ #optional
+            # - EDGE_CLI=https://www.google.com/ #optional
+        volumes:
+            - ${fdat}:/config
+        ports:
+            - '${dc_port}:3000'
+            # - '${dc_port}:3001'
+        restart: unless-stopped
+EOF
+
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain   "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit   "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd -  &>/dev/null # 返回原来目录 
+    }
     function dc_deploy_docker_win(){    
         local base_root="/home/dcc.d"
         local dc_port=48006
@@ -7518,10 +7620,11 @@ EOF
         21) dc_deploy_dashdot  ;;
         22) dc_deploy_myip  ;;
         23) dc_deploy_neko  ;;
-        24) dc_deploy_ittools  ;;
-        25) dc_deploy_spdf  ;;
-        26) dc_deploy_code_linuxserver  ;;
-        27) dc_deploy_code_official  ;;
+        24) dc_deploy_browser_kasmvnc  ;;
+        25) dc_deploy_ittools  ;;
+        26) dc_deploy_spdf  ;;
+        27) dc_deploy_code_linuxserver  ;;
+        28) dc_deploy_code_official  ;;
         xx) sys_reboot ;;
         # 0)  echo -e "\n$TIP 返回上级菜单 ..." && _IS_BREAK="false"  && break  ;;
         0)  docker_management_menu && _IS_BREAK="false" && break  ;; 
