@@ -4216,7 +4216,7 @@ EOF
                 download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml" "."
                 download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "."  
                 ;; 
-            0) _IS_BREAK='false' ;; 
+            0) _IS_BREAK='false' && break ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
             case_end_tackle
