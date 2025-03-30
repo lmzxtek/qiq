@@ -4126,6 +4126,42 @@ EOF
         _BREAK_INFO=" 安装成功: ${app_name}!"
         
     }
+    function tools_manage_frp(){
+        function print_tools_manage_frp(){
+            echo -e ""
+            echo -e "$PRIGHT frp内网穿透"
+            generate_separator "=" 40
+            echo -e " 1.下载最新frp程序"
+            echo -e " 2.安装服务frps(服务端)"
+            echo -e " 3.卸载服务frps(服务端)"
+            echo -e " 4.重启服务frps(服务端)"
+            echo -e " 5.查看配置frps(服务端)"
+            echo -e " 6.安装服务frpc(客户端)"
+            echo -e " 7.卸载服务frpc(客户端)"
+            echo -e " 8.重启服务frpc(客户端)"
+            echo -e " 9.查看配置frpc(客户端)"
+            echo -e " 0.返回"
+            generate_separator "=" 40
+        }
+        while true; do
+            _IS_BREAK="true"
+            print_tools_manage_frp
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择？(默认官方): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT=1
+            case "${INPUT}" in 
+            1) docker_install_official ;; 
+            2) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) ;; 
+            3) bash <(curl -sSL https://raw.githubusercontent.com/SuperManito/LinuxMirrors/main/DockerInstallation.sh) ;; 
+            4) bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh) ;; 
+            5) bash <(curl -sSL https://cdn.jsdelivr.net/gh/SuperManito/LinuxMirrors@main/DockerInstallation.sh) ;; 
+            0) _IS_BREAK='false' ;; 
+            *) echo -e "\n$WARN 输入错误,返回！"  ;; 
+            esac 
+            case_end_tackle
+        done
+
+    }
     function tools_install_lucky(){
         _IS_BREAK="true"
         local app_name='Lucky'
@@ -7692,23 +7728,50 @@ function docker_management_menu(){
             echo -e "${TIP}已成功关闭ipv6访问"
         fi
     }
-    function docker_manage_ipv6(){
-        generate_separator "=" 40
-        echo -e " 1.开启容器IPv6网络"
-        echo -e " 2.关闭容器IPv6网络"
-        echo -e " 0.返回"
-        generate_separator "=" 40
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        case "${INPUT}" in
-        1) docker_enable_ipv6 ;;
-        2) docker_disable_ipv6 ;;
-        0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
-        *) _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
-        esac
-        # case_end_tackle
+    # 验证配置
+    function dc_verify_config() {
+        echo -e "\n当前配置文件内容："
+        cat "$CONFIG_FILE" 2>/dev/null || echo "配置文件不存在"
+        
+        echo -e "\nDocker服务状态："
+        systemctl status docker --no-pager -l | head -n 6
+        
+        echo -e "\nIPv6路由表："
+        ip -6 route show | grep docker0 || echo "未发现Docker IPv6路由"
     }
-    function docker_add_1panel_v4v6(){
+    #======== 启用IPv6
+    function dc_enable_ipv6() {
+        echo "正在启用Docker IPv6支持..."
+        local tmpfile=$(mktemp)
+        
+        # 使用jq合并配置
+        jq \
+            --argjson ipv6 true \
+            --arg fixed_cidr_v6 'fd00:dead:beef::/64' \
+            --argjson ip6tables true \
+            --argjson experimental true \
+            '. + {ipv6: $ipv6, fixed-cidr-v6: $fixed_cidr_v6, ip6tables: $ip6tables, experimental: $experimental}' \
+            "$CONFIG_FILE" > "$tmpfile"
+        
+        mv "$tmpfile" "$CONFIG_FILE"
+    }
+    #========= 禁用IPv6
+    function dc_disable_ipv6() {
+        echo "正在禁用Docker IPv6支持..."
+        local tmpfile=$(mktemp)
+        local CONFIG_FILE="/etc/docker/daemon.json"
+        local BACKUP_FILE="/etc/docker/daemon.json.bak"
+        local IPV6_CONFIG=('ipv6' 'true' 'fixed-cidr-v6' 'fd00:dead:beef::/64' 'ip6tables' 'true' 'experimental' 'true')
+        
+        # 使用jq删除相关字段
+        jq \
+            'del(.ipv6, ."fixed-cidr-v6", .ip6tables, .experimental)' \
+            "$CONFIG_FILE" > "$tmpfile"
+        
+        mv "$tmpfile" "$CONFIG_FILE"
+    }
+
+    function docker_add_network_v4v6(){
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入网络名称(默认:1panel-v4v6): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] &&  INPUT="1panel-v4v6"
@@ -7716,12 +7779,28 @@ function docker_management_menu(){
         echo -e "\n $TIP 添加${INPUT}之前，请先确保容器网络${RED}开启了bridge网络的IPv6${PLAIN}"
         docker network create --driver=bridge \
             --subnet=172.16.10.0/24 \
-            --gateway=172.16.10.1 \
             --ipv6 \
-            --subnet=2408:400e::/48 \
-            --gateway=2408:400e::1 \
+            --subnet=fd00:dead:beef::/64 \
             ${INPUT}
         echo -e "\n $TIP 添加${INPUT}网络完成.\n"
+    }
+    function docker_manage_ipv6(){
+        generate_separator "=" 40
+        echo -e " 1.开启IPv6网络"
+        echo -e " 2.关闭IPv6网络"
+        echo -e " 3.添加v4v6网络"
+        echo -e " 0.返回"
+        generate_separator "=" 40
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1) dc_enable_ipv6 ;;
+        2) dc_disable_ipv6 ;;
+        3) docker_add_network_v4v6 ;;
+        0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
+        *) _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
+        esac
+        # case_end_tackle
     }
     function docker_service_restart(){
         if ! command -v systemctl > /dev/null 2>&1; then 
@@ -7807,9 +7886,7 @@ function docker_management_menu(){
             "1.删除网络|${RED}"
             "2.清理网络"
             "3.删除所有"
-            "4.开启IPv6|${GREEN}"
-            "5.关闭IPv6"
-            "6.添加网络(v4v6)|${CYAN}"
+            "4.管理IPv6|${GREEN}"
             "0.返回"
         )
 
@@ -7823,9 +7900,9 @@ function docker_management_menu(){
             1)  dc_name=$(docker_get_id '网络名') && [[ -n ${dc_name} ]] && docker network rm $dc_name ;;
             2)  docker network prune ;; # 清理网络
             3)  docker_images_rm_all ;;
-            4)  docker_enable_ipv6 ;;
-            5)  docker_disable_ipv6 ;;
-            6)  docker_add_1panel_v4v6 ;;
+            4)  docker_manage_ipv6 ;;
+            # 5)  docker_disable_ipv6 ;;
+            # 6)  docker_add_network_v4v6 ;;
             0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
             *)  _BREAK_INFO=" 请输入有效选项！" ;;
             esac 
@@ -8014,7 +8091,7 @@ function script_update(){
 set_qiq_alias
 # 初始化全局变量
 init_global_vars
- 
+
 echo -e " Get region: $(get_region)\n"
 # 检测系统IP地址
 check_ip_status
