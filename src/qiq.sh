@@ -857,7 +857,7 @@ function download_file_url() {
     local url="$1"
     local file="$2"
     local path="${3:-${PWD}}"
-    local is_proxy=${3:-1}
+    local is_proxy=${4:-1}
 
     # 创建文件夹 
     [[ ! -d ${path} ]] && mkdir -p ${path} 
@@ -879,7 +879,7 @@ function download_github_realease() {
     local REPO_URL="$1"
     local fpattern="$2"
     local is_proxy=${3:-1}
-    local path="${4:-${PWD}}"
+    # local path="${4:-${PWD}}"
 
     # 获取系统架构和类型
     local ARCH=$(uname -m)
@@ -918,7 +918,7 @@ function download_github_realease() {
     command -v jq >/dev/null   2>&1 || { echo "Error: jq 未安装"; app_install jq ; }
 
     # 创建文件夹 
-    [[ ! -d ${path} ]] && mkdir -p ${path} 
+    # [[ ! -d ${path} ]] && mkdir -p ${path} 
     if [ -z "$DOWNLOAD_URL" ]; then
         echo "No matching release found for $SYSTEM $FRP_ARCH."
         return 1
@@ -3656,7 +3656,7 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "22|MySQL|$WHITE"
     "23|MariaDB|$WHITE"
     "24|PostgreSQL|$WHITE"
-    "25|frp|$WHITE"
+    "25|frp|$RED"
     "26|Lucky|$WHITE"
     "27|Nezha|$WHITE"
     "28|Chrome|$WHITE"
@@ -4186,6 +4186,23 @@ EOF
         _BREAK_INFO=" 安装成功: ${app_name}!"
         
     }
+    function tools_frp_download(){
+        local pfld="$PWD/frp"
+        [[ -d "$pfld" ]] && mkdir -p $pfld
+        # echo -e "\n$TIP    目录: ${pfld}"
+        echo -e "\n$TIP 开始下载: 1.frp最新程序..."
+        download_github_realease "https://github.com/fatedier/frp" 
+        echo -e "\n$TIP 开始下载: 2.frp配置文件..."
+        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml"    "frpc.toml" $pfld
+        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml"    "frps.toml" $pfld
+        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "frps.service"  $pfld
+        tarfile=$(ls -1 ./frp_*.tar.gz)
+        mv $tarfile "${pfld}/frp.tar.gz"
+        tarfile=${pfld}/frp.tar.gz
+        echo -e "\n$TIP 解压程序: ${tarfile}"
+        tar -zxf "${tarfile}"
+        # echo -e "\n$TIP 解压完成: 4.修改配置文件，再启动服务 ..."
+    }
     function tools_manage_frp(){
         local frp_items_list=(
             " 1.下载最新frp程序|$YELLOW"
@@ -4207,19 +4224,7 @@ EOF
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT=1
             case "${INPUT}" in 
-            1) 
-                local pfld="$PWD/frp"
-                [[ -d "$pfld" ]] && mkdir -p $pfld
-                echo -e "\n$TIP 开始下载: 1.frp最新程序..."
-                download_github_realease "https://github.com/fatedier/frp"  "" 1 $pfld
-                echo -e "\n$TIP 开始下载: 2.frp配置文件..."
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml"    "${pfld}/frpc.toml" 
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml"    "${pfld}/frps.toml" 
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "${pfld}/frps.service"  
-                echo -e "\n$TIP 解压程序: 3.tar -zxf ${pfld}/frp_*.tar.gz"
-                tar -zxf "${pfld}/frp_*.tar.gz"
-                echo -e "\n$TIP 解压完成: 4.修改配置文件，再启动服务 ..."
-                ;; 
+            1) tools_frp_download ;; 
             0) _IS_BREAK='false' && break ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
