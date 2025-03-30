@@ -7209,7 +7209,7 @@ EOF
 
     function dc_deploy_browser_kasmvnc(){    
         local base_root="/home/dcc.d"
-        local dc_port=45427
+        local dc_port=45428
         local dc_name='browser'
         local dc_imag=lscr.io/linuxserver/firefox:latest
         # local dc_imag=lscr.io/linuxserver/msedge:latest
@@ -7253,15 +7253,15 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && memsize=$INPUT
 
-        local pssuser=neko
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pssuser}): ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        [[ -n "$INPUT" ]] && pssuser=$INPUT
+        # local pssuser=neko
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pssuser}): ${PLAIN}")
+        # read -rp "${CHOICE}" INPUT
+        # [[ -n "$INPUT" ]] && pssuser=$INPUT
 
-        local pssadmin=admin
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理员密码(默认为:${pssadmin}): ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        [[ -n "$INPUT" ]] && pssadmin=$INPUT
+        # local pssadmin=admin
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理员密码(默认为:${pssadmin}): ${PLAIN}")
+        # read -rp "${CHOICE}" INPUT
+        # [[ -n "$INPUT" ]] && pssadmin=$INPUT
 
         cat > "$fyml" << EOF
 services:
@@ -7275,9 +7275,9 @@ services:
             - PUID=1000
             - PGID=1000
             - TZ=Asia/Shanghai
-            # - FIREFOX_CLI=https://www.google.com/ #optional
-            # - CHROME_CLI=https://www.google.com/ #optional
-            # - EDGE_CLI=https://www.google.com/ #optional
+            - FIREFOX_CLI=https://www.google.com/ #optional
+            - CHROME_CLI=https://www.google.com/ #optional
+            - EDGE_CLI=https://www.google.com/ #optional
         volumes:
             - ${fdat}:/config
         ports:
