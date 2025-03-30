@@ -7184,12 +7184,13 @@ services:
             NEKO_ICELITE: 1
             # NEKO_NAT1TO1: '104.28.254.16'
             NEKO_FILE_TRANSFER_ENABLED: true
+            NEKO_FILE_TRANSFER_PATH: /home/neko/Downloads
         volumes:
-            - /home/dc_neko_data/neko.yaml:/etc/neko/neko.yaml
+            - ${fdat}:/home/neko/Downloads
         ports:
             - '${dc_port}:8080'
             - "52000-52100:52000-52100/udp"
-        restart: always
+        restart: unless-stopped
 EOF
 
         docker-compose up -d 
@@ -8138,7 +8139,7 @@ function docker_management_menu(){
     function docker_containers_list(){
         local dc_id=''
         local dc_items_list=(
-            "1.删除容器|${RED}|♨️"
+            "1.删除容器|${RED}|❌"
             "2.停止容器"
             "3.重启容器"
             "4.查看容器|${GREEN}|🎯"
