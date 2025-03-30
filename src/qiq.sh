@@ -863,6 +863,8 @@ function download_file_url() {
     [[ ! -d ${path} ]] && mkdir -p ${path} 
 
     [[ $is_proxy -eq 1 ]] && url=$(get_proxy_url "$url") 
+    echo -e " $WORKING File url: ${url} "
+    echo -e " $WORKING Target  : ${path}/${file} "
     if command -v curl &>/dev/null; then 
         curl -sSL -o ${path}/${file} "${url}" 
     elif command -v wget &>/dev/null; then 
@@ -4185,25 +4187,22 @@ EOF
         
     }
     function tools_manage_frp(){
-        function print_tools_manage_frp(){
-            echo -e ""
-            echo -e "$PRIGHT frp内网穿透"
-            generate_separator "=" 40
-            echo -e " 1.下载最新frp程序"
-            echo -e " 2.安装服务frps(服务端)"
-            echo -e " 3.卸载服务frps(服务端)"
-            echo -e " 4.重启服务frps(服务端)"
-            echo -e " 5.查看配置frps(服务端)"
-            echo -e " 6.安装服务frpc(客户端)"
-            echo -e " 7.卸载服务frpc(客户端)"
-            echo -e " 8.重启服务frpc(客户端)"
-            echo -e " 9.查看配置frpc(客户端)"
-            echo -e " 0.返回"
-            generate_separator "=" 40
-        }
+        local frp_items_list=(
+            " 1.下载最新frp程序|$YELLOW"
+            " 2.安装服务frps(服务端)|$GREEN"
+            " 3.卸载服务frps(服务端)"
+            " 4.重启服务frps(服务端)"
+            " 5.查看配置frps(服务端)"
+            " 6.安装服务frpc(客户端)|$GREEN"
+            " 7.卸载服务frpc(客户端)"
+            " 8.重启服务frpc(客户端)"
+            " 9.查看配置frpc(客户端)"
+            " 0.返回|$RED"
+        )
+        #=================================
         while true; do
             _IS_BREAK="true"
-            print_tools_manage_frp
+            print_items_list frp_items_list[@] ' 🏹 frp内网穿透 '
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT=1
@@ -4212,9 +4211,9 @@ EOF
                 echo -e "\n$TIP 开始下载: 1.frp最新程序..."
                 download_github_realease "https://github.com/fatedier/frp"  
                 echo -e "\n$TIP 开始下载: 2.frp配置文件..."
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml" "."
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml" "."
-                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "."  
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml" "frpc.toml" 
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml" "frps.toml" 
+                download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "frps.service"  
                 ;; 
             0) _IS_BREAK='false' && break ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
