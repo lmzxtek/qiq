@@ -578,7 +578,7 @@ function App_download {
         Write-Host "  18. gm-api           " -ForegroundColor Blue
         Write-Host "   9. WinSW            " -NoNewline
         Write-Host "  19. shawl            " #-NoNewline  
-        Write-Host "  10. PotPlayer        " -NoNewline  
+        Write-Host "  10. PotPlayer        " #-NoNewline  
         # Write-Host "  20. shawl            " #-NoNewline  
         Write-Host "  88. reinstall.bat    " -NoNewline
         Write-Host "  99. All              " -ForegroundColor Green

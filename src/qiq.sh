@@ -4188,7 +4188,7 @@ EOF
     }
     function tools_frp_download(){
         local pfld="$PWD/frp"
-        [[ -d "$pfld" ]] && mkdir -p $pfld
+        [[ ! -d "$pfld" ]] && mkdir -p $pfld
         cd $pfld
         # echo -e "\n$TIP    目录: ${pfld}"
         echo -e "\n$TIP 开始下载: 1.frp最新程序..."
@@ -4205,8 +4205,8 @@ EOF
         tar -zxf ${tarfile}
         rm -rf $tarfile 
         
-        echo -e "\n$TIP 解压完成: 4.修改配置文件，再启动服务 ..."
-        local tardir=$(ls -1 -d frp_*.tar.gz)
+        echo -e "\n$TIP 解压完成: 3.修改配置文件，再启动服务 ..."
+        local tardir=$(ls -1 -d frp_*)
         mv $tardir/frps ./ 
         mv $tardir/frpc ./ 
         rm -rf $tardir 
