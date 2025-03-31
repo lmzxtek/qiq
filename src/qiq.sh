@@ -4793,7 +4793,10 @@ EOF
             "7|配置客户端(frpc)    |$CYAN"
             "8|卸载客户端(frpc)    |$WHITE"
             "============================"
-            "9|下载最新frp程序    |$YELLOW"
+            "9|下载最新frp程序     |$YELLOW"
+            "10|查看正在运行的进程  |$GREEN"
+            "11|查看所有加载的服务  |$WHITE"
+            "12|查看所有已安装的服务|$WHITE"
             "0|返回|$RED"
         )
         #=================================
@@ -4817,6 +4820,12 @@ EOF
             7) tools_add_service_frpc ;; 
             8) tools_srv_delete "frpc" ;; 
             9) tools_frp_download ;; 
+            10) 
+                # ps aux | grep -E 'systemd|init' 
+                systemctl list-units --type=service --state=running
+                ;; 
+            11) systemctl list-units --type=service --all ;; 
+            12) systemctl list-unit-files --type=service ;; 
             0) _IS_BREAK='false' && break ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
