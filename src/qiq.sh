@@ -4397,6 +4397,7 @@ EOF
         # 生成随机端口和凭证
         local bind_port=7000
         local dashboard_port=7500
+        local dashboard_ip="0.0.0.0"
 
         local token=$(openssl rand -hex 16)
         local dashboard_user="user_$(openssl rand -hex 4)"
@@ -4443,7 +4444,10 @@ EOF
         [[ -z "$INPUT" ]] &&  INPUT="Y"
         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
             is_web_dashboard=''
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板端口(默认: ${dashboard_port}): ${PLAIN}")
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板监听IP(默认: ${dashboard_ip}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_ip=${INPUT} 
+            
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板监听端口(默认: ${dashboard_port}): ${PLAIN}")
             read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_port=${INPUT} 
             
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板用户名(随机: ${dashboard_user}): ${PLAIN}")
@@ -4460,13 +4464,13 @@ EOF
 bind_port    = $bind_port
 quicBindPort = $bind_port
 
-auth.method = 'token'
-auth.token  = '$token'
+auth.method = "token"
+auth.token  = "$token"
 
-${is_web_dashboard}webServer.addr = '0.0.0.0'
+${is_web_dashboard}webServer.addr = "$dashboard_ip"
 ${is_web_dashboard}webServer.port = $dashboard_port
-${is_web_dashboard}webServer.user = $dashboard_user
-${is_web_dashboard}webServer.password  = $dashboard_pwd
+${is_web_dashboard}webServer.user = "$dashboard_user"
+${is_web_dashboard}webServer.password  = "$dashboard_pwd"
 EOF
 
         local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即配置系统服务？[Y/n]: ${PLAIN}")
@@ -4484,6 +4488,7 @@ EOF
         local bind_ip=''
         local bind_port=7000
         local dashboard_port=7400
+        local dashboard_ip="0.0.0.0"
 
         local token=''
         local dashboard_user="user_$(openssl rand -hex 4)"
@@ -4543,9 +4548,12 @@ EOF
         [[ -z "$INPUT" ]] &&  INPUT="Y"
         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
             is_web_dashboard=''
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板端口(默认: ${dashboard_port}): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_port=${INPUT} 
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板监听IP(默认: ${dashboard_ip}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_ip=${INPUT} 
             
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板监听端口(默认: ${dashboard_port}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_port=${INPUT} 
+
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板用户名(随机: ${dashboard_user}): ${PLAIN}")
             read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_user=${INPUT} 
 
@@ -4609,17 +4617,17 @@ EOF
         # 创建 frps.toml 文件
         cat <<EOF > ${fcfg}
 [common]
-serverAddr = $bind_ip
+serverAddr = "$bind_ip"
 serverPort = $bind_port
 ${is_quic}transport.protocol = "quic"
 
-auth.method = 'token'
-auth.token  = '$token'
+auth.method = "token"
+auth.token  = "$token"
 
-${is_web_dashboard}webServer.addr = '0.0.0.0'
-${is_web_dashboard}webServer.port = $dashboard_port
-${is_web_dashboard}webServer.user = $dashboard_user
-${is_web_dashboard}webServer.password  = $dashboard_pwd
+${is_web_dashboard}webServer.addr = "$dashboard_ip"
+${is_web_dashboard}webServer.port = "$dashboard_port"
+${is_web_dashboard}webServer.user = "$dashboard_user"
+${is_web_dashboard}webServer.password  = "$dashboard_pwd"
 EOF
 
         local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即配置系统服务？[Y/n]: ${PLAIN}")
