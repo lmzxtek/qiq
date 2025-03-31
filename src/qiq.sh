@@ -4612,7 +4612,7 @@ EOF
             local CHOICE=$(echo -e "\n${BOLD}└─ 添加的配置信息是否正确？[Y/n]: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT="Y" 
-            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] ;; then 
+            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] ; then 
                 proxies+="\n\n${proxy}"
             fi 
 
