@@ -4557,23 +4557,52 @@ EOF
         while true; do 
             echo -e "\n${BOLD} $PRIGHT 添加穿透信息 ${PLAIN}"
             local proxy='' 
-            local proxy_name=''
-            local proxy_type=''
-            local local_ip='127.0.0.1' # [::1]
-            local local_port=''
-            local remote_port=''
-            local is_enable_encrypt='# '
-            local is_enable_compression='# '
             
-            proxies+="\n${proxy}"
+            local proxy_name=''
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入穿透名称(默认: ${proxy_name}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  proxy_name=${INPUT} 
+
+            local proxy_type='tcp'
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入穿透类型(默认: ${proxy_type}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  proxy_type=${INPUT} 
+
+            local local_ip='127.0.0.1' # [::1]
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入本地IP(默认: ${local_ip}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  local_ip=${INPUT} 
+            
+            local local_port=3000
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入本地端口(默认: ${local_port}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  local_port=${INPUT} 
+
+            local remote_port=3000
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入远程端口(默认: ${local_port}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  remote_port=${INPUT} 
+
+            local is_enable_encrypt='# '
+            local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用加密？[Y/n]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  INPUT='Y' 
+            [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] && is_enable_encrypt=''
+
+            local is_enable_compression='# '
+            local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用压缩？[y/N]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  INPUT='N' 
+            [[ $INPUT == [Nn] || $INPUT == [Nn][Oo] ]] && is_enable_compression=''
+
+            proxy="\n[[proxies]]"
+            proxy+="\nname = $proxy_name"
+            proxy+="\ntype = $proxy_type"
+            proxy+="\nlocalIP = $local_ip"
+            proxy+="\nlocalPort = $local_port"
+            proxy+="\nremotePort = $remote_port"
+            proxy+="\n${is_enable_encrypt}useEncryption = true"
+            proxy+="\n${is_enable_compression}transport.useEncryption = true"
+
+            proxies+="\n\n${proxy}"
             local CHOICE=$(echo -e "\n${BOLD}└─ 是否继续添加？[Y/n]: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT="Y"
-            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-                continue 
-            else
-                break 
-            fi
+            [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] || break 
+            
         done 
         
         
@@ -4597,8 +4626,8 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] &&  INPUT="Y"
         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-            if [[ ! -f "${fld}/frps" ]] ; then 
-                echo -e "\n$WARN 检测到目录中程序 ${fld}/frps 不存在,建议先下载!"
+            if [[ ! -f "${fld}/frpc" ]] ; then 
+                echo -e "\n$WARN 检测到目录中程序 ${fld}/frpc 不存在,建议先下载!"
             fi 
             tools_add_service_frps ${fld} "${srv_name}" "${fcfg}"
         fi
