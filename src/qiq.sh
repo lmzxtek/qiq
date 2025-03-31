@@ -4476,7 +4476,7 @@ EOF
             if [[ ! -f "${fld}/frps" ]] ; then 
                 echo -e "\n$WARN 检测到目录中程序 ${fld}/frps 不存在,建议先下载!"
             fi 
-            tools_add_service_frps ${fld} "${srv_name}" "${fcfg}"
+            tools_add_service_frps ${fld} "${srv_name}" "${srv_name}.toml"
         fi
     }
     function tools_service_generate_frpc_cfg() {
@@ -4629,7 +4629,7 @@ EOF
             if [[ ! -f "${fld}/frpc" ]] ; then 
                 echo -e "\n$WARN 检测到目录中程序 ${fld}/frpc 不存在,建议先下载!"
             fi 
-            tools_add_service_frps ${fld} "${srv_name}" "${fcfg}"
+            tools_add_service_frps ${fld} "${srv_name}" "${srv_name}.toml"
         fi
     }
     function tools_manage_frp(){
