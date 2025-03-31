@@ -22,6 +22,7 @@
 SRC_VER=v0.7.4
 #==========================
 
+DOCKER_PROXY='m.daocloud.io/'
 URL_PROXY='https://proxy.zwdk.org/proxy/'
 URL_REDIRECT='https://qiq.zwdk.org/sh'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
@@ -832,6 +833,17 @@ function get_proxy_url() {
     # check_ip_china
     # [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
     [ "$region" = 'CN' ] && url="${URL_PROXY}${url}"
+    echo "$url"
+}
+
+## 判断IP所在地，给url设置代理 
+function get_proxy_docker() {
+    local url="$1"
+    local region=${2:-${_REGION}} 
+    [ "$region" = 'Unknown' ] && region="$(get_region )"
+    # check_ip_china
+    # [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
+    [ "$region" = 'CN' ] && url="${DOCKER_PROXY}${url}"
     echo "$url"
 }
 
