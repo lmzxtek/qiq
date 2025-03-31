@@ -4605,12 +4605,21 @@ EOF
             proxy+="\n${is_enable_encrypt}useEncryption = true"
             proxy+="\n${is_enable_compression}transport.useEncryption = true"
 
-            proxies+="\n\n${proxy}"
+            echo -e "\n${BOLD} $PRIGHT 添加的配置信息如下: ${PLAIN}\n"
+            generate_separator "=" 25
+            echo -e "${proxy}"
+            generate_separator "=" 25
+            local CHOICE=$(echo -e "\n${BOLD}└─ 添加的配置信息是否正确？[Y/n]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="Y" 
+            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] ;; then 
+                proxies+="\n\n${proxy}"
+            fi 
+
             local CHOICE=$(echo -e "\n${BOLD}└─ 是否继续添加？[Y/n]: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT="Y"
             [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] || break 
-            
         done 
         
         
@@ -4628,6 +4637,7 @@ ${is_web_dashboard}webServer.addr = "$dashboard_ip"
 ${is_web_dashboard}webServer.port = "$dashboard_port"
 ${is_web_dashboard}webServer.user = "$dashboard_user"
 ${is_web_dashboard}webServer.password  = "$dashboard_pwd"
+
 ${proxies}
 EOF
 
