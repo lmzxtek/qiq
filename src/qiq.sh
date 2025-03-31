@@ -4411,14 +4411,14 @@ EOF
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置文件名称(默认: ${srv_name}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  srv_name=${INPUT} 
         local fcfg="${fld}/${srv_name}.toml"
-        if [[ -f "$fld/${fcfg}.toml" ]] ; then 
-            echo -e "\n$WARN 配置文件: ${fld}/${fcfg} 已存在,请先备份!"
+        if [[ -f "${fcfg}" ]] ; then 
+            echo -e "\n$WARN 配置文件: ${fcfg} 已存在,请先备份!"
             local CHOICE=$(echo -e "\n${BOLD}└─ 是否备份？[Y/n]: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT="Y"
             if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-                mv ${fld}/${fcfg} ${fld}/${fcfg}.bak
-                echo -e "\n$WARN 已备份配置文件: ${fld}/${fcfg} -> ${fld}/${fcfg}.bak"
+                mv ${fcfg} ${fcfg}.bak
+                echo -e "\n$WARN 已备份配置文件: ${fcfg} -> ${fcfg}.bak"
             else
                 local CHOICE=$(echo -e "\n${BOLD}└─ 不备份配置文件, 是否继续？[Y/n]: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
@@ -4502,14 +4502,14 @@ EOF
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置文件名称(默认: ${srv_name}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  srv_name=${INPUT} 
         local fcfg="${fld}/${srv_name}.toml"
-        if [[ -f "$fld/${fcfg}.toml" ]] ; then 
-            echo -e "\n$WARN 配置文件: ${fld}/${fcfg} 已存在,请先备份!"
+        if [[ -f "${fcfg}" ]] ; then 
+            echo -e "\n$WARN 配置文件: ${fcfg} 已存在,请先备份!"
             local CHOICE=$(echo -e "\n${BOLD}└─ 是否备份？[Y/n]: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT="Y"
             if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-                mv ${fld}/${fcfg} ${fld}/${fcfg}.bak
-                echo -e "\n$WARN 已备份配置文件: ${fld}/${fcfg} -> ${fld}/${fcfg}.bak"
+                mv ${fcfg} ${fcfg}.bak
+                echo -e "\n$WARN 已备份配置文件: ${fcfg} -> ${fcfg}.bak"
             else
                 local CHOICE=$(echo -e "\n${BOLD}└─ 不备份配置文件, 是否继续？[Y/n]: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
@@ -4537,7 +4537,7 @@ EOF
         read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  token=${INPUT} 
         
         local is_quic="# "
-        local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用Web管理面板？[Y/n]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用quic? [Y/n]: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] &&  INPUT="Y"
         [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] && is_quic=''
@@ -4586,24 +4586,24 @@ EOF
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入远程端口(默认: ${local_port}): ${PLAIN}")
             read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  remote_port=${INPUT} 
 
-            local is_enable_encrypt='# '
+            local is_enable_encrypt='false'
             local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用加密？[Y/n]: ${PLAIN}")
-            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  INPUT='Y' 
-            [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] && is_enable_encrypt=''
+            read -rp "${CHOICE}" INPUT && [[ -z "$INPUT" ]] &&  INPUT='Y' 
+            [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] && is_enable_encrypt='true'
 
-            local is_enable_compression='# '
+            local is_enable_compression='false'
             local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用压缩？[y/N]: ${PLAIN}")
-            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  INPUT='N' 
-            [[ $INPUT == [Nn] || $INPUT == [Nn][Oo] ]] && is_enable_compression=''
+            read -rp "${CHOICE}" INPUT && [[ -z "$INPUT" ]] &&  INPUT='N' 
+            [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] && is_enable_compression='true'
 
             proxy="\n[[proxies]]"
-            proxy+="\nname = $proxy_name"
-            proxy+="\ntype = $proxy_type"
-            proxy+="\nlocalIP = $local_ip"
+            proxy+="\nname = \"$proxy_name\""
+            proxy+="\ntype = \"$proxy_type\""
+            proxy+="\nlocalIP = \"$local_ip\""
             proxy+="\nlocalPort = $local_port"
             proxy+="\nremotePort = $remote_port"
-            proxy+="\n${is_enable_encrypt}useEncryption = true"
-            proxy+="\n${is_enable_compression}transport.useEncryption = true"
+            proxy+="\ntransport.useEncryption = ${is_enable_encrypt}"
+            proxy+="\ntransport.useCompression = ${is_enable_compression}"
 
             echo -e "\n${BOLD} $PRIGHT 添加的配置信息如下: ${PLAIN}\n"
             generate_separator "=" 25
@@ -4624,6 +4624,7 @@ EOF
         
         
         # 创建 frps.toml 文件
+        echo -e "\n$WARN 保存配置文件: ${fcfg} ... "
         cat <<EOF > ${fcfg}
 [common]
 serverAddr = "$bind_ip"
@@ -4637,9 +4638,8 @@ ${is_web_dashboard}webServer.addr = "$dashboard_ip"
 ${is_web_dashboard}webServer.port = "$dashboard_port"
 ${is_web_dashboard}webServer.user = "$dashboard_user"
 ${is_web_dashboard}webServer.password  = "$dashboard_pwd"
-
-${proxies}
 EOF
+        echo -e "$proxies" | tee -a $fcfg 
 
         local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即配置系统服务？[Y/n]: ${PLAIN}")
         read -rp "${CHOICE}" INPUT

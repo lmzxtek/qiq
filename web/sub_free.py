@@ -1,6 +1,14 @@
 '''
 免费节点获取服务
 
+poetry run hypercorn sub_free:app --bind 127.0.0.1:5333 --workers
+poetry run hypercorn sub_free:app --bind 0.0.0.0:5333 --workers 9
+poetry run hypercorn sub_free:app --bind [::]:5333 --workers 9
+poetry run gunicorn sub_free:app -b 0.0.0.0:5333 -w 9
+
+1Panel: deploy on Python Environment
+run cmd: pip install poetry && poetry install && poetry run hypercorn sub_free:app --bind 0.0.0.0:5333 --workers 9
+
 
 '''
 from flask import Flask, request, jsonify, send_from_directory, request, abort
@@ -291,6 +299,8 @@ def route_mihomo_changfeng():
     
 @app.route('/usage', methods=['GET'])
 def route_usage():
+    # host_url = str(request.base_url)
+    host_url = str(request.host_url)
     
     html_content = f"""
 <!DOCTYPE html>
@@ -305,62 +315,62 @@ def route_usage():
     <h2>米贝</h2>
     <a href="https://www.mibei77.com"/>
     <ul>
-        <li><a href="http://{HOST}:{PORT}/c/mibei" target="_blank">http://{HOST}:{PORT}/c/mibei</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/v/mibei" target="_blank">http://{HOST}:{PORT}/v/mibei</a></li>\n\n
+        <li><a href="{host_url}c/mibei" target="_blank">{host_url}c/mibei</a></li>\n
+        <li><a href="{host_url}v/mibei" target="_blank">{host_url}v/mibei</a></li>\n\n
     </ul>
     <h2>NodeFree</h2>
     <ul>
-        <li><a href="http://{HOST}:{PORT}/c/nodefree" target="_blank">http://{HOST}:{PORT}/c/nodefree</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/v/nodefree" target="_blank">http://{HOST}:{PORT}/v/nodefree</a></li>\n\n
+        <li><a href="{host_url}c/nodefree" target="_blank">{host_url}c/nodefree</a></li>\n
+        <li><a href="{host_url}v/nodefree" target="_blank">{host_url}v/nodefree</a></li>\n\n
     </ul>
     <h2>V2rayFree</h2>
     <ul>
-        <li><a href="http://{HOST}:{PORT}/c/v2rayshare" target="_blank">http://{HOST}:{PORT}/c/v2rayshare</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/v/v2rayshare" target="_blank">http://{HOST}:{PORT}/v/v2rayshare</a></li>\n\n
+        <li><a href="{host_url}c/v2rayshare" target="_blank">{host_url}c/v2rayshare</a></li>\n
+        <li><a href="{host_url}v/v2rayshare" target="_blank">{host_url}v/v2rayshare</a></li>\n\n
     </ul>
     <h2>OpenRunner</h2>
     <ul>
-        <li><a href="http://{HOST}:{PORT}/c/openrunner" target="_blank">http://{HOST}:{PORT}/c/openrunner</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/v/openrunner" target="_blank">http://{HOST}:{PORT}/v/openrunner</a></li>\n\n
+        <li><a href="{host_url}c/openrunner" target="_blank">{host_url}c/openrunner</a></li>\n
+        <li><a href="{host_url}v/openrunner" target="_blank">{host_url}v/openrunner</a></li>\n\n
     </ul>
     <h2>clashNode</h2>
     <ul>
-        <li><a href="http://{HOST}:{PORT}/c/clashnode" target="_blank">http://{HOST}:{PORT}/c/clashnode</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/v/clashnode" target="_blank">http://{HOST}:{PORT}/v/clashnode</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/s/clashnode" target="_blank">http://{HOST}:{PORT}/s/clashnode</a></li>\n\n
+        <li><a href="{host_url}c/clashnode" target="_blank">{host_url}c/clashnode</a></li>\n
+        <li><a href="{host_url}v/clashnode" target="_blank">{host_url}v/clashnode</a></li>\n
+        <li><a href="{host_url}s/clashnode" target="_blank">{host_url}s/clashnode</a></li>\n\n
     </ul>
     <h2>长风</h2>
     <ul>
-        <li><a href="http://{HOST}:{PORT}/c/changfeng" target="_blank">http://{HOST}:{PORT}/c/changfeng</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/v/changfeng" target="_blank">http://{HOST}:{PORT}/v/changfeng</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/s/changfeng" target="_blank">http://{HOST}:{PORT}/s/changfeng</a></li>\n
-        <li><a href="http://{HOST}:{PORT}/m/changfeng" target="_blank">http://{HOST}:{PORT}/m/changfeng</a></li>\n
+        <li><a href="{host_url}c/changfeng" target="_blank">{host_url}c/changfeng</a></li>\n
+        <li><a href="{host_url}v/changfeng" target="_blank">{host_url}v/changfeng</a></li>\n
+        <li><a href="{host_url}s/changfeng" target="_blank">{host_url}s/changfeng</a></li>\n
+        <li><a href="{host_url}m/changfeng" target="_blank">{host_url}m/changfeng</a></li>\n
     </ul>
 </body>
 </html>
 """
     sss = f'''
     \n
-    \nhttp://{HOST}:{PORT}/c/mibei
-    \nhttp://{HOST}:{PORT}/v/mibei
+    \n{host_url}c/mibei
+    \n{host_url}v/mibei
     \n
-    \nhttp://{HOST}:{PORT}/c/nodefree
-    \nhttp://{HOST}:{PORT}/v/nodefree
+    \n{host_url}c/nodefree
+    \n{host_url}v/nodefree
     \n
-    \nhttp://{HOST}:{PORT}/c/v2rayshare
-    \nhttp://{HOST}:{PORT}/v/v2rayshare
+    \n{host_url}c/v2rayshare
+    \n{host_url}v/v2rayshare
     \n
-    \nhttp://{HOST}:{PORT}/c/openrunner
-    \nhttp://{HOST}:{PORT}/v/openrunner
+    \n{host_url}c/openrunner
+    \n{host_url}v/openrunner
     \n
-    \nhttp://{HOST}:{PORT}/c/clashnode
-    \nhttp://{HOST}:{PORT}/v/clashnode
-    \nhttp://{HOST}:{PORT}/s/clashnode
+    \n{host_url}c/clashnode
+    \n{host_url}v/clashnode
+    \n{host_url}s/clashnode
     \n
-    \nhttp://{HOST}:{PORT}/c/changfeng
-    \nhttp://{HOST}:{PORT}/v/changfeng
-    \nhttp://{HOST}:{PORT}/s/changfeng
-    \nhttp://{HOST}:{PORT}/m/changfeng
+    \n{host_url}c/changfeng
+    \n{host_url}v/changfeng
+    \n{host_url}s/changfeng
+    \n{host_url}m/changfeng
 
     '''
     
@@ -368,31 +378,31 @@ def route_usage():
     
 def usage():
     print(f'\n')
-    print(f' http://{HOST}:{PORT}/c/mibei')
-    print(f' http://{HOST}:{PORT}/v/mibei')
+    print(f' http://{host_url}/c/mibei')
+    print(f' http://{host_url}/v/mibei')
     
     # print(f'\n')
-    print(f' http://{HOST}:{PORT}/c/nodefree')
-    print(f' http://{HOST}:{PORT}/v/nodefree')
+    print(f' http://{host_url}/c/nodefree')
+    print(f' http://{host_url}/v/nodefree')
     
     # print(f'\n')
-    print(f' http://{HOST}:{PORT}/c/v2rayshare')
-    print(f' http://{HOST}:{PORT}/v/v2rayshare')
+    print(f' http://{host_url}/c/v2rayshare')
+    print(f' http://{host_url}/v/v2rayshare')
     
     # print(f'\n')
-    print(f' http://{HOST}:{PORT}/c/openrunner')
-    print(f' http://{HOST}:{PORT}/v/openrunner')
+    print(f' http://{host_url}/c/openrunner')
+    print(f' http://{host_url}/v/openrunner')
     
     # print(f'\n')
-    print(f' http://{HOST}:{PORT}/c/clashnode')
-    print(f' http://{HOST}:{PORT}/v/clashnode')
-    print(f' http://{HOST}:{PORT}/s/clashnode')
+    print(f' http://{host_url}/c/clashnode')
+    print(f' http://{host_url}/v/clashnode')
+    print(f' http://{host_url}/s/clashnode')
     
     # print(f'\n')
-    print(f' http://{HOST}:{PORT}/c/changfeng')
-    print(f' http://{HOST}:{PORT}/v/changfeng')
-    print(f' http://{HOST}:{PORT}/s/changfeng')
-    print(f' http://{HOST}:{PORT}/m/changfeng')
+    print(f' http://{host_url}/c/changfeng')
+    print(f' http://{host_url}/v/changfeng')
+    print(f' http://{host_url}/s/changfeng')
+    print(f' http://{host_url}/m/changfeng')
     
     print(f'\n')
 
