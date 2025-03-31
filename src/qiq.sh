@@ -4628,6 +4628,7 @@ ${is_web_dashboard}webServer.addr = "$dashboard_ip"
 ${is_web_dashboard}webServer.port = "$dashboard_port"
 ${is_web_dashboard}webServer.user = "$dashboard_user"
 ${is_web_dashboard}webServer.password  = "$dashboard_pwd"
+${proxies}
 EOF
 
         local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即配置系统服务？[Y/n]: ${PLAIN}")
