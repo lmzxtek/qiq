@@ -4213,15 +4213,18 @@ EOF
 
         cd -  >/dev/null 2>&1 
     }
-    function tools_add_service_frps(){
-        local pfld=${1}
-        local srvname=${2}
-        local cfgname=${3}
+    function tools_add_srv_frp(){
+        local srvname=${1}
+        local exepath=${2}
+        local cfgpath=${3}
 
         if [[ -z "$srvname" ]]; then
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(默认: frps): ${PLAIN}")
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(例如: frps): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
-            [[ -z "$INPUT" ]] &&  INPUT="frps"
+            if [[ -z "$INPUT" ]] ; then 
+                echo -e "WARN 请输入有效的服务名称: $INPUT "
+                return 1 
+            fi
             srvname=${INPUT} 
         fi 
         local srvpath=/etc/systemd/system/${srvname}.service 
@@ -4237,26 +4240,23 @@ EOF
             fi
         fi 
 
-        if [[ -z "$pfld" ]]; then
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入frps目录(默认: ./frp): ${PLAIN}")
+        if [[ -z "$exepath" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入程序路径(例如: ${PWD}/frp/frps): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
-            [[ -z "$INPUT" ]] &&  INPUT="${PWD}/frp"
-            pfld=${INPUT} 
+            exepath=$INPUT
         fi 
-        local fexe=${pfld}/frps
-        if [[ ! -f "$fexe" ]] ; then 
-            echo -e "\n$WARN ${fexe} 不存在,请先下载frp程序!"
+        if [[ ! -f "$exepath" ]] ; then 
+            echo -e "\n$WARN ${exepath} 不存在,请检查程序路径是否正确!"
             return 1 
         fi 
-        if [[ -z "$cfgname" ]]; then
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置名称(默认: frps.toml): ${PLAIN}")
+
+        if [[ -z "$cfgpath" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置路径(例如: ${PWD}/frp/frps.toml): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
-            [[ -z "$INPUT" ]] &&  INPUT="frps.toml"
-            cfgname=${INPUT} 
+            cfgpath=${INPUT} 
         fi 
-        local fcfg=${pfld}/${cfgname} 
-        if [[ ! -f "$fcfg" ]] ; then 
-            echo -e "\n$WARN 配置文件: ${fcfg} 不存在,请先准备好配置文件!"
+        if [[ ! -f "$cfgpath" ]] ; then 
+            echo -e "\n$WARN 配置文件: ${cfgpath} 不存在,请先准备好配置文件!"
             return 1 
         fi 
 
@@ -4272,7 +4272,7 @@ Wants = network.target
 [Service]
 Type = simple
 # 启动frps的命令, 需修改为您的frps的安装路径
-ExecStart = ${fexe} -c ${fcfg}
+ExecStart = ${exepath} -c ${cfgpath}
 
 [Install]
 WantedBy = multi-user.target
@@ -4291,6 +4291,7 @@ EOF
         [[ -z "$INPUT" ]] &&  INPUT="Y"
         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
             ##===========================
+            sudo systemctl daemon-reload 
             # # 启动frp
             sudo systemctl start ${srvname}
             # # 停止frp
@@ -4301,6 +4302,99 @@ EOF
             # # 查看frp状态
             sudo systemctl status ${srvname}
         fi
+
+    }
+    function tools_add_service_frps(){
+        local pfld=${1}
+        local srvname=${2}
+        local cfgname=${3}
+
+        if [[ -z "$srvname" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(默认: frps): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="frps"
+            srvname=${INPUT} 
+        fi 
+        # local srvpath=/etc/systemd/system/${srvname}.service 
+        # if [[ -f "$srvpath" ]] ; then             
+        #     local CHOICE=$(echo -e "\n${BOLD}└─ 服务 ${srvname} 已存在,是否继续？[Y/n]: ${PLAIN}")
+        #     read -rp "${CHOICE}" INPUT
+        #     [[ -z "$INPUT" ]] &&  INPUT="Y"
+        #     if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+        #         echo -e "\n$WARN 继续, 服务将被覆盖 ${srvname}: ${srvpath}!"
+        #     else
+        #         echo -e "\n$WARN 不覆盖服务 ${srvpath}, 返回!"
+        #         return 1 
+        #     fi
+        # fi 
+
+        if [[ -z "$pfld" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入frps目录(默认: ./frp): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="${PWD}/frp"
+            pfld=${INPUT} 
+        fi 
+        local fexe=${pfld}/frps
+        # if [[ ! -f "$fexe" ]] ; then 
+        #     echo -e "\n$WARN ${fexe} 不存在,请先下载frp程序!"
+        #     return 1 
+        # fi 
+        if [[ -z "$cfgname" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置名称(默认: frps.toml): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="frps.toml"
+            cfgname=${INPUT} 
+        fi 
+        local fcfg=${pfld}/${cfgname} 
+        # if [[ ! -f "$fcfg" ]] ; then 
+        #     echo -e "\n$WARN 配置文件: ${fcfg} 不存在,请先准备好配置文件!"
+        #     return 1 
+        # fi 
+        
+        tools_add_srv_frp ${srvname} ${fexe} ${fcfg}
+
+#         echo -e "\n$TIP 生成服务配置: ${srvpath}"
+#         # 创建 frps.service 文件
+#         cat <<EOF > ${srvpath}
+# [Unit]
+# # 服务名称，可自定义
+# Description = ${srvname}
+# After = network.target syslog.target
+# Wants = network.target
+
+# [Service]
+# Type = simple
+# # 启动frps的命令, 需修改为您的frps的安装路径
+# ExecStart = ${fexe} -c ${fcfg}
+
+# [Install]
+# WantedBy = multi-user.target
+# EOF
+
+#         local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务为开机自启动？[Y/n]: ${PLAIN}")
+#         read -rp "${CHOICE}" INPUT
+#         [[ -z "$INPUT" ]] &&  INPUT="Y"
+#         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+#             # 开机启动frp
+#             sudo systemctl enable ${srvname}
+#         fi
+
+#         local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务？[Y/n]: ${PLAIN}")
+#         read -rp "${CHOICE}" INPUT
+#         [[ -z "$INPUT" ]] &&  INPUT="Y"
+#         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+#             ##===========================
+#             sudo systemctl daemon-reload 
+#             # # 启动frp
+#             sudo systemctl start ${srvname}
+#             # # 停止frp
+#             # sudo systemctl stop ${srvname}
+#             # # 重启frp
+#             # sudo systemctl restart ${srvname}
+
+#             # # 查看frp状态
+#             sudo systemctl status ${srvname}
+#         fi
 
     }
     function tools_add_service_frpc(){
@@ -4314,30 +4408,30 @@ EOF
             [[ -z "$INPUT" ]] &&  INPUT="frpc"
             srvname=${INPUT} 
         fi 
-        local srvpath=/etc/systemd/system/${srvname}.service 
-        if [[ -f "$srvpath" ]] ; then             
-            local CHOICE=$(echo -e "\n${BOLD}└─ 服务 ${srvname} 已存在,是否继续？[Y/n]: ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            [[ -z "$INPUT" ]] &&  INPUT="Y"
-            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-                echo -e "\n$WARN 继续, 服务将被覆盖 ${srvname}: ${srvpath}!"
-            else
-                echo -e "\n$WARN 不覆盖服务 ${srvpath}, 返回!"
-                return 1 
-            fi
-        fi 
+        # local srvpath=/etc/systemd/system/${srvname}.service 
+        # if [[ -f "$srvpath" ]] ; then             
+        #     local CHOICE=$(echo -e "\n${BOLD}└─ 服务 ${srvname} 已存在,是否继续？[Y/n]: ${PLAIN}")
+        #     read -rp "${CHOICE}" INPUT
+        #     [[ -z "$INPUT" ]] &&  INPUT="Y"
+        #     if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+        #         echo -e "\n$WARN 继续, 服务将被覆盖 ${srvname}: ${srvpath}!"
+        #     else
+        #         echo -e "\n$WARN 不覆盖服务 ${srvpath}, 返回!"
+        #         return 1 
+        #     fi
+        # fi 
 
         if [[ -z "$pfld" ]]; then
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入frps目录(默认: ./frp): ${PLAIN}")
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入frpc目录(默认: ./frp): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT="${PWD}/frp"
             pfld=${INPUT} 
         fi 
-        local fexe=${pfld}/frps
-        if [[ ! -f "$fexe" ]] ; then 
-            echo -e "\n$WARN ${fexe} 不存在,请先下载frp程序!"
-            return 1 
-        fi 
+        local fexe=${pfld}/frpc
+        # if [[ ! -f "$fexe" ]] ; then 
+        #     echo -e "\n$WARN ${fexe} 不存在,请先下载frp程序!"
+        #     return 1 
+        # fi 
         if [[ -z "$cfgname" ]]; then
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置名称(默认: frps.toml): ${PLAIN}")
             read -rp "${CHOICE}" INPUT
@@ -4345,52 +4439,55 @@ EOF
             cfgname=${INPUT} 
         fi 
         local fcfg=${pfld}/${cfgname} 
-        if [[ ! -f "$fcfg" ]] ; then 
-            echo -e "\n$WARN 配置文件: ${fcfg} 不存在,请先准备好配置文件!"
-            return 1 
-        fi 
+        # if [[ ! -f "$fcfg" ]] ; then 
+        #     echo -e "\n$WARN 配置文件: ${fcfg} 不存在,请先准备好配置文件!"
+        #     return 1 
+        # fi 
 
-        echo -e "\n$TIP 生成服务配置: ${srvpath}"
-        # 创建 frps.service 文件
-        cat <<EOF > ${srvpath}
-[Unit]
-# 服务名称，可自定义
-Description = ${srvname}
-After = network.target syslog.target
-Wants = network.target
+        tools_add_srv_frp ${srvname} ${fexe} ${fcfg}
 
-[Service]
-Type = simple
-# 启动frps的命令, 需修改为您的frps的安装路径
-ExecStart = ${fexe} -c ${fcfg}
+#         echo -e "\n$TIP 生成服务配置: ${srvpath}"
+#         # 创建 frps.service 文件
+#         cat <<EOF > ${srvpath}
+# [Unit]
+# # 服务名称，可自定义
+# Description = ${srvname}
+# After = network.target syslog.target
+# Wants = network.target
 
-[Install]
-WantedBy = multi-user.target
-EOF
+# [Service]
+# Type = simple
+# # 启动frps的命令, 需修改为您的frps的安装路径
+# ExecStart = ${fexe} -c ${fcfg}
 
-        local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务为开机自启动？[Y/n]: ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        [[ -z "$INPUT" ]] &&  INPUT="Y"
-        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-            # 开机启动frp
-            sudo systemctl enable ${srvname}
-        fi
+# [Install]
+# WantedBy = multi-user.target
+# EOF
 
-        local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务？[Y/n]: ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        [[ -z "$INPUT" ]] &&  INPUT="Y"
-        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-            ##===========================
-            # # 启动frp
-            sudo systemctl start ${srvname}
-            # # 停止frp
-            # sudo systemctl stop ${srvname}
-            # # 重启frp
-            # sudo systemctl restart ${srvname}
+#         local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务为开机自启动？[Y/n]: ${PLAIN}")
+#         read -rp "${CHOICE}" INPUT
+#         [[ -z "$INPUT" ]] &&  INPUT="Y"
+#         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+#             # 开机启动frp
+#             sudo systemctl enable ${srvname}
+#         fi
 
-            # # 查看frp状态
-            sudo systemctl status ${srvname}
-        fi
+#         local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务？[Y/n]: ${PLAIN}")
+#         read -rp "${CHOICE}" INPUT
+#         [[ -z "$INPUT" ]] &&  INPUT="Y"
+#         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+#             ##===========================
+#             sudo systemctl daemon-reload 
+#             # # 启动frp
+#             sudo systemctl start ${srvname}
+#             # # 停止frp
+#             # sudo systemctl stop ${srvname}
+#             # # 重启frp
+#             # sudo systemctl restart ${srvname}
+
+#             # # 查看frp状态
+#             sudo systemctl status ${srvname}
+#         fi
 
     }
     function tools_service_generate_frps_cfg() {
@@ -4646,8 +4743,44 @@ EOF
             if [[ ! -f "${fld}/frpc" ]] ; then 
                 echo -e "\n$WARN 检测到目录中程序 ${fld}/frpc 不存在,建议先下载!"
             fi 
-            tools_add_service_frps ${fld} "${srv_name}" "${srv_name}.toml"
+            tools_add_service_frpc ${fld} "${srv_name}" "${srv_name}.toml"
         fi
+    }
+    function tools_srv_check_cfg(){
+        local tagname=${1:-frps} 
+        local srvname=$2 
+        if [[ -z "$srvname" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(默认: $tagname): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT=${tagname}
+            srvname=${INPUT} 
+        fi 
+        local srvpath=/etc/systemd/system/${srvname}.service 
+        if [[ ! -f "$srvpath" ]] ; then             
+            echo -e "\n$WARN 未检测到服务: ${srvpath}, 返回!"
+            return 1 
+        fi 
+
+        systemctl status $srvname 
+    }
+    function tools_srv_delete(){
+        local tagname=${1:-frps} 
+        local srvname=$2 
+        if [[ -z "$srvname" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(默认: $tagname): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT=${tagname}
+            srvname=${INPUT} 
+        fi 
+        local srvpath=/etc/systemd/system/${srvname}.service 
+        if [[ ! -f "$srvpath" ]] ; then             
+            echo -e "\n$WARN 未检测到服务: ${srvpath}, 返回!"
+            return 1 
+        fi 
+
+        systemctl stop $srvname 
+        rm -f $srvpath
+        echo -e "\n$SUCCESS 删除服务成功: ${srvpath}"
     }
     function tools_manage_frp(){
         local frp_items_list=(
@@ -4676,9 +4809,13 @@ EOF
             [[ -z "$INPUT" ]] &&  INPUT=1
             case "${INPUT}" in 
             1) tools_service_generate_frps_cfg ;; 
+            2) tools_srv_check_cfg  ;; 
             3) tools_add_service_frps ;; 
+            4) tools_srv_delete ;; 
             5) tools_service_generate_frpc_cfg ;; 
+            6) tools_srv_check_cfg "frpc" ;; 
             7) tools_add_service_frpc ;; 
+            8) tools_srv_delete "frpc" ;; 
             9) tools_frp_download ;; 
             0) _IS_BREAK='false' && break ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
