@@ -4461,7 +4461,7 @@ bind_port    = $bind_port
 quicBindPort = $bind_port
 
 auth.method = 'token'
-auth.token  = '"$token"'
+auth.token  = '$token'
 
 ${is_web_dashboard}webServer.addr = '0.0.0.0'
 ${is_web_dashboard}webServer.port = $dashboard_port
@@ -4614,7 +4614,7 @@ serverPort = $bind_port
 ${is_quic}transport.protocol = "quic"
 
 auth.method = 'token'
-auth.token  = '"$token"'
+auth.token  = '$token'
 
 ${is_web_dashboard}webServer.addr = '0.0.0.0'
 ${is_web_dashboard}webServer.port = $dashboard_port
