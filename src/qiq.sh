@@ -4213,28 +4213,427 @@ EOF
 
         cd -  >/dev/null 2>&1 
     }
+    function tools_add_service_frps(){
+        local pfld=${1}
+        local srvname=${2}
+        local cfgname=${3}
+
+        if [[ -z "$srvname" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(默认: frps): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="frps"
+            srvname=${INPUT} 
+        fi 
+        local srvpath=/etc/systemd/system/${srvname}.service 
+        if [[ -f "$srvpath" ]] ; then             
+            local CHOICE=$(echo -e "\n${BOLD}└─ 服务 ${srvname} 已存在,是否继续？[Y/n]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="Y"
+            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+                echo -e "\n$WARN 继续, 服务将被覆盖 ${srvname}: ${srvpath}!"
+            else
+                echo -e "\n$WARN 不覆盖服务 ${srvpath}, 返回!"
+                return 1 
+            fi
+        fi 
+
+        if [[ -z "$pfld" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入frps目录(默认: ./frp): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="${PWD}/frp"
+            pfld=${INPUT} 
+        fi 
+        local fexe=${pfld}/frps
+        if [[ ! -f "$fexe" ]] ; then 
+            echo -e "\n$WARN ${fexe} 不存在,请先下载frp程序!"
+            return 1 
+        fi 
+        if [[ -z "$cfgname" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置名称(默认: frps.toml): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="frps.toml"
+            cfgname=${INPUT} 
+        fi 
+        local fcfg=${pfld}/${cfgname} 
+        if [[ ! -f "$fcfg" ]] ; then 
+            echo -e "\n$WARN 配置文件: ${fcfg} 不存在,请先准备好配置文件!"
+            return 1 
+        fi 
+
+        echo -e "\n$TIP 生成服务配置: ${srvpath}"
+        # 创建 frps.service 文件
+        cat <<EOF > ${srvpath}
+[Unit]
+# 服务名称，可自定义
+Description = ${srvname}
+After = network.target syslog.target
+Wants = network.target
+
+[Service]
+Type = simple
+# 启动frps的命令, 需修改为您的frps的安装路径
+ExecStart = ${fexe} -c ${fcfg}
+
+[Install]
+WantedBy = multi-user.target
+EOF
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务为开机自启动？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+            # 开机启动frp
+            sudo systemctl enable ${srvname}
+        fi
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+            ##===========================
+            # # 启动frp
+            sudo systemctl start ${srvname}
+            # # 停止frp
+            # sudo systemctl stop ${srvname}
+            # # 重启frp
+            # sudo systemctl restart ${srvname}
+
+            # # 查看frp状态
+            sudo systemctl status ${srvname}
+        fi
+
+    }
+    function tools_add_service_frpc(){
+        local pfld=${1}
+        local srvname=${2}
+        local cfgname=${3}
+
+        if [[ -z "$srvname" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务名称(默认: frpc): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="frpc"
+            srvname=${INPUT} 
+        fi 
+        local srvpath=/etc/systemd/system/${srvname}.service 
+        if [[ -f "$srvpath" ]] ; then             
+            local CHOICE=$(echo -e "\n${BOLD}└─ 服务 ${srvname} 已存在,是否继续？[Y/n]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="Y"
+            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+                echo -e "\n$WARN 继续, 服务将被覆盖 ${srvname}: ${srvpath}!"
+            else
+                echo -e "\n$WARN 不覆盖服务 ${srvpath}, 返回!"
+                return 1 
+            fi
+        fi 
+
+        if [[ -z "$pfld" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入frps目录(默认: ./frp): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="${PWD}/frp"
+            pfld=${INPUT} 
+        fi 
+        local fexe=${pfld}/frps
+        if [[ ! -f "$fexe" ]] ; then 
+            echo -e "\n$WARN ${fexe} 不存在,请先下载frp程序!"
+            return 1 
+        fi 
+        if [[ -z "$cfgname" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置名称(默认: frps.toml): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="frps.toml"
+            cfgname=${INPUT} 
+        fi 
+        local fcfg=${pfld}/${cfgname} 
+        if [[ ! -f "$fcfg" ]] ; then 
+            echo -e "\n$WARN 配置文件: ${fcfg} 不存在,请先准备好配置文件!"
+            return 1 
+        fi 
+
+        echo -e "\n$TIP 生成服务配置: ${srvpath}"
+        # 创建 frps.service 文件
+        cat <<EOF > ${srvpath}
+[Unit]
+# 服务名称，可自定义
+Description = ${srvname}
+After = network.target syslog.target
+Wants = network.target
+
+[Service]
+Type = simple
+# 启动frps的命令, 需修改为您的frps的安装路径
+ExecStart = ${fexe} -c ${fcfg}
+
+[Install]
+WantedBy = multi-user.target
+EOF
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务为开机自启动？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+            # 开机启动frp
+            sudo systemctl enable ${srvname}
+        fi
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+            ##===========================
+            # # 启动frp
+            sudo systemctl start ${srvname}
+            # # 停止frp
+            # sudo systemctl stop ${srvname}
+            # # 重启frp
+            # sudo systemctl restart ${srvname}
+
+            # # 查看frp状态
+            sudo systemctl status ${srvname}
+        fi
+
+    }
+    function tools_service_generate_frps_cfg() {
+        # 生成随机端口和凭证
+        local bind_port=7000
+        local dashboard_port=7500
+
+        local token=$(openssl rand -hex 16)
+        local dashboard_user="user_$(openssl rand -hex 4)"
+        local dashboard_pwd=$(openssl rand -hex 8)
+
+        local fld="$PWD/frp"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置文件目录(默认: ${fld}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  fld=${INPUT} 
+
+        local srv_name="frps"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置文件名称(默认: ${srv_name}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  srv_name=${INPUT} 
+        local fcfg="${fld}/${srv_name}.toml"
+        if [[ -f "$fld/${fcfg}.toml" ]] ; then 
+            echo -e "\n$WARN 配置文件: ${fld}/${fcfg} 已存在,请先备份!"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 是否备份？[Y/n]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="Y"
+            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+                mv ${fld}/${fcfg} ${fld}/${fcfg}.bak
+                echo -e "\n$WARN 已备份配置文件: ${fld}/${fcfg} -> ${fld}/${fcfg}.bak"
+            else
+                local CHOICE=$(echo -e "\n${BOLD}└─ 不备份配置文件, 是否继续？[Y/n]: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                [[ -z "$INPUT" ]] &&  INPUT="Y"
+                if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+                    echo -e "\n$WARN 不备份,配置文件将被覆盖 !"
+                else 
+                    echo -e "\n$WARN 不备份配置文件, 返回!"
+                    return 1 
+                fi 
+            fi
+        fi 
+        
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务监听端口(默认: ${bind_port}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  bind_port=${INPUT} 
+        
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入授权Token(随机: ${token}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  token=${INPUT} 
+        
+        local is_web_dashboard="# "
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用Web管理面板？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+            is_web_dashboard=''
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板端口(默认: ${dashboard_port}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_port=${INPUT} 
+            
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板用户名(随机: ${dashboard_user}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_user=${INPUT} 
+
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板密码(随机: ${dashboard_pwd}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_pwd=${INPUT} 
+        fi
+        
+        
+        # 创建 frps.toml 文件
+        cat <<EOF > ${fcfg}
+[common]
+bind_port    = $bind_port
+quicBindPort = $bind_port
+
+auth.method = 'token'
+auth.token  = '"$token"'
+
+${is_web_dashboard}webServer.addr = '0.0.0.0'
+${is_web_dashboard}webServer.port = $dashboard_port
+${is_web_dashboard}webServer.user = $dashboard_user
+${is_web_dashboard}webServer.password  = $dashboard_pwd
+EOF
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即配置系统服务？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+            if [[ ! -f "${fld}/frps" ]] ; then 
+                echo -e "\n$WARN 检测到目录中程序 ${fld}/frps 不存在,建议先下载!"
+            fi 
+            tools_add_service_frps ${fld} "${srv_name}" "${fcfg}"
+        fi
+    }
+    function tools_service_generate_frpc_cfg() {
+        # 生成随机端口和凭证
+        local bind_ip=''
+        local bind_port=7000
+        local dashboard_port=7400
+
+        local token=''
+        local dashboard_user="user_$(openssl rand -hex 4)"
+        local dashboard_pwd=$(openssl rand -hex 8)
+
+        local fld="$PWD/frp"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置文件目录(默认: ${fld}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  fld=${INPUT} 
+
+        local srv_name="frpc"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入配置文件名称(默认: ${srv_name}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  srv_name=${INPUT} 
+        local fcfg="${fld}/${srv_name}.toml"
+        if [[ -f "$fld/${fcfg}.toml" ]] ; then 
+            echo -e "\n$WARN 配置文件: ${fld}/${fcfg} 已存在,请先备份!"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 是否备份？[Y/n]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="Y"
+            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+                mv ${fld}/${fcfg} ${fld}/${fcfg}.bak
+                echo -e "\n$WARN 已备份配置文件: ${fld}/${fcfg} -> ${fld}/${fcfg}.bak"
+            else
+                local CHOICE=$(echo -e "\n${BOLD}└─ 不备份配置文件, 是否继续？[Y/n]: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                [[ -z "$INPUT" ]] &&  INPUT="Y"
+                if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+                    echo -e "\n$WARN 不备份,配置文件将被覆盖 !"
+                else 
+                    echo -e "\n$WARN 不备份配置文件, 返回!"
+                    return 1 
+                fi 
+            fi
+        fi 
+        
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务端IP(默认: ${bind_ip}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  bind_ip=${INPUT} 
+        if [[ -z "$bind_ip" ]] ; then
+            echo -e "\n$WARN 服务端IP为空,请重试!"
+            return 1 
+        fi 
+        
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务端端口(默认: ${bind_port}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  bind_port=${INPUT} 
+        
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入服务端授权Token(随机: ${token}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  token=${INPUT} 
+        
+        local is_quic="# "
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用Web管理面板？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]] && is_quic=''
+
+        local is_web_dashboard="# "
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否启用Web管理面板？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+            is_web_dashboard=''
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板端口(默认: ${dashboard_port}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_port=${INPUT} 
+            
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板用户名(随机: ${dashboard_user}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_user=${INPUT} 
+
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理面板密码(随机: ${dashboard_pwd}): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT && [[ -n "$INPUT" ]] &&  dashboard_pwd=${INPUT} 
+        fi
+
+        local proxies=''
+        while true; do 
+            echo -e "\n${BOLD} $PRIGHT 添加穿透信息 ${PLAIN}"
+            local proxy='' 
+            local proxy_name=''
+            local proxy_type=''
+            local local_ip='127.0.0.1' # [::1]
+            local local_port=''
+            local remote_port=''
+            local is_enable_encrypt='# '
+            local is_enable_compression='# '
+            
+            proxies+="\n${proxy}"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 是否继续添加？[Y/n]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="Y"
+            if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+                continue 
+            else
+                break 
+            fi
+        done 
+        
+        
+        # 创建 frps.toml 文件
+        cat <<EOF > ${fcfg}
+[common]
+serverAddr = $bind_ip
+serverPort = $bind_port
+${is_quic}transport.protocol = "quic"
+
+auth.method = 'token'
+auth.token  = '"$token"'
+
+${is_web_dashboard}webServer.addr = '0.0.0.0'
+${is_web_dashboard}webServer.port = $dashboard_port
+${is_web_dashboard}webServer.user = $dashboard_user
+${is_web_dashboard}webServer.password  = $dashboard_pwd
+EOF
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即配置系统服务？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+            if [[ ! -f "${fld}/frps" ]] ; then 
+                echo -e "\n$WARN 检测到目录中程序 ${fld}/frps 不存在,建议先下载!"
+            fi 
+            tools_add_service_frps ${fld} "${srv_name}" "${fcfg}"
+        fi
+    }
     function tools_manage_frp(){
         local frp_items_list=(
-            " 1.下载最新frp程序|$YELLOW"
-            " 2.安装服务frps(服务端)|$GREEN"
-            " 3.卸载服务frps(服务端)"
-            " 4.重启服务frps(服务端)"
-            " 5.查看配置frps(服务端)"
-            " 6.安装服务frpc(客户端)|$GREEN"
-            " 7.卸载服务frpc(客户端)"
-            " 8.重启服务frpc(客户端)"
-            " 9.查看配置frpc(客户端)"
-            " 0.返回|$RED"
+            "1|生成服务端配置(frps)|$GREEN"
+            "2|查看服务配置(frps)  |$WHITE"
+            "3|配置服务端(frps)    |$CYAN"
+            "4|卸载服务端(frps)    |$WHITE"
+            "5|生成客户配置(frpc)  |$GREEN"
+            "6|查看客户配置(frpc)  |$WHITE"
+            "7|配置客户端(frpc)    |$CYAN"
+            "8|卸载客户端(frpc)    |$WHITE"
+            "============================"
+            "9|下载最新frp程序    |$YELLOW"
+            "0|返回|$RED"
         )
         #=================================
         while true; do
             _IS_BREAK="true"
-            print_items_list frp_items_list[@] ' 🏹 frp内网穿透 '
+            # print_items_list frp_items_list[@] ' 🏹 frp内网穿透 '
+            echo -e "\n${BOLD} ${PRIGHT} 🏹 frp管理: ${PLAIN}"
+            generate_separator "=|$BLUE" 
+            split_menu_items frp_items_list[@] 0 33
+            # generate_separator "=|$BLUE" 33
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT=1
             case "${INPUT}" in 
-            1) tools_frp_download ;; 
+            1) tools_service_generate_frps_cfg ;; 
+            3) tools_add_service_frps ;; 
+            5) tools_service_generate_frpc_cfg ;; 
+            7) tools_add_service_frpc ;; 
+            9) tools_frp_download ;; 
             0) _IS_BREAK='false' && break ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 

@@ -1,15 +1,16 @@
 # https://github.com/fatedier/frp/releases
+# https://gofrp.org/zh-cn/docs/
 
 serverAddr = "101.200.214.242"
 serverPort = 7000
 transport.protocol = "quic"
 
 auth.method = "token"
-auth.token = "token12345"
+auth.token  = "token12345"
 
-webServer.addr = "0.0.0.0"
-webServer.port = 7400
-webServer.user = "admin"
+webServer.addr     = "0.0.0.0"
+webServer.port     = 7400
+webServer.user     = "admin"
 webServer.password = "admin_password"
 
 
