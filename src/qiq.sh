@@ -4460,8 +4460,7 @@ EOF
         
         # 创建 frps.toml 文件
         cat <<EOF > ${fcfg}
-[common]
-bind_port    = $bind_port
+bindPort     = $bind_port
 quicBindPort = $bind_port
 
 auth.method = "token"
@@ -4626,7 +4625,6 @@ EOF
         # 创建 frps.toml 文件
         echo -e "\n$WARN 保存配置文件: ${fcfg} ... "
         cat <<EOF > ${fcfg}
-[common]
 serverAddr = "$bind_ip"
 serverPort = $bind_port
 ${is_quic}transport.protocol = "quic"
@@ -4635,7 +4633,7 @@ auth.method = "token"
 auth.token  = "$token"
 
 ${is_web_dashboard}webServer.addr = "$dashboard_ip"
-${is_web_dashboard}webServer.port = "$dashboard_port"
+${is_web_dashboard}webServer.port = $dashboard_port
 ${is_web_dashboard}webServer.user = "$dashboard_user"
 ${is_web_dashboard}webServer.password  = "$dashboard_pwd"
 EOF
