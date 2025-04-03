@@ -1,0 +1,5 @@
+nginx:latest
+mongo:7.0.14
+mongo-express:1.0.2-20-alpine3.19
+# 这是一个注释
+# https://developer.aliyun.com/article/1654250
