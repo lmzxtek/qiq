@@ -695,7 +695,7 @@ function App_download {
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_northstar {        
-        $file = "env.ps1"
+        $file = "northstar_env.ps1"
         $url_dl = Get_proxy_url "https://gitee.com/dromara/northstar/raw/master/env.ps1"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
@@ -704,9 +704,11 @@ function App_download {
         Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
-        # Invoke-WebRequest $url_dl -OutFile $file; powershell -noexit ".\$file"
         write-host "`nGit URL: https://gitee.com/dromara/northstar"
-        write-host "Git URL: https://gitee.com/dromara/northstar/releases`n"
+        write-host "exe URL: https://gitee.com/dromara/northstar/releases`n"
+        write-host "Run NorthStar env installation ... "
+        powershell -noexit "$targetFilePath"
+        # Invoke-WebRequest $url_dl -OutFile $file; powershell -noexit ".\$file"
     }
     function download_rustdesk {
         $url_gh = "https://github.com/rustdesk/rustdesk"
