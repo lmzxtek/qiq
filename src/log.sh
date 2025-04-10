@@ -11,7 +11,7 @@ FTSS='\033[5m'         # 字体：闪烁
 
 VLATEST="${FCLS}${FTSS}NEW${FTCZ}" # 蓝色闪烁字体
 url_redir='https://sub.zwdk.org/qiq'
-url_script='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh'
+url_script='https://github.com/lmzxtek/qiq'
 url_update='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/log.sh'
 
 clear
@@ -33,11 +33,14 @@ echoT "   5.修改虚拟内存时显示当前虚拟内情情况"
 echoT "   6.修正了时区调整显示问题"
 echoT "   7.优化显示系统信息"
 echoT "--------------------------------"
-echoR " -=> 2025-03-30   v0.7.4" " $VLATEST"
-echoY "   1.增加Code-Server的容器部署(LinuxServer and Official)"
-echoY "   2.增加系统服务管理菜单"
-echoY "   3.增加frp管理菜单"
+echoT " -=> 2025-03-30   v0.7.4" " "
+echoT "   1.增加Code-Server的容器部署(LinuxServer and Official)"
+echoT "   2.增加系统服务管理菜单"
+echoT "   3.增加frp管理菜单"
+echoT "--------------------------------"
+echoR " -=> 2025-04-11   v0.7.5" " $VLATEST"
+echoY "   1.增加NorthStar部署"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
-echoR "" $(echoY "url") $(echoR ": $url_script") 
+echoR "" $(echoY "web") $(echoR ": $url_script") 
 

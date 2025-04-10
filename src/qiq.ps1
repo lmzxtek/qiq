@@ -578,8 +578,8 @@ function App_download {
         Write-Host "  18. gm-api           " -ForegroundColor Blue
         Write-Host "   9. WinSW            " -NoNewline
         Write-Host "  19. shawl            " #-NoNewline  
-        Write-Host "  10. PotPlayer        " #-NoNewline  
-        # Write-Host "  20. shawl            " #-NoNewline  
+        Write-Host "  10. PotPlayer        " -NoNewline  
+        Write-Host "  20. NorthStar(java)  " #-NoNewline  
         Write-Host "  88. reinstall.bat    " -NoNewline
         Write-Host "  99. All              " -ForegroundColor Green
         Write-Host "   0. Exit             " -ForegroundColor Red
@@ -693,6 +693,20 @@ function App_download {
         Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_northstar {        
+        $file = "env.ps1"
+        $url_dl = Get_proxy_url "https://gitee.com/dromara/northstar/raw/master/env.ps1"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "`nGit URL: https://gitee.com/dromara/northstar`n"
+        write-host "File URL: $url_dl"
+        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+        # Invoke-WebRequest $url_dl -OutFile $file; powershell -noexit ".\$file"
+        write-host "`nGit URL: https://gitee.com/dromara/northstar"
+        write-host "Git URL: https://gitee.com/dromara/northstar/releases`n"
     }
     function download_rustdesk {
         $url_gh = "https://github.com/rustdesk/rustdesk"
@@ -902,6 +916,7 @@ servertag = 'gm(demo)'
             "9"  { download_winsw  }
             "19" { download_shawl  }
             "10" { download_potplayer }
+            "20" { download_northstar }
             "88" { download_reinstall; }
             "99" { download_all_software }
             "0"  { return }

@@ -19,7 +19,7 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.4
+SRC_VER=v0.7.5
 #==========================
 
 DOCKER_PROXY='m.daocloud.io/'
@@ -3675,6 +3675,7 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "29|Coder|$WHITE"
     "30|Code Server|$YELLOW"
     "31|Akile Monitor|$WHITE"
+    "32|NorthStar|$WHITE"
     "………………………|$WHITE" 
     "41|RustDesk|$WHITE"
     "42|SubLinkX|$WHITE"
@@ -5310,6 +5311,17 @@ EOF
         29) tools_install_coder ;; 
         30) tools_install_codeserver ;; 
         31) tools_install_akilemonitor ;; 
+        32) 
+            echo -e "" 
+            echo -e "$PRIGHT 安装NorthStar环境脚本 ... $PLAIN" 
+            echo -e "$PRIGHT Git: https://gitee.com/dromara/northstar $PLAIN"            
+            curl https://gitee.com/dromara/northstar/raw/master/env.sh | sh 
+            echo -e "$PRIGHT 下载NorthStar ... $PLAIN" 
+            echo -e "$PRIGHT URL: https://gitee.com/dromara/northstar/releases $PLAIN" 
+            echo -e "$PRIGHT Git: https://gitee.com/dromara/northstar $PLAIN" 
+            echo -e "" 
+            ;; 
+
         41) tools_install_rustdesk ;; 
         42) tools_install_sublinkx ;; 
         43) tools_install_deeplx ;; 
