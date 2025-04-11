@@ -40,6 +40,7 @@ echoT "   3.增加frp管理菜单"
 echoT "--------------------------------"
 echoR " -=> 2025-04-11   v0.7.5" " $VLATEST"
 echoY "   1.增加NorthStar部署"
+echoY "   2.增加Music-Tag(Docker)部署"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 

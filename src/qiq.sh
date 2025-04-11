@@ -6569,6 +6569,7 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "27|OpenCode Server|$WHITE" 
     "28|Code Server(LinuxServer)|$YELLOW" 
     "29|Code Server(Official,NOT recommend)|$WHITE" 
+    "30|Music-Tag|$WHITE" 
 )
 function docker_deploy_menu(){
     function print_menu_docker_deploy(){
@@ -6897,7 +6898,7 @@ EOF
         
         cd - &>/dev/null # 返回原来目录 
     }
-    function dc_deploy_opencode_server(){    
+    function dc_deploy_openvscode_server(){    
         local base_root="/home/dcc.d"
         local dc_port=41005
         local dc_name='opencode_server'
@@ -6935,7 +6936,7 @@ EOF
         local path_config="${fdat}"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入项目目录(默认为:${path_config}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
-        [[ -n "$INPUT" ]] && admin_password=$INPUT
+        [[ -n "$INPUT" ]] && path_config=$INPUT
 
         cat > "$fyml" << EOF
 services:
@@ -6970,6 +6971,66 @@ EOF
         content+="\n # DOCKER_USER  : $dc_user       "
         content+="\n # User password: $user_password "
         content+="\n # START_DIR    : $path_config   "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_music_tag_web(){    
+        local base_root="/home/dcc.d"
+        local dc_port=48802
+        local dc_name='music_tag'
+        local dc_imag=xhongc/music_tag_web:latest
+        local dc_desc="Music-Tag-web"
+        local urlgit='https://github.com/xhongc/music-tag-web'
+        local urldoc='https://xiers-organization.gitbook.io/music-tag-web-v2'
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml 
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        local pmusic="$base_root/$dc_name/media"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入数据目录(默认为: ${pmusic}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && pmusic=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: ${dc_imag}
+    volumes:
+      - ${fdat}:/app/data
+      - ${pmusic}:/app/media:rw
+    ports:
+      - '${dc_port}:8002'
+    restart: unless-stopped
+EOF
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+        
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+        [[ -n $urldoc ]]  && content+="\nDocumentat  : $urldoc  "
+        # content+="\n # Update: docker-compose up -d $dc_name  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -8266,8 +8327,10 @@ EOF
         24) dc_deploy_browser_kasmvnc  ;;
         25) dc_deploy_ittools  ;;
         26) dc_deploy_spdf  ;;
-        27) dc_deploy_code_linuxserver  ;;
-        28) dc_deploy_code_official  ;;
+        27) dc_deploy_openvscode_server  ;;
+        28) dc_deploy_code_linuxserver  ;;
+        29) dc_deploy_code_official  ;;
+        30) dc_deploy_music_tag_web  ;;
         xx) sys_reboot ;;
         # 0)  echo -e "\n$TIP 返回上级菜单 ..." && _IS_BREAK="false"  && break  ;;
         0)  docker_management_menu && _IS_BREAK="false" && break  ;; 
