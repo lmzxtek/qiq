@@ -1,5 +1,5 @@
 # 源镜像
-FROM ubuntu:20.10
+FROM ubuntu:24.04
 
 # 使用root用户
 USER root
