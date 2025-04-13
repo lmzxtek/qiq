@@ -7321,12 +7321,7 @@ EOF
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
-        [[ -n "$INPUT" ]] && dc_port=$INPUT
-        
-        SITE_PASSWORD=''
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入网站密码: ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        [[ -n "$INPUT" ]] && SITE_PASSWORD=$INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT        
 
         local url_dockerfile=$(get_proxy_url "https://raw.githubusercontent.com/akfamily/aktools/master/Dockerfile")
         wget -q $url_dockerfile -O ${lfld}/Dockerfile
