@@ -7292,7 +7292,7 @@ EOF
         [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
-        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc "
         [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
@@ -7302,7 +7302,7 @@ EOF
     }
     function dc_deploy_aktools(){    
         local base_root="/home/dcc.d"
-        local dc_port=45088
+        local dc_port=45686
         local dc_name='aktools'
         local dc_imag=registry.cn-shanghai.aliyuncs.com/akfamily/aktools:1.8.95
         local dc_desc="AKTools"
@@ -7328,13 +7328,17 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && SITE_PASSWORD=$INPUT
 
+        local url_dockerfile=$(get_proxy_url "https://raw.githubusercontent.com/akfamily/aktools/master/Dockerfile")
+        wget -q $url_dockerfile -O ${lfld}/Dockerfile
+
         cat > "$fyml" << EOF
 services:
     ${dc_name}:
         container_name: ${dc_name}
-        image: $dc_imag
-        environment:
-            - SITE_PASSWORD=$SITE_PASSWORD
+        # image: $dc_imag
+        build:
+            context: .
+            dockerfile: Dockerfile
         ports:
             - '$dc_port:8080'
         restart: always
