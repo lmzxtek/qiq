@@ -824,17 +824,17 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit
 }
 
-$tsk_dir  = "C:\frp"
-$tsk_path = "$tsk_dir\frps.exe"
+\$tsk_dir  = "C:\frp"
+\$tsk_path = "\$tsk_dir\frps.exe"
 
 #========================================
-$tsk_name = "frps"
-$tsk_arg  = "-c frps.toml"
-$tsk_user = "NT AUTHORITY\SYSTEM"
+\$tsk_name = "frps"
+\$tsk_arg  = "-c frps.toml"
+\$tsk_user = "NT AUTHORITY\SYSTEM"
 #========================================
-$action  = New-ScheduledTaskAction -Execute $tsk_path -Argument $tsk_arg -WorkingDirectory $tsk_dir
-$trigger = New-ScheduledTaskTrigger -AtStartup
-Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
+\$action  = New-ScheduledTaskAction -Execute \$tsk_path -Argument \$tsk_arg -WorkingDirectory \$tsk_dir
+\$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -TaskName \$tsk_name -Action $action -Trigger \$trigger -RunLevel Highest -User \$tsk_user
 
 "@
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
@@ -849,17 +849,17 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit
 }
 
-$tsk_dir  = "C:\frp"
-$tsk_path = "$tsk_dir\frpc.exe"
+\$tsk_dir  = "C:\frp"
+\$tsk_path = "\$tsk_dir\frpc.exe"
 
 #========================================
-$tsk_name = "frpc"
-$tsk_arg  = "-c frpc.toml"
-$tsk_user = "NT AUTHORITY\SYSTEM"
+\$tsk_name = "frpc"
+\$tsk_arg  = "-c frpc.toml"
+\$tsk_user = "NT AUTHORITY\SYSTEM"
 #========================================
-$action  = New-ScheduledTaskAction -Execute $tsk_path -Argument $tsk_arg -WorkingDirectory $tsk_dir
-$trigger = New-ScheduledTaskTrigger -AtStartup
-Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
+\$action  = New-ScheduledTaskAction -Execute \$tsk_path -Argument \$tsk_arg -WorkingDirectory \$tsk_dir
+\$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -TaskName \$tsk_name -Action \$action -Trigger \$trigger -RunLevel Highest -User \$tsk_user
 
 "@
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
