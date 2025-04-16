@@ -4328,18 +4328,6 @@ EOF
             [[ -z "$INPUT" ]] &&  INPUT="frps"
             srvname=${INPUT} 
         fi 
-        # local srvpath=/etc/systemd/system/${srvname}.service 
-        # if [[ -f "$srvpath" ]] ; then             
-        #     local CHOICE=$(echo -e "\n${BOLD}└─ 服务 ${srvname} 已存在,是否继续？[Y/n]: ${PLAIN}")
-        #     read -rp "${CHOICE}" INPUT
-        #     [[ -z "$INPUT" ]] &&  INPUT="Y"
-        #     if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-        #         echo -e "\n$WARN 继续, 服务将被覆盖 ${srvname}: ${srvpath}!"
-        #     else
-        #         echo -e "\n$WARN 不覆盖服务 ${srvpath}, 返回!"
-        #         return 1 
-        #     fi
-        # fi 
 
         if [[ -z "$pfld" ]]; then
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入frps目录(默认: ./frp): ${PLAIN}")
@@ -4365,50 +4353,7 @@ EOF
         # fi 
         
         tools_add_srv_frp ${srvname} ${fexe} ${fcfg}
-
-#         echo -e "\n$TIP 生成服务配置: ${srvpath}"
-#         # 创建 frps.service 文件
-#         cat <<EOF > ${srvpath}
-# [Unit]
-# # 服务名称，可自定义
-# Description = ${srvname}
-# After = network.target syslog.target
-# Wants = network.target
-
-# [Service]
-# Type = simple
-# # 启动frps的命令, 需修改为您的frps的安装路径
-# ExecStart = ${fexe} -c ${fcfg}
-
-# [Install]
-# WantedBy = multi-user.target
-# EOF
-
-#         local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务为开机自启动？[Y/n]: ${PLAIN}")
-#         read -rp "${CHOICE}" INPUT
-#         [[ -z "$INPUT" ]] &&  INPUT="Y"
-#         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-#             # 开机启动frp
-#             sudo systemctl enable ${srvname}
-#         fi
-
-#         local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务？[Y/n]: ${PLAIN}")
-#         read -rp "${CHOICE}" INPUT
-#         [[ -z "$INPUT" ]] &&  INPUT="Y"
-#         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-#             ##===========================
-#             sudo systemctl daemon-reload 
-#             # # 启动frp
-#             sudo systemctl start ${srvname}
-#             # # 停止frp
-#             # sudo systemctl stop ${srvname}
-#             # # 重启frp
-#             # sudo systemctl restart ${srvname}
-
-#             # # 查看frp状态
-#             sudo systemctl status ${srvname}
-#         fi
-
+        
     }
     function tools_add_service_frpc(){
         local pfld=${1}
@@ -4421,18 +4366,6 @@ EOF
             [[ -z "$INPUT" ]] &&  INPUT="frpc"
             srvname=${INPUT} 
         fi 
-        # local srvpath=/etc/systemd/system/${srvname}.service 
-        # if [[ -f "$srvpath" ]] ; then             
-        #     local CHOICE=$(echo -e "\n${BOLD}└─ 服务 ${srvname} 已存在,是否继续？[Y/n]: ${PLAIN}")
-        #     read -rp "${CHOICE}" INPUT
-        #     [[ -z "$INPUT" ]] &&  INPUT="Y"
-        #     if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-        #         echo -e "\n$WARN 继续, 服务将被覆盖 ${srvname}: ${srvpath}!"
-        #     else
-        #         echo -e "\n$WARN 不覆盖服务 ${srvpath}, 返回!"
-        #         return 1 
-        #     fi
-        # fi 
 
         if [[ -z "$pfld" ]]; then
             local CHOICE=$(echo -e "\n${BOLD}└─ 请输入frpc目录(默认: ./frp): ${PLAIN}")
@@ -4459,55 +4392,12 @@ EOF
 
         tools_add_srv_frp ${srvname} ${fexe} ${fcfg}
 
-#         echo -e "\n$TIP 生成服务配置: ${srvpath}"
-#         # 创建 frps.service 文件
-#         cat <<EOF > ${srvpath}
-# [Unit]
-# # 服务名称，可自定义
-# Description = ${srvname}
-# After = network.target syslog.target
-# Wants = network.target
-
-# [Service]
-# Type = simple
-# # 启动frps的命令, 需修改为您的frps的安装路径
-# ExecStart = ${fexe} -c ${fcfg}
-
-# [Install]
-# WantedBy = multi-user.target
-# EOF
-
-#         local CHOICE=$(echo -e "\n${BOLD}└─ 是否设置服务为开机自启动？[Y/n]: ${PLAIN}")
-#         read -rp "${CHOICE}" INPUT
-#         [[ -z "$INPUT" ]] &&  INPUT="Y"
-#         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-#             # 开机启动frp
-#             sudo systemctl enable ${srvname}
-#         fi
-
-#         local CHOICE=$(echo -e "\n${BOLD}└─ 是否立即启动服务？[Y/n]: ${PLAIN}")
-#         read -rp "${CHOICE}" INPUT
-#         [[ -z "$INPUT" ]] &&  INPUT="Y"
-#         if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
-#             ##===========================
-#             sudo systemctl daemon-reload 
-#             # # 启动frp
-#             sudo systemctl start ${srvname}
-#             # # 停止frp
-#             # sudo systemctl stop ${srvname}
-#             # # 重启frp
-#             # sudo systemctl restart ${srvname}
-
-#             # # 查看frp状态
-#             sudo systemctl status ${srvname}
-#         fi
-
     }
     function tools_service_generate_frps_cfg() {
         # 生成随机端口和凭证
         local bind_port=7000
         local dashboard_port=7500
-        local dashboard_ip="0.0.0.0"
+        local dashboard_ip="::"
 
         local token=$(openssl rand -hex 16)
         local dashboard_user="user_$(openssl rand -hex 4)"
@@ -4597,7 +4487,7 @@ EOF
         local bind_ip=''
         local bind_port=7000
         local dashboard_port=7400
-        local dashboard_ip="0.0.0.0"
+        local dashboard_ip="::"
 
         local token=''
         local dashboard_user="user_$(openssl rand -hex 4)"
@@ -4801,15 +4691,17 @@ EOF
             "2|查看服务配置(frps)  |$WHITE"
             "3|配置服务端(frps)    |$CYAN"
             "4|卸载服务端(frps)    |$WHITE"
-            "5|生成客户配置(frpc)  |$GREEN"
-            "6|查看客户配置(frpc)  |$WHITE"
-            "7|配置客户端(frpc)    |$CYAN"
-            "8|卸载客户端(frpc)    |$WHITE"
+            "5|重载服务(frps)      |$WHITE"
+            "6|生成客户配置(frpc)  |$GREEN"
+            "7|查看客户配置(frpc)  |$WHITE"
+            "8|配置客户端(frpc)    |$CYAN"
+            "9|卸载客户端(frpc)    |$WHITE"
+            "10|重载客户端(frpc)   |$WHITE"
             "============================"
-            "9|下载最新frp程序     |$YELLOW"
-            "10|查看正在运行的进程  |$GREEN"
-            "11|查看所有加载的服务  |$WHITE"
-            "12|查看所有已安装的服务|$WHITE"
+            "99|下载最新frp程序     |$YELLOW"
+            "98|查看正在运行的进程  |$GREEN"
+            "97|查看所有加载的服务  |$WHITE"
+            "96|查看所有已安装的服务|$WHITE"
             "0|返回|$RED"
         )
         #=================================
@@ -4828,17 +4720,24 @@ EOF
             2) tools_srv_check_cfg  ;; 
             3) tools_add_service_frps ;; 
             4) tools_srv_delete ;; 
-            5) tools_service_generate_frpc_cfg ;; 
-            6) tools_srv_check_cfg "frpc" ;; 
-            7) tools_add_service_frpc ;; 
-            8) tools_srv_delete "frpc" ;; 
-            9) tools_frp_download ;; 
+            5) 
+                sudo systemctl daemon-reload
+                sudo systemctl restart frps
+                ;; 
+            6) tools_service_generate_frpc_cfg ;; 
+            7) tools_srv_check_cfg "frpc" ;; 
+            8) tools_add_service_frpc ;; 
+            9) tools_srv_delete "frpc" ;; 
             10) 
+                sudo systemctl daemon-reload
+                sudo systemctl restart frpc
+                ;;
+            99) 
                 # ps aux | grep -E 'systemd|init' 
                 systemctl list-units --type=service --state=running
                 ;; 
-            11) systemctl list-units --type=service --all ;; 
-            12) systemctl list-unit-files --type=service ;; 
+            98) systemctl list-units --type=service --all ;; 
+            97) systemctl list-unit-files --type=service ;; 
             0) _IS_BREAK='false' && break ;; 
             *) echo -e "\n$WARN 输入错误,返回！"  ;; 
             esac 
