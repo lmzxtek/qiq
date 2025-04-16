@@ -818,7 +818,7 @@ function App_download {
         function Generate_frps_ps1 {
             $batFileName = "$sfld\task_frps.ps1"
             $batContent = @'
-# 以管理员运行
+# Run as administrator
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
     exit
@@ -843,7 +843,7 @@ Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -Ru
         function Generate_frpc_ps1 {
             $batFileName = "$sfld\task_frpc.ps1"
             $batContent = @'
-# 以管理员运行
+# Run as administrator
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
     exit
