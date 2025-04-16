@@ -1305,6 +1305,8 @@ function  main_menu {
         Write-Host "  6. Activate Tool        "  -ForegroundColor Blue 
         Write-Host "  7. Python Management    "  -ForegroundColor Cyan 
         Write-Host "  8. Show region          "  -ForegroundColor Green
+        Write-Host "  9. Show Exclude         "  -ForegroundColor Blue
+        Write-Host " 10. Test Connection      "  
         Write-Host "  0. Exit                 "  -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
@@ -1321,6 +1323,8 @@ function  main_menu {
             "6" { activate_win_office }
             "7" { Manage_Python }
             "8" { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$global:LOCATION_REGION `n" -ForegroundColor Green ; Pause }
+            "9" { Get-MpPreference | Select-Object -ExpandProperty ExclusionPath ; Pause }
+            "10" { $port = Read-Host "Enter port(default: 5000)"; if (!$port) { $port = 5000 }; Test-NetConnection -ComputerName localhost -Port $port ; Pause }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
