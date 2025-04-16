@@ -1239,9 +1239,9 @@ function  main_menu {
         Clear-Host
         Write-Host "========== Tool Menu ==========" -ForegroundColor Cyan
         Write-Host "  1. App Install          "
-        Write-Host "  2. Web Links            "  -ForegroundColor Yellow
-        Write-Host "  3. GitHub Links         "  
-        Write-Host "  4. App Download         "  -ForegroundColor Green
+        Write-Host "  2. App Download         "  -ForegroundColor Green
+        Write-Host "  3. Web Links            "  -ForegroundColor Yellow
+        Write-Host "  4. GitHub Links         "  
         Write-Host "  5. Symtems Setting      "  
         Write-Host "  6. Activate Tool        "  -ForegroundColor Blue 
         Write-Host "  7. Python Management    "  -ForegroundColor Cyan 
@@ -1255,9 +1255,9 @@ function  main_menu {
         $choice = Read-Host "Enter your choice"
         switch ($choice) {
             "1" { Software_install }
-            "2" { show_web_links; Pause }
-            "3" { show_github_links; Pause }
-            "4" { App_download }
+            "2" { App_download }
+            "3" { show_web_links; Pause }
+            "4" { show_github_links; Pause }
             "5" { System_Settings }
             "6" { activate_win_office }
             "7" { Manage_Python }
