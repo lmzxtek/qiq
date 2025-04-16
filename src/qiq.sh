@@ -4207,9 +4207,9 @@ EOF
         echo -e "\n$TIP 开始下载: 1.frp最新程序..."
         download_github_realease "https://github.com/fatedier/frp" 
         echo -e "\n$TIP 开始下载: 2.frp配置文件..."
-        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frpc.toml"    "frpc.toml" 
-        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.toml"    "frps.toml" 
-        download_file_url "https://github.com/lmzxtek/qiq/raw/refs/heads/main/scripts/conf/frps.service" "frps.service"  
+        download_file_url "https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/scripts/conf/frpc.toml"    "frpc.toml" 
+        download_file_url "https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/scripts/conf/frps.toml"    "frps.toml" 
+        download_file_url "https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/scripts/conf/frps.service" "frps.service"  
         
         local tarfile=$(ls -1 ./frp_*.tar.gz)
         # mv $tarfile "${pfld}/frp.tar.gz"
