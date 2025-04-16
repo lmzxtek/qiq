@@ -29,6 +29,28 @@ if (Get-Command choco -ErrorAction SilentlyContinue) {
 }
 
 
+function Add_port_in_out {
+    param([number]$port = 5000)
+    # 以管理员身份运行 PowerShell，执行以下命令：
+    if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+        Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+        return 
+    }
+    New-NetFirewallRule -DisplayName "Allow Port $port Inbound" `
+                        -Direction Inbound `
+                        -LocalPort $port `
+                        -Protocol TCP `
+                        -Action Allow
+    Write-Host " Add TCP inbound: $port" -ForegroundColor Green
+
+    New-NetFirewallRule -DisplayName "Allow Port $port Outbound" `
+                        -Direction Outbound `
+                        -LocalPort $port `
+                        -Protocol TCP `
+                        -Action Allow
+    Write-Host " Add TCP outbound: $port" -ForegroundColor Green
+}
+
 function get_region { 
     $ipapi = "" 
     $region = "Unknown"
@@ -112,6 +134,8 @@ function Get_download_path {
     $targetDir = Join-Path -Path $scriptDir -ChildPath $sfld 
     if (-not (Test-Path -Path $targetDir)) {
         New-Item -ItemType Directory -Path $targetDir
+        # # 排除整个文件夹, 避免安全检测
+        # Add-MpPreference -ExclusionPath $targetDir
     }
     # 定义目标文件路径
     # $targetFilePath = Join-Path -Path $targetDir -ChildPath "file.zip"
@@ -556,7 +580,11 @@ function System_Settings {
 
 function App_download {
     $sfld = 'Apps'
-    $targetDir = Get_download_path $sfld
+    $targetDir = Get_download_path $sfld 
+    if (Test-Path -Path $targetDir) {
+        # # 排除整个文件夹, 避免安全检测
+        Add-MpPreference -ExclusionPath $targetDir
+    }
     function Show_Menu_app_download {
         Clear-Host
         Write-Host "========== Download Menu =============" -ForegroundColor Cyan
@@ -812,6 +840,8 @@ function App_download {
         $targetDir = $sfld
         if (-not (Test-Path -Path $targetDir)) {
             New-Item -ItemType Directory -Path $targetDir
+            # # 排除整个文件夹, 避免安全检测
+            Add-MpPreference -ExclusionPath $targetDir
         } 
 
         #=================================================
@@ -865,9 +895,35 @@ Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -Ru
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
             Write-Host " task_frpc.ps1 file saved: $batFileName"
         }
+        function Generate_frps_port_ps1 {
+            $batFileName = "$sfld\add_frps_port.ps1"
+            $batContent = @'
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+    return 
+}
+New-NetFirewallRule -DisplayName "Allow Port 7000 Inbound" `
+                    -Direction Inbound `
+                    -LocalPort 7000 `
+                    -Protocol TCP `
+                    -Action Allow
+Write-Host " Add TCP inbound: 7000" -ForegroundColor Green
+
+New-NetFirewallRule -DisplayName "Allow Port 7000 Outbound" `
+                    -Direction Outbound `
+                    -LocalPort 7000 `
+                    -Protocol TCP `
+                    -Action Allow
+Write-Host " Add TCP outbound: 7000" -ForegroundColor Green
+
+'@
+            $batContent | Out-File -FilePath $batFileName -Encoding ASCII
+            Write-Host " task_frps.ps1 file saved: $batFileName"
+        }
 
         Generate_frps_ps1
         Generate_frpc_ps1
+        Generate_frps_port_ps1
 
         $url_gh = "https://github.com/fatedier/frp"
         $fpattern = ".*windows_amd64.zip"
@@ -893,6 +949,8 @@ Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -Ru
         $targetDir = $sfld
         if (-not (Test-Path -Path $targetDir)) {
             New-Item -ItemType Directory -Path $targetDir
+            # # 排除整个文件夹, 避免安全检测
+            Add-MpPreference -ExclusionPath $targetDir
         }
         function Generate_run_wh3_bat {
             param(
@@ -1013,6 +1071,7 @@ wsproto==1.2.0
         Generate_cfg_toml    $(Join-Path -Path $targetDir -ChildPath "cfg.toml")    
         Generate_requirements_txt $(Join-Path -Path $targetDir -ChildPath "requirements.txt")  
         Add_task_scheduler_gm_api 
+        Add_port_in_out 5000
     }
 
     
