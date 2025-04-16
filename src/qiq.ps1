@@ -817,51 +817,51 @@ function App_download {
         #=================================================
         function Generate_frps_ps1 {
             $batFileName = "$sfld\task_frps.ps1"
-            $batContent = @"
+            $batContent = @'
 # 以管理员运行
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
     exit
 }
 
-\$tsk_dir  = "C:\frp"
-\$tsk_path = "\$tsk_dir\frps.exe"
+$tsk_dir  = "C:\frp"
+$tsk_path = "$tsk_dir\frps.exe"
 
 #========================================
-\$tsk_name = "frps"
-\$tsk_arg  = "-c frps.toml"
-\$tsk_user = "NT AUTHORITY\SYSTEM"
+$tsk_name = "frps"
+$tsk_arg  = "-c frps.toml"
+$tsk_user = "NT AUTHORITY\SYSTEM"
 #========================================
-\$action  = New-ScheduledTaskAction -Execute \$tsk_path -Argument \$tsk_arg -WorkingDirectory \$tsk_dir
-\$trigger = New-ScheduledTaskTrigger -AtStartup
-Register-ScheduledTask -TaskName \$tsk_name -Action $action -Trigger \$trigger -RunLevel Highest -User \$tsk_user
+$action  = New-ScheduledTaskAction -Execute $tsk_path -Argument $tsk_arg -WorkingDirectory $tsk_dir
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
 
-"@
+'@
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
             Write-Host " task_frps.ps1 file saved: $batFileName"
         }
         function Generate_frpc_ps1 {
             $batFileName = "$sfld\task_frpc.ps1"
-            $batContent = @"
+            $batContent = @'
 # 以管理员运行
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
     exit
 }
 
-\$tsk_dir  = "C:\frp"
-\$tsk_path = "\$tsk_dir\frpc.exe"
+$tsk_dir  = "C:\frp"
+$tsk_path = "$tsk_dir\frpc.exe"
 
 #========================================
-\$tsk_name = "frpc"
-\$tsk_arg  = "-c frpc.toml"
-\$tsk_user = "NT AUTHORITY\SYSTEM"
+$tsk_name = "frpc"
+$tsk_arg  = "-c frpc.toml"
+$tsk_user = "NT AUTHORITY\SYSTEM"
 #========================================
-\$action  = New-ScheduledTaskAction -Execute \$tsk_path -Argument \$tsk_arg -WorkingDirectory \$tsk_dir
-\$trigger = New-ScheduledTaskTrigger -AtStartup
-Register-ScheduledTask -TaskName \$tsk_name -Action \$action -Trigger \$trigger -RunLevel Highest -User \$tsk_user
+$action  = New-ScheduledTaskAction -Execute $tsk_path -Argument $tsk_arg -WorkingDirectory $tsk_dir
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
 
-"@
+'@
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
             Write-Host " task_frpc.ps1 file saved: $batFileName"
         }
