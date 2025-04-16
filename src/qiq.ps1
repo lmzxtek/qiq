@@ -1296,36 +1296,36 @@ function  main_menu {
     # 菜单界面
     function Show-Menu {
         Clear-Host
-        Write-Host "========== Tool Menu ==========" -ForegroundColor Cyan
-        Write-Host "  1. App Install          "
-        Write-Host "  2. App Download         "  -ForegroundColor Green
-        Write-Host "  3. Web Links            "  -ForegroundColor Yellow
-        Write-Host "  4. GitHub Links         "  
-        Write-Host "  5. Symtems Setting      "  
-        Write-Host "  6. Activate Tool        "  -ForegroundColor Blue 
-        Write-Host "  7. Python Management    "  -ForegroundColor Cyan 
-        Write-Host "  8. Show region          "  -ForegroundColor Green
-        Write-Host "  9. Show Exclude         "  -ForegroundColor Blue
-        Write-Host " 10. Test Connection      "  
-        Write-Host "  0. Exit                 "  -ForegroundColor Red
-        Write-Host "===============================" -ForegroundColor Cyan
+        Write-Host "========== Tool Menu =========="  -ForegroundColor Cyan
+        Write-Host "  1. Activate Tool             "  -ForegroundColor Blue 
+        Write-Host "  2. App Download              "  -ForegroundColor Green
+        Write-Host "  3. App Install               "
+        Write-Host "  4. Web Links                 "  -ForegroundColor Yellow
+        Write-Host "  5. GitHub Links              "  
+        Write-Host "  6. Symtem Setting            "  
+        Write-Host "  7. Python Management         "  -ForegroundColor Cyan 
+        Write-Host "  8. Show region               "  -ForegroundColor Green
+        Write-Host "  9. Show Excludepath          " 
+        Write-Host " 10. Test Connection           "  -ForegroundColor Blue
+        Write-Host "  x. Exit                      "  -ForegroundColor Red
+        Write-Host "==============================="  -ForegroundColor Cyan
     }
     # 菜单循环
     while ($true) {
         Show-Menu
         $choice = Read-Host "Enter your choice"
         switch ($choice) {
-            "1" { Software_install }
+            "1" { activate_win_office }
             "2" { App_download }
-            "3" { show_web_links; Pause }
-            "4" { show_github_links; Pause }
-            "5" { System_Settings }
-            "6" { activate_win_office }
+            "3" { Software_install }
+            "4" { show_web_links; Pause }
+            "5" { show_github_links; Pause }
+            "6" { System_Settings }
             "7" { Manage_Python }
             "8" { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$global:LOCATION_REGION `n" -ForegroundColor Green ; Pause }
             "9" { Get-MpPreference | Select-Object -ExpandProperty ExclusionPath ; Pause }
             "10" { $port = Read-Host "Enter port(default: 5000)"; if (!$port) { $port = 5000 }; Test-NetConnection -ComputerName localhost -Port $port ; Pause }
-            "0" { return }
+            "x" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
