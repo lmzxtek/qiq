@@ -808,22 +808,15 @@ function App_download {
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_frp {
-        $url_gh = "https://github.com/fatedier/frp"
-        $fpattern = ".*windows_amd64.zip"
-        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
-        if (-not $downloadedFile) {
-            Write-Host " Download failed" -ForegroundColor Red
-        }
-
-        #=================================================
         param([string]$sfld = "c:\frp")
         $targetDir = $sfld
         if (-not (Test-Path -Path $targetDir)) {
             New-Item -ItemType Directory -Path $targetDir
-        }
+        } 
 
+        #=================================================
         function Generate_frps_ps1 {
-            param([string]$batFileName = "$sfld\task_frps.ps1")
+            $batFileName = "$sfld\task_frps.ps1"
             $batContent = @"
 # 以管理员运行
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
@@ -848,7 +841,7 @@ Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -Ru
             Write-Host " task_frps.ps1 file saved: $batFileName"
         }
         function Generate_frpc_ps1 {
-            param([string]$batFileName = "$sfld\task_frpc.ps1")
+            $batFileName = "$sfld\task_frpc.ps1"
             $batContent = @"
 # 以管理员运行
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
@@ -875,6 +868,13 @@ Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -Ru
 
         Generate_frps_ps1
         Generate_frpc_ps1
+
+        $url_gh = "https://github.com/fatedier/frp"
+        $fpattern = ".*windows_amd64.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
 
         # 以管理员运行
         # if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
@@ -994,6 +994,7 @@ wsproto==1.2.0
             $action   = New-ScheduledTaskAction -Execute $tsk_path -WorkingDirectory $tsk_dir
             $trigger  = New-ScheduledTaskTrigger -AtStartup
             Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
+            Write-Host " Added task: $tsk_path"
 
             $tsk_dir  = "C:\gm_api"
             $tsk_path = "C:\gm_api\run_wh.bat"
@@ -1002,6 +1003,7 @@ wsproto==1.2.0
             $action   = New-ScheduledTaskAction -Execute $tsk_path -WorkingDirectory $tsk_dir
             $trigger  = New-ScheduledTaskTrigger -AtStartup
             Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
+            Write-Host " Added task: $tsk_path" 
 
         }
 
@@ -1009,7 +1011,8 @@ wsproto==1.2.0
         Generate_run_gm_bat  $(Join-Path -Path $targetDir -ChildPath "run_gm.bat")  
         Generate_gm_api_py   $(Join-Path -Path $targetDir -ChildPath "gm_api.py")   
         Generate_cfg_toml    $(Join-Path -Path $targetDir -ChildPath "cfg.toml")    
-        Generate_requirements_txt $(Join-Path -Path $targetDir -ChildPath "requirements.txt")    
+        Generate_requirements_txt $(Join-Path -Path $targetDir -ChildPath "requirements.txt")  
+        Add_task_scheduler_gm_api 
     }
 
     
