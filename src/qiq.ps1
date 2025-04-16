@@ -665,14 +665,6 @@ function App_download {
         # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
-    function download_frp {
-        $url_gh = "https://github.com/fatedier/frp"
-        $fpattern = ".*windows_amd64.zip"
-        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
-        if (-not $downloadedFile) {
-            Write-Host " Download failed" -ForegroundColor Red
-        }
-    }
     function download_reinstall {        
         $file = "reinstall.bat"
         # $url_gh = "https://github.com/bin456789/reinstall"
@@ -815,6 +807,86 @@ function App_download {
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
+    function download_frp {
+        $url_gh = "https://github.com/fatedier/frp"
+        $fpattern = ".*windows_amd64.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+
+        #=================================================
+        param([string]$sfld = "c:\frp")
+        $targetDir = $sfld
+        if (-not (Test-Path -Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir
+        }
+
+        function Generate_frps_ps1 {
+            param([string]$batFileName = "$sfld\task_frps.ps1")
+            $batContent = @"
+# 以管理员运行
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+    exit
+}
+
+$tsk_dir  = "C:\frp"
+$tsk_path = "$tsk_dir\frps.exe"
+
+#========================================
+$tsk_name = "frps"
+$tsk_arg  = "-c frps.toml"
+$tsk_user = "NT AUTHORITY\SYSTEM"
+#========================================
+$action  = New-ScheduledTaskAction -Execute $tsk_path -Argument $tsk_arg -WorkingDirectory $tsk_dir
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
+
+"@
+            $batContent | Out-File -FilePath $batFileName -Encoding ASCII
+            Write-Host " cfg.toml file saved: $batFileName"
+        }
+        function Generate_frpc_ps1 {
+            param([string]$batFileName = "$sfld\task_frpc.ps1")
+            $batContent = @"
+# 以管理员运行
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+    exit
+}
+
+$tsk_dir  = "C:\frp"
+$tsk_path = "$tsk_dir\frpc.exe"
+
+#========================================
+$tsk_name = "frpc"
+$tsk_arg  = "-c frpc.toml"
+$tsk_user = "NT AUTHORITY\SYSTEM"
+#========================================
+$action  = New-ScheduledTaskAction -Execute $tsk_path -Argument $tsk_arg -WorkingDirectory $tsk_dir
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
+
+"@
+            $batContent | Out-File -FilePath $batFileName -Encoding ASCII
+            Write-Host " cfg.toml file saved: $batFileName"
+        }
+
+        Generate_frps_ps1
+        Generate_frpc_ps1
+
+        # 以管理员运行
+        # if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+        #     Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+        #     exit
+        # }
+
+        # $action = New-ScheduledTaskAction -Execute "C:\frp\frps.exe" -Argument "-c cfg.toml" -WorkingDirectory "C:\frp\frp"
+        # $trigger = New-ScheduledTaskTrigger -AtStartup
+        # Register-ScheduledTask -TaskName "FrpsService" -Action $action -Trigger $trigger -RunLevel Highest -User "NT AUTHORITY\SYSTEM"
+
+    }
     function download_gm_api {
         # 生成 gm_api.py, cfg.toml, 生成 run_wh3.bat, 生成 run_gm.bat
         param([string]$sfld = "c:\gm_api")
@@ -824,7 +896,7 @@ function App_download {
         }
         function Generate_run_wh3_bat {
             param(
-                [string]$batFileName = "c:\gm_api\run_wh3.bat",
+                [string]$batFileName = "c:\gm_api\run_wh.bat",
                 [string]$exePath = "C:\Vanho Goldminer3\vanhogm3.exe"
             )
 
@@ -859,9 +931,47 @@ port  = 5000
 workers = 4 
 servertag = 'gm(demo)'
 "@
+            $batContent | Out-File -FilePath $batFileName -Encoding ASCII
+            Write-Host " cfg.toml file saved: $batFileName"
+        }
+        function Generate_requirements_txt {
+            param([string]$batFileName = "c:\gm_api\requirements.txt")
+
+            $batContent = @"
+annotated-types==0.7.0
+anyio==4.9.0
+cachetools==5.5.0
+fastapi==0.115.12
+gm==3.0.176
+h11==0.14.0
+h2==4.2.0
+hpack==4.1.0
+Hypercorn==0.17.3
+hyperframe==6.1.0
+idna==3.10
+numpy==2.2.4
+pandas==2.2.3
+priority==2.0.0
+protobuf==3.20.3
+pydantic==2.11.3
+pydantic_core==2.33.1
+python-dateutil==2.9.0.post0
+pytz==2025.2
+setuptools==69.1.1
+six==1.17.0
+sniffio==1.3.1
+starlette==0.46.2
+toml==0.10.2
+typing==3.7.4.3
+typing-inspection==0.4.0
+typing_extensions==4.13.2
+tzdata==2023.3
+wheel==0.45.1
+wsproto==1.2.0
+"@
 
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
-            Write-Host " .toml file saved: $batFileName"
+            Write-Host " requirements.txt file saved: $batFileName"
         }
         function Generate_gm_api_py {
             param([string]$batFileName = "c:\gm_api\gm_api.py")
@@ -870,11 +980,36 @@ servertag = 'gm(demo)'
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
             Write-Host " .py file saved: $batFileName"
         }
+        function Add_task_scheduler_gm_api {
+            # 以管理员运行
+            if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+                Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+                return 
+            }
+
+            $tsk_dir  = "C:\gm_api"
+            $tsk_path = "C:\gm_api\run_gm.bat"
+            $tsk_name = "gm_api"
+            $tsk_user = "NT AUTHORITY\SYSTEM"
+            $action   = New-ScheduledTaskAction -Execute $tsk_path -WorkingDirectory $tsk_dir
+            $trigger  = New-ScheduledTaskTrigger -AtStartup
+            Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
+
+            $tsk_dir  = "C:\gm_api"
+            $tsk_path = "C:\gm_api\run_wh.bat"
+            $tsk_name = "gm_wh3"
+            $tsk_user = "NT AUTHORITY\SYSTEM"
+            $action   = New-ScheduledTaskAction -Execute $tsk_path -WorkingDirectory $tsk_dir
+            $trigger  = New-ScheduledTaskTrigger -AtStartup
+            Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
+
+        }
 
         Generate_run_wh3_bat $(Join-Path -Path $targetDir -ChildPath "run_wh3.bat") 
         Generate_run_gm_bat  $(Join-Path -Path $targetDir -ChildPath "run_gm.bat")  
         Generate_gm_api_py   $(Join-Path -Path $targetDir -ChildPath "gm_api.py")   
         Generate_cfg_toml    $(Join-Path -Path $targetDir -ChildPath "cfg.toml")    
+        Generate_requirements_txt $(Join-Path -Path $targetDir -ChildPath "requirements.txt")    
     }
 
     
