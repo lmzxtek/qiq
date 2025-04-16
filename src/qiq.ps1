@@ -845,7 +845,7 @@ Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -Ru
 
 "@
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
-            Write-Host " cfg.toml file saved: $batFileName"
+            Write-Host " task_frps.ps1 file saved: $batFileName"
         }
         function Generate_frpc_ps1 {
             param([string]$batFileName = "$sfld\task_frpc.ps1")
@@ -870,7 +870,7 @@ Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -Ru
 
 "@
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
-            Write-Host " cfg.toml file saved: $batFileName"
+            Write-Host " task_frpc.ps1 file saved: $batFileName"
         }
 
         Generate_frps_ps1
