@@ -30,7 +30,7 @@ if (Get-Command choco -ErrorAction SilentlyContinue) {
 
 
 function Add_port_in_out {
-    param([number]$port = 5000)
+    param([int]$port = 5000)
     # 以管理员身份运行 PowerShell，执行以下命令：
     if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
         Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
