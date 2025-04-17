@@ -38,11 +38,12 @@ echoT "   1.增加Code-Server的容器部署(LinuxServer and Official)"
 echoT "   2.增加系统服务管理菜单"
 echoT "   3.增加frp管理菜单"
 echoT "--------------------------------"
-echoR " -=> 2025-04-13   v0.7.5" " $VLATEST"
+echoR " -=> 2025-04-18   v0.7.5" " $VLATEST"
 echoY "   1.增加NorthStar部署"
 echoY "   2.增加Music-Tag(Docker)部署"
 echoY "   3.修改AKtools(Docker)部署为最新版本，构建镜像本地"
 echoY "   4.修正frp配置文件下载路径"
+echoY "   5.修正frp菜单功能"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 
