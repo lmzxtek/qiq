@@ -50,7 +50,7 @@ if($region -ne "CN"){
 $download = "https://github.com/$agentrepo/releases/download/$agenttag/$file"
 Write-Host "Location:$region,connect directly!" -BackgroundColor DarkRed -ForegroundColor Green
 }else{
-$download = "https://proxy.zwdk.im/proxy/https://github.com/$agentrepo/releases/download/$agenttag/$file"
+$download = "https://proxy.180102.xyz/proxy/https://github.com/$agentrepo/releases/download/$agenttag/$file"
 Write-Host "Location:CN,use proxy address" -BackgroundColor DarkRed -ForegroundColor Green
 }
 echo $download
