@@ -1065,7 +1065,7 @@ wsproto==1.2.0
 
         }
 
-        Generate_run_wh3_bat $(Join-Path -Path $targetDir -ChildPath "run_wh3.bat") 
+        Generate_run_wh3_bat $(Join-Path -Path $targetDir -ChildPath "run_wh.bat") 
         Generate_run_gm_bat  $(Join-Path -Path $targetDir -ChildPath "run_gm.bat")  
         Generate_gm_api_py   $(Join-Path -Path $targetDir -ChildPath "gm_api.py")   
         Generate_cfg_toml    $(Join-Path -Path $targetDir -ChildPath "cfg.toml")    
