@@ -3514,12 +3514,12 @@ function commonly_tools_menu(){
             ;;
         8) 
             local app_name='fail2ban'
-            local resp=$(systemctl list-unit-files --type-service | grep ${app_name} )
             app_install ${app_name}
             app_install rsyslog 
             sudo systemctl start ${app_name}
             sudo systemctl enable ${app_name}
             sudo systemctl status ${app_name}
+            # local resp=$(systemctl list-unit-files --type-service | grep ${app_name} )
             # if [[ -z resp ]]; then
             # fi
             echo -e "\n $PRIGHT ${app_name}已安装："
