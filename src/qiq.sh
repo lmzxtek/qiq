@@ -3474,35 +3474,35 @@ function commonly_tools_menu(){
             local app_name='wget'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
-            app_install wget 
+            # app_install wget 
             _IS_BREAK='true'
             ;;
         3) 
             local app_name='gdu'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
-            app_install gdu 
+            # app_install gdu 
             _IS_BREAK='true'
             ;;
         4) 
             local app_name='btop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
-            app_install btop 
+            # app_install btop 
             _IS_BREAK='true'
             ;;
         5) 
             local app_name='htop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
-            app_install htop 
+            # app_install htop 
             _IS_BREAK='true'
             ;;
         6) 
             local app_name='iftop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
-            app_install iftop 
+            # app_install iftop 
             _IS_BREAK='true'
             ;;
         7) 
@@ -3515,13 +3515,13 @@ function commonly_tools_menu(){
         8) 
             local app_name='fail2ban'
             local resp=$(systemctl list-unit-files --type-service | grep ${app_name} )
-            if [[ -z resp ]]; then
-                app_install ${app_name}
-                app_install rsyslog 
-                sudo systemctl start ${app_name}
-                sudo systemctl enable ${app_name}
-                sudo systemctl status ${app_name}
-            fi
+            app_install ${app_name}
+            app_install rsyslog 
+            sudo systemctl start ${app_name}
+            sudo systemctl enable ${app_name}
+            sudo systemctl status ${app_name}
+            # if [[ -z resp ]]; then
+            # fi
             echo -e "\n $PRIGHT ${app_name}已安装："
             _IS_BREAK='true'
             ;;
