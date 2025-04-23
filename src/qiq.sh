@@ -8514,38 +8514,39 @@ function docker_management_menu(){
     }
     #======== 启用IPv6 =================
     function dc_enable_ipv6() {
-        if command -v 1pctl > /dev/null 2>&1 ; then
+        if command -v 1pctl > /dev/null 2>&1; then
             echo -e "$WARN 检测到系统安装了1pctl,要开启容器的IPv6网络功能, 请在1pctl中设置:"
             echo -e "\n    >>  1Panel -> 容器 -> 配置 -> IPv6 > 子网: fd00:dead:beef::/64"
             echo -e   "    >>                    网络 -> 创建网络 > IPv4 -> 子网: 172.16.10.0/24"
             echo -e   "    >>                    网络 -> 创建网络 > IPv6 -> 子网: fd00:dead:beff::/64\n"
-            return 1
-        fi
-        local tmpfile=$(mktemp)
-        local CONFIG_FILE="/etc/docker/daemon.json"
-        local BACKUP_FILE="/etc/docker/daemon.json.bak"
-        local IPV6_CONFIG=('ipv6' 'true' 'fixed-cidr-v6' 'fd00:dead:beef::/64' 'ip6tables' 'true' 'experimental' 'true')
-        local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "fd00:dead:beef::/64",  "ip6tables": "true", "experimental": "true"}'
-        app_install jq
-        local tmpfile=$(mktemp)
-        
-        echo -e "$PRIGHT 正在启用Docker IPv6支持..."
-        if [ ! -f "$CONFIG_FILE" ]; then
-            echo -e "$PRIGHT $CONFIG_FILE 不存在, 创建配置文件 ..."
-            echo "$REQUIRED_IPV6_CONFIG" | jq . > "$CONFIG_FILE"
-            systemctl restart docker
+            # return 1
         else
-            # 使用jq合并配置
-            echo -e "$PRIGHT $CONFIG_FILE 存在, 附加内容到配置文件 ..."
-            jq \
-                --argjson ipv6 true \
-                --arg fixed_cidr_v6 'fd00:dead:beef::/64' \
-                --argjson ip6tables true \
-                --argjson experimental true \
-                '. + {ipv6: $ipv6, fixed-cidr-v6: $fixed_cidr_v6, ip6tables: $ip6tables, experimental: $experimental}' \
-                "$CONFIG_FILE" > "$tmpfile"
+            local tmpfile=$(mktemp)
+            local CONFIG_FILE="/etc/docker/daemon.json"
+            local BACKUP_FILE="/etc/docker/daemon.json.bak"
+            local IPV6_CONFIG=('ipv6' 'true' 'fixed-cidr-v6' 'fd00:dead:beef::/64' 'ip6tables' 'true' 'experimental' 'true')
+            local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "fd00:dead:beef::/64",  "ip6tables": "true", "experimental": "true"}'
+            app_install jq
+            local tmpfile=$(mktemp)
             
-            mv "$tmpfile" "$CONFIG_FILE"
+            echo -e "$PRIGHT 正在启用Docker IPv6支持..."
+            if [ ! -f "$CONFIG_FILE" ]; then
+                echo -e "$PRIGHT $CONFIG_FILE 不存在, 创建配置文件 ..."
+                echo "$REQUIRED_IPV6_CONFIG" | jq . > "$CONFIG_FILE"
+                systemctl restart docker
+            else
+                # 使用jq合并配置
+                echo -e "$PRIGHT $CONFIG_FILE 存在, 附加内容到配置文件 ..."
+                jq \
+                    --argjson ipv6 true \
+                    --arg fixed_cidr_v6 'fd00:dead:beef::/64' \
+                    --argjson ip6tables true \
+                    --argjson experimental true \
+                    '. + {ipv6: $ipv6, fixed-cidr-v6: $fixed_cidr_v6, ip6tables: $ip6tables, experimental: $experimental}' \
+                    "$CONFIG_FILE" > "$tmpfile"
+                
+                mv "$tmpfile" "$CONFIG_FILE"
+            fi
         fi
     }
     #========= 禁用IPv6 ===============
@@ -8707,8 +8708,10 @@ function docker_management_menu(){
             2)  docker network prune ;; # 清理网络
             3)  docker_images_rm_all ;;
             4)  dc_name=$(docker_get_id '网络名') && [[ -n ${dc_name} ]] && docker network inspect $dc_name ;;
-            5)  docker_enable_ipv6 ;;
-            6)  docker_disable_ipv6 ;;
+            5)  dc_enable_ipv6 ;;
+            6)  dc_disable_ipv6 ;;
+            # 5)  docker_enable_ipv6 ;;
+            # 6)  docker_disable_ipv6 ;;
             7)  dc_verify_config ;;
             8)  docker_add_network_v4v6 ;;
             0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
