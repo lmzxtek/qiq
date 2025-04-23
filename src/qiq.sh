@@ -8514,6 +8514,13 @@ function docker_management_menu(){
     }
     #======== 启用IPv6 =================
     function dc_enable_ipv6() {
+        if command -v 1pctl > /dev/null 2>&1 ; then
+            echo -e "$WARN 检测到系统安装了1pctl,要开启容器的IPv6网络功能, 请在1pctl中设置:"
+            echo -e "\n    >>  1Panel -> 容器 -> 配置 -> IPv6 > 子网: fd00:dead:beef::/64"
+            echo -e   "    >>                    网络 -> 创建网络 > IPv4 -> 子网: 172.16.10.0/24"
+            echo -e   "    >>                    网络 -> 创建网络 > IPv6 -> 子网: fd00:dead:beff::/64\n"
+            return 1
+        fi
         local tmpfile=$(mktemp)
         local CONFIG_FILE="/etc/docker/daemon.json"
         local BACKUP_FILE="/etc/docker/daemon.json.bak"

@@ -46,6 +46,7 @@ echoY "   4.修正frp配置文件下载路径"
 echoY "   5.修正frp菜单功能"
 echoY "   6.添加nezha-v0安装脚本(win)"
 echoY "   7.修正常用工具的安装"
+echoY "   8.修正Docker网络IPv6的开启"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 
