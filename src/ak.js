@@ -38,10 +38,13 @@
               transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           }
           #loadMoreBtn {
-              background: linear-gradient(135deg, #6c5ce7, #a88beb);
+              background: linear-gradient(135deg,rgba(108, 92, 231, 0.94),rgba(168, 139, 235, 0.9));
           }
           #jumpBtn {
-              background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+              background: linear-gradient(135deg,rgba(255, 107, 107, 0.94),rgba(255, 142, 142, 0.92));
+          }
+          #allBtn {
+              background: linear-gradient(135deg,rgba(102, 255, 0, 0.93),rgba(222, 245, 176, 0.81));
           }
           .loading {
               animation: pulse 1.2s infinite;
@@ -559,7 +562,6 @@
         `;
 
         table.innerHTML = tableHtml;
-
         return table;
     }
 
