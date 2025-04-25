@@ -270,7 +270,7 @@
             period: period || ''  // 显式处理空字符串
         };
     }
-        
+
     function parseQuantity(inputStr) {
         // 增强型正则表达式（支持小数和多字符单位）
         const regex = /^(\d+\.?\d*)([^\d\s]+)$/;
@@ -292,18 +292,18 @@
     // 进阶版本（带单位白名单验证）：parseQuantityAdvanced("100核", ['核', 'M'])
     function parseQuantityAdvanced(inputStr, validUnits = []) {
       const result = parseQuantity(inputStr);
-      
+
       if (!result) return null;
-      
+
       // 单位白名单验证
       if (validUnits.length > 0 && !validUnits.includes(result.unit)) {
         console.warn(`无效单位: ${result.unit}`);
         return null;
       }
-      
+
       return result;
     }
-    
+
     function safeCombinePriceAndRenew(price, renew) {
       // 转换前验证数值类型
       if (typeof price !== "number" || typeof renew !== "number") {
@@ -373,18 +373,18 @@
             //   const dayOK = timeDiff.days >= 14 ? '✔️' : '❌';
                 // const dayOK = timeDiff.days >= 14 ? '✅' : '⛔';
                 //   const dayOK = timeDiff.days >= 14 ? 'Yes' : 'No';
-                
+
                 const srvManage = card.querySelector('.server-manage') || 'N/A';
                 const priceStr  = srvManage.querySelector('.shop-server-price')?.textContent.trim() || 'N/A';
                 const price     = parsePricePeriod(priceStr).price;
                 const sellPrice = Math.ceil(price/0.9) || 0;
-                
+
                 // 买的条件：剩余流量大于50%，剩余天数大于14天
                 const okBuy = timeDiff.days >= 23 && usedv < totalv*0.5 && (period === '月' && price<renewPrice*0.7 ) ? '✅' : '';
                 const isBuy = timeDiff.days >= 23 && usedv < totalv*0.5 && (period === '月' && price<renewPrice*0.7 ) ? 'Y' : 'N';
                 const pricetorenew = safeCombinePriceAndRenew(price, renewPrice);
 
-                if ( daysleft > 12 || price<7 || ( cpu>1) ) { 
+                if ( daysleft > 12 || price<7 || ( cpu>1) ) {
                     if (( (isFiltered && isBuy === 'Y')  ) || ( !isFiltered )) {
                         data.push({ name, detail, location, period,node, type, cpu, mem, disk,
                             network, bandw, usedv,usedu, totalv,totalu, ipv4,ipv6,
@@ -422,11 +422,11 @@
             transition: all 0.3s;
             box-shadow: 0 2px 8px rgba(255, 77, 79, 0.4);
         `;
-        
+
         btn.innerHTML = `
             <i class="fas fa-times" aria-hidden="true"></i>
         `;
-        
+
         btn.addEventListener('click', () => {
             table.remove();
             document.getElementById('akile-btn-container').remove();
@@ -499,7 +499,7 @@
                             </td>
                             <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
                                 ${item.isBuy === 'Y' ? 'color:rgb(0, 255, 51); font-weight: 700;' : 'color:rgba(1, 4, 0, 0.96);'}">
-                                ￥${escapeHtml(item.sellPrice.toString())}
+                                ￥${escapeHtml(item.sellPrice.toString())}${item.isBuy==='Y' ? '👈' : ''}
                             </td>
                             <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
                                 ${item.price < item.renew.price*0.8 ? 'color:rgb(255, 242, 0); ' : 'color:rgb(4, 4, 4);'}">
@@ -533,11 +533,11 @@
         `;
 
         table.innerHTML = tableHtml;
-        
+
         // 添加关闭按钮
         const closeButton = createCloseButton(table);
         title.appendChild(closeButton);
-        
+
         return table;
     }
 
@@ -576,7 +576,7 @@
 
     function triggerAllData() {scrapeData(false);}
     function triggerFilteredData() {scrapeData(true);}
-  
+
     // 绑定点击事件
     allBtn.addEventListener("click", triggerAllData);
     filtBtn.addEventListener("click", triggerFilteredData);
