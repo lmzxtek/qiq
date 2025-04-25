@@ -18,7 +18,7 @@
           .center-panel {
               position: fixed;
               bottom: 50px;
-              left: 50%;
+              left: 45%;
               transform: translateX(-50%);
               display: flex;
               gap: 20px;
@@ -58,14 +58,29 @@
     panel.className = "center-panel";
     document.body.appendChild(panel);
 
+    // 滚动到底部按钮
+    const closeBtn = document.createElement("button");
+    closeBtn.id = "closeBtn";
+    closeBtn.className = "action-btn";
+    // closeBtn.innerHTML = "x";
+    closeBtn.innerHTML = "❌";
+    panel.appendChild(closeBtn);
+
     // 加载更多按钮
+    const loadMoreBtn = document.createElement("button");
+    loadMoreBtn.id = "loadMoreBtn";
+    loadMoreBtn.className = "action-btn";
+    loadMoreBtn.innerHTML = "↻";
+    panel.appendChild(loadMoreBtn);
+
+    // 整理表格按钮
     const allBtn = document.createElement("button");
     allBtn.id = "allBtn";
     allBtn.className = "action-btn";
     allBtn.innerHTML = "A";
     panel.appendChild(allBtn);
 
-    // 加载更多按钮
+    // 筛选按钮
     const filtBtn = document.createElement("button");
     filtBtn.id = "loadMoreBtn";
     filtBtn.className = "action-btn";
@@ -443,8 +458,9 @@
             background: rgba(149, 144, 144, 0.97);
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(74, 73, 73, 0.15);
+            box-shadow: 0 6px 24px rgba(74, 73, 73, 0.15);
             max-width: 90vw;
+            min-width: 600px;
             margin: 20px auto;
             font-family: system-ui, sans-serif;
         `;
@@ -453,13 +469,23 @@
         const title = document.createElement('h3');
         title.textContent = '服务器数据抓取结果';
         title.style.cssText = `
-            margin-top: 0;
+            margin: 0 0 15px 0;
             color: #1890ff;
             border-bottom: 2px solid #f0f0f0;
             padding-bottom: 10px;
-            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        `;
+        title.innerHTML = `
+            <i class="fas fa-server fa-lg" aria-hidden="true"></i>
+            <span>服务器数据抓取结果</span>
         `;
         table.appendChild(title);
+        
+        // 添加关闭按钮
+        const closeButton = createCloseButton(table);
+        title.appendChild(closeButton);
 
         // 表格内容
         const tableHtml = `
@@ -472,10 +498,10 @@
                         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">保底</th>
                         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">售/续</th>
                         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">剩余</th>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">到期</th>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">带宽</th>
                         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">已用</th>
                         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">流量</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">到期</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">带宽</th>
                         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">CPU</th>
                         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">RAM</th>
                         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">Disk</th>
@@ -509,13 +535,13 @@
                                 ${item.daysleft > 25 ? 'color:rgba(255, 238, 0, 0.93);font-weight: 700; ' : 'color:rgb(0, 0, 0);'}">
                                 ${escapeHtml(item.daysleft)}天
                             </td>
-                            <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;white-space: nowrap;overflow: hidden;">${escapeHtml(item.expire)}</td>
-                            <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.bandw)}</td>
                             <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
                                 ${item.usedv > item.totalv*0.4 ? 'color:rgba(255, 0, 0, 0.93); ' : 'color:rgb(0, 0, 0);'}">
                                 ${escapeHtml(item.usedv.toString())}${escapeHtml(item.usedu)}
                             </td>
                             <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.totalv.toString())}${escapeHtml(item.totalu)}</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;white-space: nowrap;overflow: hidden;">${escapeHtml(item.expire)}</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.bandw)}</td>
                             <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
                                 ${item.cpu > 1 ? 'color:rgb(0, 26, 255);font-weight: 700; ' : 'color:rgb(0, 0, 0);'}">
                                 ${escapeHtml(item.cpu)}核
@@ -533,10 +559,6 @@
         `;
 
         table.innerHTML = tableHtml;
-
-        // 添加关闭按钮
-        const closeButton = createCloseButton(table);
-        title.appendChild(closeButton);
 
         return table;
     }
@@ -574,16 +596,22 @@
       });
     }
 
+    // 滚动到底部功能
+    function closeTable() {
+        const oldTable = document.querySelector('#akile-scrape-table');
+        if (oldTable) oldTable.remove();
+      }
+  
     function triggerAllData() {scrapeData(false);}
     function triggerFilteredData() {scrapeData(true);}
 
     // 绑定点击事件
+    // loadBtn.addEventListener("click", handleLoadMore);
     allBtn.addEventListener("click", triggerAllData);
     filtBtn.addEventListener("click", triggerFilteredData);
-  //   loadBtn.addEventListener("click", handleLoadMore);
     // loadBtn.addEventListener('click', triggerLoadMore);
     jumpBtn.addEventListener("click", smoothScrollToBottom);
-  //   jumpBtn.addEventListener("click", scrollToBottom);
+    closeBtn.addEventListener("click", closeTable);
 
     // 按钮状态管理
     let isScrolled = false;
@@ -592,6 +620,7 @@
       const shouldShow =
         window.scrollY < document.documentElement.scrollHeight - threshold;
 
+      loadBtn.style.display = shouldShow ? "flex" : "none";
       allBtn.style.display = shouldShow ? "flex" : "none";
       filtBtn.style.display = shouldShow ? "flex" : "none";
       jumpBtn.style.display = shouldShow ? "flex" : "none";
