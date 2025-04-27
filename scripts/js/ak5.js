@@ -35,8 +35,8 @@
             
         function resetButton() {
             isRunning = false;
-            controlBtn.textContent = '开始自动加载';
-            controlBtn.disabled = false;
+            btn.textContent = '开始自动加载';
+            btn.disabled = false;
         }
         function smoothScrollToBottom() {
           const scrollHeight = Math.max(
@@ -50,7 +50,7 @@
           });
       
         }
-        
+
         btn.textContent = '正在加载...';
         btn.disabled = true;
 

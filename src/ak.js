@@ -93,6 +93,7 @@
       .table-style td {
         padding: 12px 20px;
         border-bottom: 1px solid #ecf0f1; /* 浅灰色分割线 */
+        background-color:rgba(141, 160, 179, 0.96); /* 浅灰背景 */
         color: #34495e;
       }
       .table-style td.td-second {
@@ -446,6 +447,42 @@
         }
     }, 1000); // 每秒检查一次
   }
+  
+    // 创建延迟函数
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    // 异步加载函数
+    async function autoLoadMoreClicker(btn) {
+        let isRunning = true;
+        btn.disabled = true;
+        // btn.textContent = '加载中...';
+        
+        try {
+            while (isRunning) {
+                smoothScrollToBottom();
+                const loadMoreBtn = document.querySelector('.load-more button');
+                
+                if (!loadMoreBtn) {
+                    console.log('加载完成');
+                    showMessage(" 👉 自动加载完成 👈 ");
+                    break;
+                }
+
+                // 执行点击并等待响应
+                loadMoreBtn.click();
+                await delay(1500); // 给服务器响应时间
+                // 可选：检测页面内容是否变化（需要根据实际情况实现）
+                // if (!contentChanged()) break;
+            }
+        } catch (error) {
+            console.error('自动加载出错:', error);
+            showMessage(" ⛔ 自动加载出错:\n"+ error);
+        } finally {
+            smoothScrollToBottom();
+            btn.disabled = false;
+            // btn.textContent = '开始自动加载';
+        }
+    }
   // 模拟点击加载更多
   async function triggerLoadMore() {
     const btn = document.querySelector( '.load-more button' );
@@ -1025,7 +1062,8 @@
 
   // loadScrollBtn.addEventListener('click', () => {clickLoadMore(true);});
   // loadScrollBtn.addEventListener('click', () => {handleLoadMore();});
-  loadScrollBtn.addEventListener('click', () => {handleAutoLoadMore(loadScrollBtn);});
+  // loadScrollBtn.addEventListener('click', () => { if (!loadScrollBtn.disabled) handleAutoLoadMore(loadScrollBtn);});
+  loadScrollBtn.addEventListener('click', () => { if (!loadScrollBtn.disabled) autoLoadMoreClicker(loadScrollBtn);});
 
 
   // 按钮点击切换显示状态
