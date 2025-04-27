@@ -222,7 +222,6 @@
   // closeBtn.innerHTML = "x";
   closeBtn.innerHTML = "❌";
   closeBtn.className = "action-btn";
-  // closeBtn.style.background = "linear-gradient(135deg,rgba(109, 108, 97, 0.94),rgba(113, 112, 94, 0.83))";
 
   // 显隐按钮
   const toggleBtn = document.createElement("button");
@@ -230,7 +229,7 @@
   toggleBtn.innerHTML = "隐";
   toggleBtn.display = "none"; // 默认隐藏
   toggleBtn.className = "action-btn";
-  // toggleBtn.style.background = "linear-gradient(135deg,rgba(5, 254, 1, 0.94),rgba(7, 247, 23, 0.83))";
+  toggleBtn.style.color = "rgb(249, 21, 0)";
   
   // 加载更多按钮
   const loadMoreBtn = document.createElement("button");
@@ -243,21 +242,20 @@
   loadScrollBtn.id = "loadScrollBtn";
   loadScrollBtn.innerHTML = "∨";
   loadScrollBtn.className = "action-btn";
-  loadScrollBtn.style.color = "rgba(249, 21, 0, 0.94)";
-  // loadScrollBtn.style.background = "linear-gradient(135deg,rgba(255, 0, 234, 0.94),rgba(186, 11, 250, 0.83))";
+  loadScrollBtn.style.color = "rgb(0, 4, 255)";
 
   // 整理表格按钮
   const allBtn = document.createElement("button");
   allBtn.id = "allBtn";
   allBtn.innerHTML = "A";
   allBtn.className = "action-btn";
+  allBtn.style.color = "rgb(9, 255, 0)";
 
   // 筛选按钮
   const filtBtn = document.createElement("button");
   filtBtn.id = "filtBtn";
   filtBtn.innerHTML = "✔️";
   filtBtn.className = "action-btn";
-  // filtBtn.style.background = "linear-gradient(135deg,rgba(0, 255, 255, 0.94),rgba(0, 207, 248, 0.83))";
 
   // 筛选按钮
   const supperBtn = document.createElement("button");
@@ -265,14 +263,13 @@
   supperBtn.innerHTML = "S";
   supperBtn.className = "action-btn";
   supperBtn.style.color = "rgba(0, 21, 249, 0.94)";
-  // supperBtn.style.background = "linear-gradient(135deg,rgba(60, 116, 116, 0.94),rgba(85, 136, 146, 0.83))";
 
   // 滚动到底部按钮
   const jumpBtn = document.createElement("button");
   jumpBtn.id = "jumpBtn";
   jumpBtn.innerHTML = "↓";
   jumpBtn.className = "action-btn";
-  jumpBtn.style.color = "rgba(0, 249, 0, 0.94)";
+  jumpBtn.style.color = "rgba(208, 0, 255, 0.94)";
 
   // 添加按钮到容器
   // panel.appendChild(closeBtn);
@@ -657,9 +654,6 @@
           box-shadow: 0 2px 8px rgba(255, 77, 79, 0.4);
       `;
 
-      // btn.innerHTML = `
-      //     <i class="fas fa-times" aria-hidden="true"></i>
-      // `;
       // btn.innerHTML = `⛔`;
       btn.innerHTML = `x`;
 
@@ -771,16 +765,6 @@
                 item.buyBtn.dispatchEvent(event);
             }
         });
-        
-        // buyBtn.addEventListener('mouseover', () => {
-        //     buyBtn.style.transform = 'scale(1.05)';
-        //     buyBtn.style.backgroundColor = '#45a049';
-        // });
-        
-        // buyBtn.addEventListener('mouseout', () => {
-        //     buyBtn.style.transform = 'scale(1)';
-        //     buyBtn.style.backgroundColor = '#4CAF50';
-        // });
 
         const actionCell = document.createElement('td');
         // 创建包裹容器（用于处理布局）
@@ -881,92 +865,8 @@
     });
     table.appendChild(tbody);
 
-      // 表格内容
-      const tableHtml = `
-          <table style="width: 100%; border-collapse: collapse;">
-              <thead>
-                  <tr style="color:rgba(241, 229, 229, 0.97);">
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">节点</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">状态</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">周期</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">购买</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">保底</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">售/续</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">剩余</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">已用</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">流量</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">到期</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">带宽</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">CPU</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">RAM</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">Disk</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">IPv4</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">IPv6</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">地区</th>
-                      <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">套餐</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  ${data.map(item => `
-                      <tr>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">${escapeHtml(item.node)}</td>
-                          <td style="padding: 15px; border-bottom: 1px solid #f5f5f5;
-                              ${item.detail === '被墙' ? 'color: #ff4d4f; font-weight: 700;' : 'color:rgba(1, 4, 0, 0.96);'}">
-                              ${escapeHtml(item.detail)}
-                          </td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
-                              ${item.period === '年' ? 'color:rgb(255, 0, 140);' : 'color:rgba(1, 4, 0, 0.96);'}">
-                              ${escapeHtml(item.period)}
-                          </td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">
-                            ${item.buyBtn.cloneNode(true).outerHTML}
-                          </td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
-                              ${item.isBuy === 'Y' ? 'color:rgb(0, 255, 51); font-weight: 700;' : 'color:rgba(1, 4, 0, 0.96);'}">
-                              ￥${escapeHtml(item.sellPrice.toString())}${item.isBuy==='Y' ? '👈' : ''}
-                          </td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
-                              ${item.price < item.renew.price*0.8 ? 'color:rgb(255, 242, 0); ' : 'color:rgb(4, 4, 4);'}">
-                              ${item.pricetorenew}
-                          </td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
-                              ${item.daysleft > 25 ? 'color:rgba(255, 238, 0, 0.93);font-weight: 700; ' : 'color:rgb(0, 0, 0);'}">
-                              ${escapeHtml(item.daysleft)}天
-                          </td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
-                              ${item.usedv > item.totalv*0.4 ? 'color:rgba(255, 0, 0, 0.93); ' : 'color:rgb(0, 0, 0);'}">
-                              ${escapeHtml(item.usedv.toString())}${escapeHtml(item.usedu)}
-                          </td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.totalv.toString())}${escapeHtml(item.totalu)}</td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;white-space: nowrap;overflow: hidden;">${escapeHtml(item.expire)}</td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.bandw)}</td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;
-                              ${item.cpu > 1 ? 'color:rgb(0, 26, 255);font-weight: 700; ' : 'color:rgb(0, 0, 0);'}">
-                              ${escapeHtml(item.cpu)}核
-                          </td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.mem)}</td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.disk)}</td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.ipv4)}</td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.ipv6)}</td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;">${escapeHtml(item.location.slice(-2) || 'N/A')}</td>
-                          <td style="padding: 12px; border-bottom: 1px solid #f5f5f5;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">${escapeHtml(item.type)}</td>
-                      </tr>
-                  `).join('')}
-              </tbody>
-          </table>
-      `;
-
-      // tabdiv.innerHTML = tableHtml;
-      // tabdiv.innerHTML = table;
-      tabdiv.appendChild(table);
-      // tabdiv.querySelectorAll('.buy-btn').forEach(btn => {
-      //   btn.addEventListener('click', function() {
-      //     const itemId = this.closest('tr').dataset.node || 'N/A';
-      //     console.log('购买商品ID:', itemId);
-      //     // 执行购买逻辑...
-      //   });
-      // });
-      return tabdiv;
+    tabdiv.appendChild(table);
+    return tabdiv;
   }
 
   // HTML转义函数
