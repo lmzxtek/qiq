@@ -1,93 +1,85 @@
 // ==UserScript==
-// @name         Dynamic Table Generator
-// @namespace    your-namespace
+// @name         Auto Load More Button
+// @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  根据data数据生成带操作按钮的表格
+// @description  自动循环点击加载更多按钮
 // @author       Your Name
-// @match        *://*/*
+// @match        https://akile.io/console/pushshop
 // @grant        none
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    // 示例数据结构（需替换为实际数据）
-    const data = [
-        { name: "商品A", buyBtn: document.querySelector('#btn1') },
-        { name: "商品B", buyBtn: document.querySelector('#btn2') }
-    ];
+    // 创建控制按钮
+    const controlBtn = document.createElement('button');
+    controlBtn.textContent = '开始自动加载';
+    controlBtn.style.position = 'fixed';
+    controlBtn.style.bottom = '20px';
+    controlBtn.style.left = '20px';
+    controlBtn.style.zIndex = 9999;
+    controlBtn.style.padding = '8px 16px';
+    controlBtn.style.backgroundColor = '#4CAF50';
+    controlBtn.style.color = 'white';
+    controlBtn.style.border = 'none';
+    controlBtn.style.borderRadius = '4px';
+    controlBtn.style.cursor = 'pointer';
+    document.body.appendChild(controlBtn);
 
-    // 创建表格元素
-    const table = document.createElement('table');
-    table.style.cssText = `
-        border-collapse: collapse;
-        width: 80%;
-        margin: 20px auto;
-        font-family: Arial, sans-serif;
-    `;
-
-    // 表格头部
-    const thead = document.createElement('thead');
-    thead.innerHTML = `
-        <tr style="background: #f5f5f5;">
-            <th style="border: 1px solid #ddd; padding: 12px;">商品名称</th>
-            <th style="border: 1px solid #ddd; padding: 12px;">操作</th>
-        </tr>
-    `;
-    table.appendChild(thead);
-
-    // 表格主体
-    const tbody = document.createElement('tbody');
     
-    data.forEach(item => {
-        const row = document.createElement('tr');
+    function handleAutoLoadMore(btn){
+        let isRunning = false;
+        let intervalId = null;
+
+        if (isRunning) return;
+            
+        function resetButton() {
+            isRunning = false;
+            controlBtn.textContent = '开始自动加载';
+            controlBtn.disabled = false;
+        }
+        function smoothScrollToBottom() {
+          const scrollHeight = Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight
+          );
+      
+          window.scrollTo({
+            top: scrollHeight,
+            behavior: "smooth",
+          });
+      
+        }
         
-        // 商品名称列
-        const nameCell = document.createElement('td');
-        nameCell.textContent = item.name;
-        nameCell.style.border = "1px solid #ddd";
-        nameCell.style.padding = "12px";
-        
-        // 操作按钮列
-        const actionCell = document.createElement('td');
-        const actionBtn = document.createElement('button');
-        actionBtn.textContent = "立即购买";
-        actionBtn.style.cssText = `
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 14px;
-        `;
-        
-        // 绑定点击事件
-        actionBtn.addEventListener('click', () => {
-            // 触发原始购买按钮的点击事件
-            if (typeof item.buyBtn.click === 'function') {
-                item.buyBtn.click();
+        btn.textContent = '正在加载...';
+        btn.disabled = true;
+
+        intervalId = setInterval(() => {
+            const loadMoreBtn = document.querySelector('.load-more button');
+            
+            if (loadMoreBtn) {
+                try {
+                    loadMoreBtn.click();
+                    smoothScrollToBottom();
+                } catch (error) {
+                    console.error('点击按钮时出错:', error);
+                    clearInterval(intervalId);
+                    resetButton();
+                }
             } else {
-                // 兼容通过 addEventListener 绑定的情况
-                const event = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true
-                });
-                item.buyBtn.dispatchEvent(event);
+                // 没有更多按钮时停止
+                smoothScrollToBottom();
+                clearInterval(intervalId);
+                resetButton();
             }
-        });
+        }, 1000); // 每秒检查一次
 
-        actionCell.appendChild(actionBtn);
-        
-        row.appendChild(nameCell);
-        row.appendChild(actionCell);
-        tbody.appendChild(row);
-    });
+    }
 
-    table.appendChild(tbody);
-    
-    // 插入到页面中（可根据需要修改选择器）
-    const container = document.querySelector('#container') || document.body;
-    container.appendChild(table);
+    // 点击事件处理
+    controlBtn.addEventListener('click', () => { handleAutoLoadMore(controlBtn);});
+
+    // 初始隐藏原加载更多按钮（可选）
+    // const originalBtn = document.querySelector('.load-more button');
+    // if (originalBtn) originalBtn.style.display = 'none';
 })();

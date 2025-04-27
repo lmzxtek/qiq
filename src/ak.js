@@ -197,11 +197,11 @@
     // 设置样式
     Object.assign(msgBox.style, {
         position: 'fixed',
-        top: '50%',
+        top: '60px',
         left: '50%',
         transform: 'translate(-50%, -50%)',
         padding: '12px 24px',
-        background: 'rgba(0, 0, 0, 0.8)',
+        background: 'rgba(100, 90, 90, 0.8)',
         color: '#fff',
         borderRadius: '4px',
         boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
@@ -212,8 +212,8 @@
     });
     // 添加到页面
     document.body.appendChild(msgBox);
-    // 1秒后移除
-    setTimeout(() => { msgBox.remove(); }, 1000);
+    // 2秒后移除
+    setTimeout(() => { msgBox.remove(); }, 2000);
   }
   // 创建容器
   const panel = document.createElement("div");
@@ -282,63 +282,68 @@
   panel.appendChild(filtBtn);
   panel.appendChild(supperBtn);
   panel.appendChild(allBtn);
-  panel.appendChild(loadMoreBtn);
   panel.appendChild(jumpBtn);
+  panel.appendChild(loadMoreBtn);
   panel.appendChild(loadScrollBtn);
+
+  // 真实点击模拟器
+  function simulateRealClick(element) {
+    if (!element || !(element instanceof Element)) {
+      console.warn('Invalid element provided for click simulation');
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const clickOptions = {
+      bubbles: true,
+      cancelable: true,
+      view: unsafeWindow,
+      button: 0,
+      buttons: 1,
+      clientX: rect.left + rect.width / 2,
+      clientY: rect.top + rect.height / 2
+    };
+
+    // 触发完整点击事件序列
+    ['mousedown', 'click', 'mouseup'].forEach(eventType => {
+      element.dispatchEvent(new MouseEvent(eventType, clickOptions));
+    });
+
+    // 调用原生click方法作为后备
+    if (typeof element.click === 'function') {
+      element.click();
+    }
+    }
 
   // 智能按钮查找函数
   function findLoadButton() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      let retryCount = 0;
+      const maxRetries = 3;
+      const checkInterval = 500;
+  
       const check = () => {
-        const candidates = [
-          ...document.querySelectorAll(
-            ".load-more, .next-page, .pagination-next"
-          ),
-          ...document.querySelectorAll(
-            '[aria-label^="加载更多"], [data-action="load"]'
-          ),
-          ...document.querySelectorAll("button:not([disabled]):not([hidden])"),
-        ];
-
+        const candidates = [...document.querySelectorAll(".load-more button")];
         const validBtn = candidates.find(
           (btn) =>
             btn.offsetHeight > 0 &&
             btn.offsetWidth > 0 &&
             btn.getBoundingClientRect().top < window.innerHeight
         );
-
-        validBtn ? resolve(validBtn) : setTimeout(check, 500);
+        // const validBtn = document.querySelectorAll(".load-more button")
+  
+        if (validBtn) {
+          resolve(validBtn);
+        } else if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(check, checkInterval);
+        } else {
+          reject(new Error("Max retries reached without finding button"));
+        }
       };
+      
       check();
     });
-  }
-
-  // 真实点击模拟器
-  function simulateRealClick(element) {
-    const rect = element.getBoundingClientRect();
-    const clickEvent = new MouseEvent("click", {
-      bubbles: true,
-      cancelable: true,
-      view: unsafeWindow,
-      button: 0,
-      buttons: 1,
-      clientX: rect.left + 1,
-      clientY: rect.top + 1,
-    });
-
-    ["mousedown", "click", "mouseup"].forEach((event) => {
-      element.dispatchEvent(
-        new MouseEvent(event, {
-          bubbles: true,
-          cancelable: true,
-          view: unsafeWindow,
-        })
-      );
-    });
-
-    if (typeof element.click === "function") {
-      element.click();
-    }
   }
 
   // 智能等待加载完成
@@ -351,6 +356,7 @@
         const hasMore = document.querySelector(".load-more");
 
         if (isLoading) {
+          // smoothScrollToBottom();
           setTimeout(check, 300);
         } else if (hasMore) {
           resolve();
@@ -365,35 +371,92 @@
   // 主逻辑
   async function handleLoadMore() {
     try {
+      smoothScrollToBottom();
       const btn = await findLoadButton();
-      if (!btn) throw new Error("未找到加载按钮");
+      if (!btn) {
+        throw new Error("未找到加载更多按钮");
+        // showMessage(" 📛 未找到加载更多按钮！📛 ");
+      }
 
       btn.disabled = true;
       btn.classList.add("loading-indicator");
-
       simulateRealClick(btn);
 
       await waitForLoad();
-      console.log("加载成功");
+      // showMessage(" ✨ 加载成功  ");
+      // console.log("✅ 加载成功");
     } catch (error) {
-      console.error("加载失败:", error);
+      showMessage(" ⛔ 加载失败:"+ error);
+      console.log(error);
     } finally {
       // 重置按钮状态
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove("loading-indicator");
+        smoothScrollToBottom();
+      }
     }
   }
 
+  function handleAutoLoadMore(btn){
+    let isRunning = false;
+    let intervalId = null;
+
+    if (isRunning) return;
+        
+    function resetButton() {
+        isRunning = false;
+        btn.disabled = false;
+    }
+    function smoothScrollToBottom() {
+      const scrollHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      );
+  
+      window.scrollTo({
+        top: scrollHeight,
+        behavior: "smooth",
+      });  
+    }
+
+    // btn.textContent = '正在加载...';
+    showMessage(" 👉 正在加载...");
+    btn.disabled = true;
+
+    intervalId = setInterval(() => {
+        const loadMoreBtn = document.querySelector('.load-more button');
+        
+        if (loadMoreBtn) {
+            try {
+                loadMoreBtn.click();
+                showMessage(" 👉 正在自动加载 ...");
+                smoothScrollToBottom();
+            } catch (error) {
+                console.error(' 点击按钮时出错:', error);
+                clearInterval(intervalId);
+                resetButton();
+            }
+        } else {
+            // 没有更多按钮时停止
+            showMessage(" 👉 自动加载完成 👈 ");
+            smoothScrollToBottom();
+            clearInterval(intervalId);
+            resetButton();
+        }
+    }, 1000); // 每秒检查一次
+  }
   // 模拟点击加载更多
   async function triggerLoadMore() {
-    const btn = document.querySelector(
-      '.load-more, .next-page, [aria-label^="加载更多"]'
-    );
+    const btn = document.querySelector( '.load-more button' );
     if (!btn) {
-      alert("未找到加载按钮！请检查选择器配置");
+      showMessage(" ⚠️ 未找到加载更多按钮！⚠️ ");
+      smoothScrollToBottom();
       return;
     }
 
     try {
-      filtBtn.classList.add("loading");
+      loadMoreBtn.classList.add("loading");
       btn.disabled = true;
 
       // 模拟真实用户点击
@@ -402,16 +465,17 @@
         cancelable: true,
         view: unsafeWindow,
       });
-      console.log("Start to click LoadMore...");
+      showMessage(" 👉 Start to click LoadMore...");
       btn.dispatchEvent(clickEvent);
       // btn.click();  // 有些情况下比dispatchEvent更可靠
 
       // 等待内容加载
-      console.log("Wait to LoadMore...");
+      showMessage(" 👉 Wait to LoadMore ...");
       await new Promise((resolve) => setTimeout(resolve, 1500));
     } finally {
-      filtBtn.classList.remove("loading");
+      loadMoreBtn.classList.remove("loading");
       btn.disabled = false;
+      smoothScrollToBottom();
     }
   }
 
@@ -503,21 +567,7 @@
           unit: unit || "", // 处理空单位
       };
   }
-  // 进阶版本（带单位白名单验证）：parseQuantityAdvanced("100核", ['核', 'M'])
-  function parseQuantityAdvanced(inputStr, validUnits = []) {
-    const result = parseQuantity(inputStr);
-
-    if (!result) return null;
-
-    // 单位白名单验证
-    if (validUnits.length > 0 && !validUnits.includes(result.unit)) {
-      console.warn(`无效单位: ${result.unit}`);
-      return null;
-    }
-
-    return result;
-  }
-
+  
   function safeCombinePriceAndRenew(price, renew) {
     // 转换前验证数值类型
     if (typeof price !== "number" || typeof renew !== "number") {
@@ -969,8 +1019,15 @@
   filtBtn.addEventListener("click", () => {scrapeData(true);});
   supperBtn.addEventListener("click", () => {scrapeData(false,true);});
   jumpBtn.addEventListener("click", () => {smoothScrollToBottom(false);});
-  loadMoreBtn.addEventListener('click', () => {clickLoadMore(false);});
-  loadScrollBtn.addEventListener('click', () => {clickLoadMore(true);});
+
+  // loadMoreBtn.addEventListener('click', () => {clickLoadMore(false);});
+  loadMoreBtn.addEventListener('click', () => {triggerLoadMore();});
+
+  // loadScrollBtn.addEventListener('click', () => {clickLoadMore(true);});
+  // loadScrollBtn.addEventListener('click', () => {handleLoadMore();});
+  loadScrollBtn.addEventListener('click', () => {handleAutoLoadMore(loadScrollBtn);});
+
+
   // 按钮点击切换显示状态
   toggleBtn.addEventListener('click', () => { showTable(); });
 
