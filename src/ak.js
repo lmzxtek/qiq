@@ -815,8 +815,8 @@
         } 
 
         const daysleftCell = document.createElement('td');
-        detailCell.daysleftCell = 'td-second';
-        detailCell.textContent = item.daysleft+"天";
+        daysleftCell.className = 'td-second';
+        daysleftCell.textContent = item.daysleft+"天";
         if (item.daysleft > 25) {
             daysleftCell.style.color = 'rgba(255, 238, 0, 0.93)';
             // daysleftCell.style.fontWeight = '700';
@@ -860,7 +860,7 @@
         ipv6Cell.textContent = item.ipv6;
 
         const locationCell = document.createElement('td');
-        locationCell.daysleftCell = 'td-second';
+        locationCell.className = 'td-second';
         locationCell.textContent = item.location.slice(-2) || 'N/A';
 
         const typeCell = document.createElement('td');
