@@ -95,6 +95,11 @@
         border-bottom: 1px solid #ecf0f1; /* 浅灰色分割线 */
         color: #34495e;
       }
+      .table-style td.td-second {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
       /* 斑马条纹效果（偶数行） */
       .table-style tr:nth-child(even) td {
@@ -747,6 +752,7 @@
         // 名称列
         const nodeCell = document.createElement('td');
         nodeCell.textContent = item.node;
+        nodeCell.className = 'td-second';
         
         const detailCell = document.createElement('td');
         detailCell.textContent = item.detail;
@@ -754,6 +760,7 @@
             detailCell.style.color = '#ff4d4f';
             detailCell.style.fontWeight = '700';
         }
+        detailCell.className = 'td-second';
 
         const periodCell = document.createElement('td');
         periodCell.textContent = item.period;
@@ -808,7 +815,8 @@
         } 
 
         const daysleftCell = document.createElement('td');
-        daysleftCell.textContent = item.daysleft+"天";
+        detailCell.daysleftCell = 'td-second';
+        detailCell.textContent = item.daysleft+"天";
         if (item.daysleft > 25) {
             daysleftCell.style.color = 'rgba(255, 238, 0, 0.93)';
             // daysleftCell.style.fontWeight = '700';
@@ -826,6 +834,7 @@
         totalvCell.textContent = item.totalv.toString()+item.totalu;
 
         const expireCell = document.createElement('td');
+        expireCell.className = 'td-second';
         expireCell.textContent = item.expire;
 
         const bandwCell = document.createElement('td');
@@ -851,10 +860,12 @@
         ipv6Cell.textContent = item.ipv6;
 
         const locationCell = document.createElement('td');
+        locationCell.daysleftCell = 'td-second';
         locationCell.textContent = item.location.slice(-2) || 'N/A';
 
         const typeCell = document.createElement('td');
         typeCell.textContent = item.type;
+        typeCell.className = 'td-second';
 
         row.appendChild(nodeCell);
         row.appendChild(detailCell);
