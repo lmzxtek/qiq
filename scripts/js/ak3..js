@@ -14,23 +14,23 @@
     window.addEventListener('load', () => {
       // 创建按钮容器
       const container = document.createElement('div');
-      container.style.position = 'fixed';
-      container.style.bottom = '20px';
-      container.style.left = '20px';
-      container.style.zIndex = '9999';
-      container.style.display = 'flex';
+      container.style.position      = 'fixed';
+      container.style.bottom        = '20px';
+      container.style.left          = '20px';
+      container.style.zIndex        = '9999';
+      container.style.display       = 'flex';
       container.style.flexDirection = 'column';
-      container.style.gap = '10px';
+      container.style.gap           = '10px';
   
       // 样式生成函数
       function styleButton(btn, color) {
-        btn.style.padding = '10px 16px';
+        btn.style.padding         = '10px 16px';
         btn.style.backgroundColor = color || '#409EFF';
-        btn.style.color = '#fff';
-        btn.style.border = 'none';
-        btn.style.borderRadius = '4px';
-        btn.style.cursor = 'pointer';
-        btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+        btn.style.color           = '#fff';
+        btn.style.border          = 'none';
+        btn.style.borderRadius    = '4px';
+        btn.style.cursor          = 'pointer';
+        btn.style.boxShadow       = '0 2px 8px rgba(0,0,0,0.2)';
       }
   
       // 创建“加载更多”按钮
