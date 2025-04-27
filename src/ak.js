@@ -552,17 +552,26 @@
               const network = infoBodies[4].querySelector('.info-value')?.textContent.trim() || 'N/A';
               const bandw   = network.split(' ')[1]  || 'N/A' ;
               const used    = network.split(' ')[3]  || 'N/A' ;
-              const total   = network.split(' ')[5]  || 'N/A' ;
-              let usedv = parseQuantity(used).num || 0;
-              let totalv = parseQuantity(total).num || 0;
-              let usedu = parseQuantity(used).unit || '';
-              let totalu = parseQuantity(total).unit || '';
-              if (usedu === 'TB' ) { usedv = (usedv * 1024).toFixed(2); usedu = 'GB'; }
-              if (usedu === 'MB' ) { usedv = (usedv / 1024).toFixed(2); usedu = 'GB'; }
-              if (usedu === 'KB' ) { usedv = (usedv / 1024 / 1024).toFixed(2); usedu = 'GB'; }
-              if (usedv == 0 ) { usedu = ''; } // 处理0的情况
-              if (totalu === 'TB' ) { totalv = (totalv * 1024).toFixed(2); totalu = 'GB'; }
-              if (totalu === 'MB' ) { totalv = (totalv / 1024).toFixed(2); totalu = 'GB'; }
+              let usedv  = 0;
+              let totalv = 0;
+              let usedu  = '';
+              let totalu = '';
+              if (used === '无限制') {
+                usedu   = '无限制' ;
+                totalu  = '无限制' ;
+              }else{
+                const total   = network.split(' ')[5]  || 'N/A' ;
+                usedv  = parseQuantity(used).num   || 0;
+                totalv = parseQuantity(total).num  || 0;
+                usedu  = parseQuantity(used).unit  || '';
+                totalu = parseQuantity(total).unit || '';
+                if (usedu === 'TB' ) { usedv = (usedv * 1024).toFixed(2); usedu = 'GB'; }
+                if (usedu === 'MB' ) { usedv = (usedv / 1024).toFixed(2); usedu = 'GB'; }
+                if (usedu === 'KB' ) { usedv = (usedv / 1024 / 1024).toFixed(2); usedu = 'GB'; }
+                if (usedv == 0 ) { usedu = ''; } // 处理0的情况
+                if (totalu === 'TB' ) { totalv = (totalv * 1024).toFixed(2); totalu = 'GB'; }
+                if (totalu === 'MB' ) { totalv = (totalv / 1024).toFixed(2); totalu = 'GB'; }
+              }
 
               const ipstr = infoBodies[5].querySelector('.info-value')?.textContent.trim() || 'N/A';
               const ipv4  = ipstr.split(' ')[1] || 'N/A';
@@ -611,10 +620,15 @@
               let is2Push = false;
               if (isOnlySuper) {
                 is2Push = cpu>1;
-              } else {
-                is2Push = daysleft > 12 || price<7 || ( cpu>1);
-                is2Push = is2Push && (( (isFiltered && isBuy === 'Y')  ) || ( !isFiltered ));
+              } else if (isFiltered) {
+                is2Push = isBuy === 'Y';
               }
+              else{
+                is2Push = true;
+              }
+                // is2Push = daysleft > 12 || price<7 || ( cpu>1);
+                // is2Push = is2Push && (( (isFiltered && isBuy === 'Y')  ) || ( !isFiltered ));
+              // }
 
               if ( is2Push ) {
                   data.push({ card, name, detail, location, period,node, type, cpu, mem, disk,
@@ -927,7 +941,10 @@
   // 关闭结果表格
   function showTable() {
     const oldTable = document.querySelector('#akile-scrape-table');
-    if (!oldTable) return;
+    if (!oldTable) { 
+      toggleBtn.style.display = 'none';
+      return; 
+    }
     const isVisible = oldTable.style.display !== 'none';
     oldTable.style.display = isVisible ? 'none' : 'block';
     toggleBtn.textContent = isVisible ? "显" : "隐";
@@ -954,7 +971,7 @@
 
     jumpBtn.style.display       = shouldShow ? "flex" : "none";
     closeBtn.style.display      = shouldShow ? "flex" : "none";
-    toggleBtn.style.display     = shouldShow ? "flex" : "none";
+    // toggleBtn.style.display     = shouldShow ? "flex" : "none";
 
     allBtn.style.display        = shouldShow ? "flex" : "none";
     filtBtn.style.display       = shouldShow ? "flex" : "none";
