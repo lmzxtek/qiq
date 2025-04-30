@@ -819,7 +819,8 @@ function App_download {
         # 定义 qBittorrent 的 SourceForge 项目 URL
         $SF_PROJECT_URL = "https://sourceforge.net/projects/qbittorrent"
         # 获取最新版本号
-        $RSS = Invoke-WebRequest -Uri "$SF_PROJECT_URL/rss" -UseBasicParsing
+        # $RSS = Invoke-WebRequest -Uri "$SF_PROJECT_URL/rss" # -UseBasicParsing
+        $RSS = Invoke-RestMethod -Uri "$SF_PROJECT_URL/rss" # -UseBasicParsing
         # $LATEST_VERSION = ($RSS.Content -split "qbittorrent/qbittorrent/qbittorrent-" | Select-Object -Skip 1 | Select-Object -First 1) -split "/" | Select-Object -First 1
         $LATEST_VERSION = $RSS.Content[0].url
         if (-not $LATEST_VERSION) {
