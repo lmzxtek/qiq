@@ -640,16 +640,30 @@
               const cpu  = conf.split(' ')[0].split('核')[0] || 'N/A';
               let mem  = conf.split(' ')[0].split('核')[1] || 'N/A';              
               if (mem.slice(-1) === 'M') {
-                const memNum = parseFloat(mem.slice(0, -1));
-                if (memNum>=1024) {mem = (memNum/1024).toFixed(2) + 'G';}
+                let memNum = parseFloat(mem.slice(0, -1));
+                if (memNum>=1024) {
+                  memNum = memNum/1024;
+                  if (memNum == Math.floor(memNum)) {
+                    mem = memNum + 'G';
+                  }else{
+                    mem = memNum.toFixed(2) + 'G';
+                  }
+                }
               }
               const disk = conf.split(' ')[1] || 'N/A';
 
               const network = infoBodies[4].querySelector('.info-value')?.textContent.trim() || 'N/A';
               let bandw   = network.split(' ')[1]  || 'N/A' ;            
               if (bandw.slice(-1) === 'M') {
-                const bandwNum = parseFloat(bandw.slice(0, -1));
-                if (bandwNum>=1024) {bandw = (bandwNum/1024).toFixed(2) + 'G';}
+                let bandwNum = parseFloat(bandw.slice(0, -1));
+                if (bandwNum>=1024) {
+                  bandwNum = bandwNum/1024;
+                  if (bandwNum == Math.floor(bandwNum)) {
+                    bandw = bandwNum + 'G';
+                  }else{
+                    bandw = bandwNum.toFixed(2) + 'G';
+                  }
+                }
               }
               // if (bandw.length>4 && bandw.slice(1) === 'M') {
               //   bandw = (bandw.split('M')[0]/1024).toFixed(2) + 'G';
