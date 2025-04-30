@@ -915,10 +915,15 @@
         const sellPriceCell = document.createElement('td');
         sellPriceCell.textContent = "￥" + item.sellPrice;
         if (item.isBuy === 'Y') {
+          // 可购买，绿色加粗标识
           sellPriceCell.style.color = 'rgb(0, 255, 51)';
           sellPriceCell.style.fontWeight = '700';
         } else if (item.sellPrice >= item.renew.price ) {
+          // 售价高于续费价，红颜色标识
           sellPriceCell.style.color = 'rgb(255, 0, 0)';
+        } else if (item.sellPrice < item.renew.price*0.5 ) {
+          // 售价小于50%续费价，黄颜色标识
+          sellPriceCell.style.color = 'rgb(246, 255, 0)';
         }
 
 
@@ -938,18 +943,22 @@
           pctLeft = "("+ Math.floor(item.daysleft/365*100) + "%)";
         } 
         daysleftCell.textContent = item.daysleft+"天"+pctLeft;
-        if (item.daysleft > 25) {
+        if ( item.period === '年' && item.daysleft >= 365 || item.period === '月' && item.daysleft >= 30) {
+          daysleftCell.style.color = 'rgb(4, 255, 0)'; 
+        } else if (item.daysleft > 25) {
             daysleftCell.style.color = 'rgba(255, 238, 0, 0.93)';
             // daysleftCell.style.fontWeight = '700';
         } else if (item.daysleft < 12) {
             daysleftCell.style.color = 'rgba(255, 0, 0, 0.93)'; 
-        }
+        } 
         
         const usedvCell = document.createElement('td');
         usedvCell.textContent = item.usedv.toString()+item.usedu;
         if (item.usedv  > item.totalv*0.4) {
             usedvCell.style.color = 'rgba(255, 0, 0, 0.93)'; 
-        }
+        } else if (item.usedv  < 0.4) {
+          usedvCell.style.color = 'rgb(9, 255, 0)'; 
+      }
 
         const totalvCell = document.createElement('td');
         totalvCell.textContent = item.totalv.toString()+item.totalu;
