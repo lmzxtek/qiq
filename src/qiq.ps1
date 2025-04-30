@@ -820,9 +820,10 @@ function App_download {
         $SF_PROJECT_URL = "https://sourceforge.net/projects/qbittorrent"
         # 获取最新版本号
         $RSS = Invoke-WebRequest -Uri "$SF_PROJECT_URL/rss" -UseBasicParsing
-        $LATEST_VERSION = ($RSS.Content -split "qbittorrent/qbittorrent/qbittorrent-" | Select-Object -Skip 1 | Select-Object -First 1) -split "/" | Select-Object -First 1
+        # $LATEST_VERSION = ($RSS.Content -split "qbittorrent/qbittorrent/qbittorrent-" | Select-Object -Skip 1 | Select-Object -First 1) -split "/" | Select-Object -First 1
+        $LATEST_VERSION = $RSS.Content[0].url
         if (-not $LATEST_VERSION) {
-            Write-Host " !!! Cannot get QBittoreent latest version. "
+            Write-Host " !!! Cannot get QBittorent latest version. "
             return 
         }
         Write-Host " Get QBittorrent latest version: $LATEST_VERSION"
