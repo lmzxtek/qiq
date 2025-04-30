@@ -822,10 +822,10 @@ function App_download {
         $RSS = Invoke-WebRequest -Uri "$SF_PROJECT_URL/rss" -UseBasicParsing
         $LATEST_VERSION = ($RSS.Content -split "qbittorrent/qbittorrent/qbittorrent-" | Select-Object -Skip 1 | Select-Object -First 1) -split "/" | Select-Object -First 1
         if (-not $LATEST_VERSION) {
-            Write-Host "无法获取QBittoreent 最新版本号"
+            Write-Host " !!! Cannot get QBittoreent latest version. "
             return 
         }
-        Write-Host "检测到QBittorrent 最新版本: $LATEST_VERSION"
+        Write-Host " Get QBittorrent latest version: $LATEST_VERSION"
 
         # Windows 下载
         $file = "qbittorrent_${LATEST_VERSION}_setup.exe"
