@@ -802,7 +802,7 @@ function App_download {
         $appver = Read-Host "Enter the xdown (e.g., 2.0.9.4)"
         if ($appver -eq "") { $appver = "2.0.9.4" }
         $file = "xdown-$appver.zip"
-        $url_dl = "https://dl.todesk.com/irrigation/$file"
+        $url_dl = "https://dl.xdown.dev/windows/i386/$file"
         # https://dl.xdown.dev/windows/i386/xdown-2.0.9.4.zip
         
         # $url_dl = Get_proxy_url $url_dl
