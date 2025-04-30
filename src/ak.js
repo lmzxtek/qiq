@@ -638,11 +638,22 @@
               const conf = infoBodies[3].querySelector('.info-value')?.textContent.trim() || 'N/A';
           //   const cpu  = conf.split(' ')[0] || 'N/A';
               const cpu  = conf.split(' ')[0].split('核')[0] || 'N/A';
-              const mem  = conf.split(' ')[0].split('核')[1] || 'N/A';
+              let mem  = conf.split(' ')[0].split('核')[1] || 'N/A';              
+              if (mem.slice(-1) === 'M') {
+                const memNum = parseFloat(mem.slice(0, -1));
+                if (memNum>=1024) {mem = (memNum/1024).toFixed(2) + 'G';}
+              }
               const disk = conf.split(' ')[1] || 'N/A';
 
               const network = infoBodies[4].querySelector('.info-value')?.textContent.trim() || 'N/A';
-              const bandw   = network.split(' ')[1]  || 'N/A' ;
+              let bandw   = network.split(' ')[1]  || 'N/A' ;            
+              if (bandw.slice(-1) === 'M') {
+                const bandwNum = parseFloat(bandw.slice(0, -1));
+                if (bandwNum>=1024) {bandw = (bandwNum/1024).toFixed(2) + 'G';}
+              }
+              // if (bandw.length>4 && bandw.slice(1) === 'M') {
+              //   bandw = (bandw.split('M')[0]/1024).toFixed(2) + 'G';
+              // }
               const used    = network.split(' ')[3]  || 'N/A' ;
               let usedv  = 0;
               let totalv = 0;
@@ -890,20 +901,29 @@
         const sellPriceCell = document.createElement('td');
         sellPriceCell.textContent = "￥" + item.sellPrice;
         if (item.isBuy === 'Y') {
-            sellPriceCell.style.color = 'rgb(0, 255, 51)';
-            sellPriceCell.style.fontWeight = '700';
-        } 
+          sellPriceCell.style.color = 'rgb(0, 255, 51)';
+          sellPriceCell.style.fontWeight = '700';
+        } else if (item.sellPrice >= item.renew.price ) {
+          sellPriceCell.style.color = 'rgb(255, 0, 0)';
+        }
+
 
         const price2renewCell = document.createElement('td');
         price2renewCell.textContent = item.pricetorenew;
-        if (item.price < item.renew.price*0.8) {
+        if (item.price < item.renew.price*0.7 ) {
             price2renewCell.style.color = 'rgb(255, 242, 0)';
             // price2renewCell.style.fontWeight = '700';
-        } 
+        } else if (item.price*0.9 > item.renew.price ) {
+            price2renewCell.style.color = 'rgb(255, 4, 0)';
+        }
 
         const daysleftCell = document.createElement('td');
         daysleftCell.className = 'td-second';
-        daysleftCell.textContent = item.daysleft+"天";
+        let pctLeft = "" 
+        if (item.period === '年') {
+          pctLeft = "("+ Math.floor(item.daysleft/365*100) + "%)";
+        } 
+        daysleftCell.textContent = item.daysleft+"天"+pctLeft;
         if (item.daysleft > 25) {
             daysleftCell.style.color = 'rgba(255, 238, 0, 0.93)';
             // daysleftCell.style.fontWeight = '700';

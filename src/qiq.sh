@@ -19,7 +19,7 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.5
+SRC_VER=v0.7.6
 #==========================
 
 DOCKER_PROXY='m.daocloud.io/'
@@ -3424,13 +3424,14 @@ EOF
 MENU_COMMONLY_TOOLS_ITEMS=(
     "1|curl|$WHITE"
     "2|wget|$WHITE"
-    "3|gdu|$MAGENTA"
-    "4|btop|$WHITE"
-    "5|htop|$WHITE"
-    "6|iftop|$WHITE"
-    "7|unzip|$WHITE"
-    "8|Fail2Ban|$YELLOW"
-    "9|SuperVisor|$YELLOW"
+    "3|fnm|$YELLOW"
+    "4|gdu|$MAGENTA"
+    "5|btop|$WHITE"
+    "6|htop|$WHITE"
+    "7|iftop|$WHITE"
+    "8|unzip|$WHITE"
+    "9|Fail2Ban|$YELLOW"
+    "10|SuperVisor|$YELLOW"
     "………………………|$WHITE" 
     "21|安装常用|$CYAN"
     "22|安装指定|$WHITE" 
@@ -3477,42 +3478,49 @@ function commonly_tools_menu(){
             # app_install wget 
             _IS_BREAK='true'
             ;;
-        3) 
+        3)  
+            local app_name='fnm'
+            curl -fsSL $(get_proxy_url "https://fnm.vercel.app/install") | bash 
+            echo -e "\n $PRIGHT ${app_name}已安装："
+            echo -e " $PRIGHT 安装node.js: fnm install 22 "
+            _IS_BREAK='true' 
+            ;;
+        4) 
             local app_name='gdu'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install gdu 
             _IS_BREAK='true'
             ;;
-        4) 
+        5) 
             local app_name='btop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install btop 
             _IS_BREAK='true'
             ;;
-        5) 
+        6) 
             local app_name='htop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install htop 
             _IS_BREAK='true'
             ;;
-        6) 
+        7) 
             local app_name='iftop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install iftop 
             _IS_BREAK='true'
             ;;
-        7) 
+        8) 
             local app_name='unzip'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             app_install unzip 
             _IS_BREAK='true'
             ;;
-        8) 
+        9) 
             local app_name='fail2ban'
             app_install ${app_name}
             app_install rsyslog 
@@ -3525,7 +3533,7 @@ function commonly_tools_menu(){
             echo -e "\n $PRIGHT ${app_name}已安装："
             _IS_BREAK='true'
             ;;
-        9) 
+        10) 
             local app_name='supervisor'
             if ! systemctl status ${app_name} > /dev/null 2>&1; then
                 app_install ${app_name}

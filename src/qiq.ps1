@@ -514,6 +514,7 @@ function Software_install {
         Write-Host "  3. Install VS Code                "
         Write-Host "  4. Install GO-Lang                "
         Write-Host "  5. Install Node.js                " -ForegroundColor Blue
+        Write-Host "  6. Install LocalSend              " -ForegroundColor Green
         Write-Host "  0. Back to Main Menu              "
         Write-Host "====================================" -ForegroundColor Cyan
     }
@@ -544,6 +545,7 @@ function Software_install {
                 # Verify npm version:
                 npm -v # Should print "10.9.2".
              }
+            "6" { winget install localsend }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
@@ -775,6 +777,65 @@ function App_download {
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
+    function download_todesk { 
+        Write-Host "`n ToDesk URL: https://www.todesk.com/ `n" -ForegroundColor Green
+        $appver = Read-Host "Enter the ToDesk (e.g., 4.7.6.3)"
+        if ($appver -eq "") { $appver = "4.7.6.3" }
+        $file = "ToDesk_$appver.exe"
+        $url_dl = "https://dl.todesk.com/irrigation/$file"
+        # https://dl.todesk.com/irrigation/ToDesk_4.7.6.3.exe
+        
+        # $url_dl = Get_proxy_url $url_dl
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_xdown { 
+        Write-Host "`n xDown URL: https://www.xdown.org/ `n" -ForegroundColor Green
+        $appver = Read-Host "Enter the xdown (e.g., 2.0.9.4)"
+        if ($appver -eq "") { $appver = "2.0.9.4" }
+        $file = "xdown-$appver.zip"
+        $url_dl = "https://dl.todesk.com/irrigation/$file"
+        # https://dl.xdown.dev/windows/i386/xdown-2.0.9.4.zip
+        
+        # $url_dl = Get_proxy_url $url_dl
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_qbittorrent { 
+        Write-Host "`n QBittorent URL: https://www.qbittorrent.org `n" -ForegroundColor Green
+
+        # 定义 qBittorrent 的 SourceForge 项目 URL
+        $SF_PROJECT_URL = "https://sourceforge.net/projects/qbittorrent"
+        # 获取最新版本号
+        $RSS = Invoke-WebRequest -Uri "$SF_PROJECT_URL/rss" -UseBasicParsing
+        $LATEST_VERSION = ($RSS.Content -split "qbittorrent/qbittorrent/qbittorrent-" | Select-Object -Skip 1 | Select-Object -First 1) -split "/" | Select-Object -First 1
+        if (-not $LATEST_VERSION) {
+            Write-Host "无法获取QBittoreent 最新版本号"
+            return 
+        }
+        Write-Host "检测到QBittorrent 最新版本: $LATEST_VERSION"
+
+        # Windows 下载
+        $file = "qbittorrent_${LATEST_VERSION}_setup.exe"
+        $url_dl = "${SF_PROJECT_URL}/files/qbittorrent/qbittorrent-${LATEST_VERSION}/${FILE_NAME}/download"
+        # https://sourceforge.net/projects/qbittorrent/files/qbittorrent-win32/qbittorrent-5.1.0/qbittorrent_5.1.0_x64_setup.exe/download
+        
+        # $url_dl = Get_proxy_url $url_dl
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
     function download_northstar {        
         $file = "northstar_env.ps1"
         $url_dl = Get_proxy_url "https://gitee.com/dromara/northstar/raw/master/env.ps1"
@@ -826,6 +887,14 @@ function App_download {
     function download_7zip_latest {
         $url_gh = "https://github.com/ip7z/7zip"
         $fpattern = ".*-x64.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_localsend_latest {
+        $url_gh = "https://github.com/localsend/localsend"
+        $fpattern = ".*-windows-x86-64.exe"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
@@ -1179,6 +1248,10 @@ wsproto==1.2.0
             "60" { download_northstar }
             "11" { download_golang }
             "61" { download_nodejs }
+            "12" { download_localsend_latest }
+            "62" { download_todesk }
+            "13" { download_xdown }
+            "63" { download_qbittorrent }
             "98" { download_reinstall; }
             "99" { download_all_software }
             "0"  { return }
@@ -1355,12 +1428,19 @@ function show_web_links {
     "
 
     Write-Host " 18. Node.js : 
-    https://nodejs.org/
+    https://nodejs.org
     https://nodejs.org/zh-cn/download
     https://nodejs.org/dist/v22.15.0/node-v22.15.0-x64.msi
     Add cnpm: npm install -g cnpm --registry=https://registry.npm.taobao.org
     Add yarn: corepack enable yarn
     Add pnpm: corepack enable pnpm
+    "
+
+    Write-Host " 19. LocalSend : 
+    https://localsend.org/download
+    https://d.localsend.org/LocalSend-1.17.0-windows-x86-64.exe
+    https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-windows-x86-64.exe
+    Install: winget install LocalSend
     "
 
     Write-Host "===============================" -ForegroundColor Cyan
