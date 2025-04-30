@@ -634,11 +634,15 @@ function App_download {
         Write-Host "   8. 7zip             " -NoNewline  
         Write-Host "  58. gm-api           " -ForegroundColor Blue
         Write-Host "   9. WinSW            " -NoNewline
-        Write-Host "  59. shawl            " #-NoNewline  
+        Write-Host "  59. shawl            " 
         Write-Host "  10. PotPlayer        " -NoNewline  
-        Write-Host "  60. NorthStar(java)  " #-NoNewline  
+        Write-Host "  60. NorthStar(java)  " 
         Write-Host "  11. Go-Lang          " -NoNewline  
-        Write-Host "  61. Node.js          " #-NoNewline  
+        Write-Host "  61. Node.js          " 
+        Write-Host "  12. LocalSend        " -NoNewline  
+        Write-Host "  62. ToDesk           " 
+        Write-Host "  13. xdown            " -NoNewline  
+        Write-Host "  63. QBittorrent      " -ForegroundColor Blue
         Write-Host "  98. reinstall.bat    " -NoNewline
         Write-Host "  99. All              " -ForegroundColor Green
         Write-Host "   0. Exit             " -ForegroundColor Red
