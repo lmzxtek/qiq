@@ -902,6 +902,22 @@ function App_download {
     function download_localsend_latest {
         $url_gh = "https://github.com/localsend/localsend"
         $fpattern = ".*-windows-x86-64.exe"
+        # https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-windows-x86-64.exe
+        # https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-windows-x86-64.zip
+        
+        $prompt = "`n Get Portable version of localsend? (Default:Y) [Y/N]"
+        $confirmation = Read-Host $prompt
+        
+        # 处理空输入（直接回车）和首尾空格
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) {
+            $userInput = 'Y'  # 设置默认值
+        }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            $fpattern = ".*-windows-x86-64.zip"
+        }
+
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
