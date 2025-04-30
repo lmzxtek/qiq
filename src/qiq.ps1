@@ -512,6 +512,8 @@ function Software_install {
         Write-Host "  1. Install 7-Zip                  "
         Write-Host "  2. Install Notepad++              "
         Write-Host "  3. Install VS Code                "
+        Write-Host "  4. Install GO-Lang                "
+        Write-Host "  5. Install Node.js                " -ForegroundColor Blue
         Write-Host "  0. Back to Main Menu              "
         Write-Host "====================================" -ForegroundColor Cyan
     }
@@ -522,6 +524,26 @@ function Software_install {
             "1" { Install-Software "7zip.7zip" "7zip" "https://www.7-zip.org/download.html" }
             "2" { Install-Software "Notepad++.Notepad++" "notepadplusplus" "https://notepad-plus-plus.org/downloads/" }
             "3" { Install-Software "Microsoft.VisualStudioCode" "vscode" "https://code.visualstudio.com/download" }
+            "4" { 
+                Write-Host "`n GoLang URL: https://go.dev/dl/ `n" -ForegroundColor Green
+                $go_version = Read-Host "Enter the GO version (e.g., 1.24.2)"
+                if ($go_version -eq "") { $go_version = "1.24.2" }
+                $gourl = "https://go.dev/dl/go$go_version.windows-amd64.msi"
+                Start-BitsTransfer -Source $gourl -Destination  './'            # 适合下载大文件或需要后台下载的场景
+                write-host "Success download GO-Lang: v$go_version" -ForegroundColor Green                
+             }
+             "5" {
+                # Download and install fnm:
+                winget install Schniz.fnm
+                # Download and install Node.js:
+                $JSver = Read-Host "Enter the Node.js version (e.g., 22)"
+                if ($JSver -eq "") { $JSver = "22" }
+                fnm install $JSver
+                # Verify the Node.js version:
+                node -v # Should print "v22.15.0".
+                # Verify npm version:
+                npm -v # Should print "10.9.2".
+             }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
@@ -536,6 +558,7 @@ function System_Settings {
         Write-Host "  1. Set PowerShell Execution Policy   "
         Write-Host "  2. Enable OpenSSH Service            "
         Write-Host "  3. Set Default Shell to pwsh         "
+        Write-Host "  4. Set GO(cn)                        " -ForegroundColor Green
         Write-Host "  0. Back to Main Menu                 " -ForegroundColor Red
         Write-Host "=======================================" -ForegroundColor Yellow
     }
@@ -569,6 +592,10 @@ function System_Settings {
             "1" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!"; Pause }
             "2" { Enable-OpenSSH }
             "3" { Set-DefaultShell-Pwsh }
+            "4" { 
+                go env -w GO111MODULE=on; 
+                go env -w GOPROXY=https://goproxy.cn,direct; 
+                Write-Host "GO(cn) set!"; Pause }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
@@ -589,26 +616,28 @@ function App_download {
         Clear-Host
         Write-Host "========== Download Menu =============" -ForegroundColor Cyan
         Write-Host "   1. VC_redist(x64)   " -NoNewline  
-        Write-Host "  11. frp              " -ForegroundColor Green
+        Write-Host "  51. frp              " -ForegroundColor Green
         Write-Host "   2. NekoBox          " -NoNewline  -ForegroundColor Yellow
-        Write-Host "  12. RustDesk         "  
+        Write-Host "  52. RustDesk         "  
         Write-Host "   3. Python3.12.7     " -NoNewline  
-        Write-Host "  13. Pot-desk         "  
+        Write-Host "  53. Pot-desk         "  
         Write-Host "   4. PowerShell       " -NoNewline
-        Write-Host "  14. THS-Hevo         "  
+        Write-Host "  54. THS-Hevo         "  
         Write-Host "   5. Notepad++        " -NoNewline  -ForegroundColor Blue
-        Write-Host "  15. WanhoGM          "  
+        Write-Host "  55. WanhoGM          "  
         Write-Host "   6. Hiddify          " -NoNewline
-        Write-Host "  16. Git              "  
+        Write-Host "  56. Git              "  
         Write-Host "   7. VSCode           " -NoNewline  
-        Write-Host "  17. 1Remote          " 
+        Write-Host "  57. 1Remote          " 
         Write-Host "   8. 7zip             " -NoNewline  
-        Write-Host "  18. gm-api           " -ForegroundColor Blue
+        Write-Host "  58. gm-api           " -ForegroundColor Blue
         Write-Host "   9. WinSW            " -NoNewline
-        Write-Host "  19. shawl            " #-NoNewline  
+        Write-Host "  59. shawl            " #-NoNewline  
         Write-Host "  10. PotPlayer        " -NoNewline  
-        Write-Host "  20. NorthStar(java)  " #-NoNewline  
-        Write-Host "  88. reinstall.bat    " -NoNewline
+        Write-Host "  60. NorthStar(java)  " #-NoNewline  
+        Write-Host "  11. Go-Lang          " -NoNewline  
+        Write-Host "  61. Node.js          " #-NoNewline  
+        Write-Host "  98. reinstall.bat    " -NoNewline
         Write-Host "  99. All              " -ForegroundColor Green
         Write-Host "   0. Exit             " -ForegroundColor Red
         Write-Host "======================================" -ForegroundColor Cyan
@@ -710,8 +739,40 @@ function App_download {
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
-        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
-        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_golang { 
+        Write-Host "`n GoLang URL: https://go.dev/dl/ `n" -ForegroundColor Green
+        $go_version = Read-Host "Enter the GO version (e.g., 1.24.2)"
+        if ($go_version -eq "") { $go_version = "1.24.2" }
+        $file = "go$go_version.windows-amd64.msi"
+        $url_dl = "https://go.dev/dl/go$go_version.windows-amd64.msi"
+        # https://go.dev/dl/go1.24.2.windows-amd64.msi
+        
+        # $url_dl = Get_proxy_url $url_dl
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_nodejs { 
+        Write-Host "`n Node.js URL: https://nodejs.org/zh-cn/download `n" -ForegroundColor Green
+        $njs = Read-Host "Enter the Node.js (e.g., 22.15.0)"
+        if ($njs -eq "") { $njs = "22.15.0" }
+        $file = "node-v$njs-x64.msi"
+        $url_dl = "https://nodejs.org/dist/v$njs/node-v$njs-x64.msi"
+        # https://nodejs.org/dist/v22.15.0/node-v22.15.0-x64.msi
+        
+        # $url_dl = Get_proxy_url $url_dl
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_northstar {        
@@ -1097,26 +1158,28 @@ wsproto==1.2.0
         switch ($choice) {
             "1"  { download_vc_redist_x64_alist; }
             # "1"  { download_vc_redist_x64_ms; }
-            "11" { download_frp; }
+            "51" { download_frp; }
             "2"  { download_nekobox_latest; }
-            "12" { download_rustdesk; }
+            "52" { download_rustdesk; }
             "3"  { download_python3127; }
-            "13" { download_pot_desktop; }
+            "53" { download_pot_desktop; }
             "4"  { download_powershell; }
-            "14" { download_ths_hevo; }
+            "54" { download_ths_hevo; }
             "5"  { download_notepadpp; }
-            "15" { download_wanho_gm; }
+            "55" { download_wanho_gm; }
             "6"  { download_hiddify }
-            "16" { download_git; }
+            "56" { download_git; }
             "7"  { download_vscode; }
-            "17" { download_1remote }
+            "57" { download_1remote }
             "8"  { download_7zip_latest }
-            "18" { download_gm_api }
+            "58" { download_gm_api }
             "9"  { download_winsw  }
-            "19" { download_shawl  }
+            "59" { download_shawl  }
             "10" { download_potplayer }
-            "20" { download_northstar }
-            "88" { download_reinstall; }
+            "60" { download_northstar }
+            "11" { download_golang }
+            "61" { download_nodejs }
+            "98" { download_reinstall; }
             "99" { download_all_software }
             "0"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
@@ -1282,6 +1345,22 @@ function show_web_links {
     https://www.10jqka.com.cn
     https://download.10jqka.com.cn/index/download/id/275/ Hevo-THS
     https://sp.thsi.cn/staticS3/mobileweb-upload-static-server.file/app_6/downloadcenter/THS_freeldy_9.40.40_0228.exe
+    "
+
+    Write-Host " 17. GO : 
+    https://go.dev
+    https://go.dev/dl/
+    https://go.dev/dl/go1.24.2.windows-amd64.msi
+    Set Proxy: go env -w GOPROXY=https://goproxy.cn,direct
+    "
+
+    Write-Host " 18. Node.js : 
+    https://nodejs.org/
+    https://nodejs.org/zh-cn/download
+    https://nodejs.org/dist/v22.15.0/node-v22.15.0-x64.msi
+    Add cnpm: npm install -g cnpm --registry=https://registry.npm.taobao.org
+    Add yarn: corepack enable yarn
+    Add pnpm: corepack enable pnpm
     "
 
     Write-Host "===============================" -ForegroundColor Cyan
