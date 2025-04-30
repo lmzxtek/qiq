@@ -829,8 +829,9 @@ function App_download {
         Write-Host " Get QBittorrent latest version: $LATEST_VERSION"
 
         # Windows 下载
-        $file = "qbittorrent_${LATEST_VERSION}_setup.exe"
-        $url_dl = "${SF_PROJECT_URL}/files/qbittorrent/qbittorrent-${LATEST_VERSION}/${FILE_NAME}/download"
+        $file = $LATEST_VERSION -split "/" | Select-Object -Last 2 | Select-Object -First 1 
+        # $url_dl = "${SF_PROJECT_URL}/files/qbittorrent/qbittorrent-${LATEST_VERSION}/${FILE_NAME}/download"
+        $url_dl = $LATEST_VERSION
         # https://sourceforge.net/projects/qbittorrent/files/qbittorrent-win32/qbittorrent-5.1.0/qbittorrent_5.1.0_x64_setup.exe/download
         
         # $url_dl = Get_proxy_url $url_dl
