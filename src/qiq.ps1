@@ -619,7 +619,7 @@ function System_Settings {
             "3" { Set-DefaultShell-Pwsh }
             "4" { 
                 $port = Read-Host "Enter port need to set inbound (e.g.: 5000)"
-                if ($port -ne "" && $port -match "^\d+$" && $port -le 65535 && $port -ge 1)  { 
+                if ( ($port -ne "") -and ($port -match "^\d+$") -and ($port -le 65535) -and ($port -ge 1) )  { 
                     Add_port_in $port
                 }else {
                     write-host " !!! Invalid input for port:  $port"
