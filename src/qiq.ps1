@@ -51,6 +51,28 @@ function Add_port_in_out {
     Write-Host " Add TCP outbound: $port" -ForegroundColor Green
 }
 
+function Add_port_in {
+    param([int]$port = 5000)
+    # 以管理员身份运行 PowerShell，执行以下命令：
+    if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+        Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+        return 
+    }
+    New-NetFirewallRule -DisplayName "Allow Port $port Inbound" `
+                        -Direction Inbound `
+                        -LocalPort $port `
+                        -Protocol TCP `
+                        -Action Allow
+    Write-Host " Add TCP inbound: $port" -ForegroundColor Green
+
+    # New-NetFirewallRule -DisplayName "Allow Port $port Outbound" `
+    #                     -Direction Outbound `
+    #                     -LocalPort $port `
+    #                     -Protocol TCP `
+    #                     -Action Allow
+    # Write-Host " Add TCP outbound: $port" -ForegroundColor Green
+}
+
 function get_region { 
     $ipapi = "" 
     $region = "Unknown"
@@ -560,7 +582,8 @@ function System_Settings {
         Write-Host "  1. Set PowerShell Execution Policy   "
         Write-Host "  2. Enable OpenSSH Service            "
         Write-Host "  3. Set Default Shell to pwsh         "
-        Write-Host "  4. Set GO(cn)                        " -ForegroundColor Green
+        Write-Host "  4. Open Port                         " -ForegroundColor Yellow
+        Write-Host "  5. Set GO(cn)                        " -ForegroundColor Green
         Write-Host "  0. Back to Main Menu                 " -ForegroundColor Red
         Write-Host "=======================================" -ForegroundColor Yellow
     }
@@ -595,9 +618,19 @@ function System_Settings {
             "2" { Enable-OpenSSH }
             "3" { Set-DefaultShell-Pwsh }
             "4" { 
-                go env -w GO111MODULE=on; 
+                $port = Read-Host "Enter port need to set inbound (e.g.: 5000)"
+                if ($port -ne "" && $port -match "^\d+$" && $port -le 65535 && $port -ge 1)  { 
+                    Add_port_in $port
+                }else {
+                    write-host " !!! Invalid input for port:  $port"
+                }
+                Pause 
+            }
+            "5" { 
+                # go env -w GO111MODULE=on; 
                 go env -w GOPROXY=https://goproxy.cn,direct; 
-                Write-Host "GO(cn) set!"; Pause }
+                Write-Host "GO(cn) set!"; Pause 
+            }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
