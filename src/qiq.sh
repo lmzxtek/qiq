@@ -3019,13 +3019,16 @@ EOF
                 local sys_lang='zh-cn'
                 [[ $lang -eq 'EN' ]] && sys_lang='en-us'
                 
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入统版本(默认: Windows Server 2025 SERVERDATACENTER): ${PLAIN}\n")
+                local sys_name="Windows Server 2025 SERVERDATACENTER"
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入统版本(默认: $sys_name): ${PLAIN}\n")
                 read -rp "${CHOICE}" INPUT 
                 img_name=${INPUT:-"Windows Server 2025 SERVERDATACENTER"}
                 
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请输镜像链接(默认: https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso): ${PLAIN}\n")
+                # local iso_default="https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso"
+                local iso_default="https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_april_2025_x64_dvd_ea86301d.iso"
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输镜像链接(默认: ${iso_default}): ${PLAIN}\n")
                 read -rp "${CHOICE}" INPUT
-                url_iso=${INPUT:-"https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso"}
+                url_iso=${INPUT:-$iso_default}
                 
                 echo -e " "
                 generate_separator "=|$WHITE" 40

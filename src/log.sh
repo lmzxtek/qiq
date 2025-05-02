@@ -48,8 +48,9 @@ echoT "   6.添加nezha-v0安装脚本(win)"
 echoT "   7.修正常用工具的安装"
 echoT "   8.修正Docker网络IPv6的开启"
 echoT "--------------------------------"
-echoR " -=> 2025-04-30   v0.7.6" " $VLATEST"
+echoR " -=> 2025-05-01   v0.7.6" " $VLATEST"
 echoY "   1.增加fnm安装脚本(linux)"
+echoY "   2.修改默认自定义DD系统链接为2025-04的版本"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 
