@@ -455,7 +455,67 @@ index-url = $mirrorURL
 "@ | Set-Content -Path $pipConfigPath -Encoding UTF8
 
         Write-Host "Pip mirror set to: $mirrorURL" -ForegroundColor Green
-        Pause
+        # Pause
+    }
+    # 设置 pip 源
+    function Set-Pip-Mirror2 {
+        Write-Host " Select Source: "
+        Write-Host " 1. AliYun  "
+        Write-Host " 2. TUNA    "
+        Write-Host " 3. USTC    "
+        Write-Host " 4. 163     "
+        Write-Host " 5. Douban  "
+        Write-Host " 6. Tencent "
+        Write-Host " 7. Custom  "
+        Write-Host " 0. Back    "
+        $mirror_choice = Read-Host "Enter choice"
+        $mirrorURL = switch ($mirror_choice) {
+            "1" { "https://mirrors.aliyun.com/pypi/simple/" }
+            "2" { "https://pypi.tuna.tsinghua.edu.cn/simple/" }
+            "3" { "https://pypi.mirrors.ustc.edu.cn/simple/" }
+            "4" { "https://mirrors.163.com/pypi/simple/" }
+            "5" { "https://pypi.doubanio.com/simple/" }
+            "6" { "https://mirrors.cloud.tencent.com/pypi/simple/" }
+            "7" { Read-Host "Enter custom pip mirror URL" }
+            "0" { return }
+            default { Write-Host "Invalid input"; return }
+        }
+        switch ($mirror_choice) {
+            "1" { 
+                pip config set global.index-url "http://mirrors.aliyun.com/pypi/simple" 
+                pip config set global.trusted-host "mirrors.aliyun.com" 
+             }             
+            "2" { 
+                pip config set global.index-url "https://pypi.tuna.tsinghua.edu.cn/simple/e" 
+                pip config set global.trusted-host "pypi.tuna.tsinghua.edu.cn" 
+             }
+            "3" { 
+                pip config set global.index-url "https://pypi.mirrors.ustc.edu.cn/simple/" 
+                pip config set global.trusted-host "pypi.mirrors.ustc.edu.cn" 
+             }
+            "4" { 
+                pip config set global.index-url "https://mirrors.163.com/pypi/simple/" 
+                pip config set global.trusted-host "mirrors.163.com" 
+             }
+            "5" { 
+                pip config set global.index-url "https://pypi.doubanio.com/simple/" 
+                pip config set global.trusted-host "pypi.doubanio.com" 
+             }
+            "6" { 
+                pip config set global.index-url "https://mirrors.cloud.tencent.com/pypi/simple/" 
+                pip config set global.trusted-host "mirrors.cloud.tencent.com" 
+             }
+            "7" { 
+                pip config set global.index-url $mirrorURL
+                # pip config set global.trusted-host "mirrors.aliyun.com" 
+             }
+        }
+
+        pip config set global.disable-pip-version-check true
+        pip config set global.timeout 30
+
+        Write-Host "Pip mirror set to: $mirrorURL" -ForegroundColor Green
+        # Pause
     }
     function Set-poetry-source {
         Write-Host " Select Source: "
@@ -519,7 +579,8 @@ index-url = $mirrorURL
             "4" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
             "5" { Install-Poetry; Pause   }
             "6" { show_jill_usage; pip install jill; jill install; Pause }
-            "7" { Set-Pip-Mirror; Pause   }
+            # "7" { Set-Pip-Mirror; Pause   }
+            "7" { Set-Pip-Mirror2; Pause   }
             "8" { Set-poetry-source; Pause}
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
