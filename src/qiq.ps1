@@ -567,7 +567,7 @@ index-url = $mirrorURL
 
     while ($true) {
         Show_manage_python_menu
-        $py_choice = Read-Host "Enter your choice (1-5)"        
+        $py_choice = Read-Host "Enter your choice"        
         switch ($py_choice) {
             "1" { Install-Software "Python.Python" "python" "https://www.python.org/downloads/"; Pause }
             "2" { 
