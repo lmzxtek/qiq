@@ -944,7 +944,7 @@ function App_download {
     }
     function download_1remote {
         $url_gh = "https://github.com/1Remote/1Remote"
-        $fpattern = ".*-x64-.*.zip"
+        $fpattern = ".*-x64.zip"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
