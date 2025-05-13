@@ -666,25 +666,49 @@ function App_download {
         Write-Host "   7. PowerShell       " -NoNewline -ForegroundColor Blue  
         Write-Host "  57. xdown            " -ForegroundColor Blue
         Write-Host "   8. Python3.12.7     " -NoNewline
-        Write-Host "  58. Pot-desktop      "  
+        Write-Host "  58. Pot-desktop      " 
         Write-Host "   9. WinSW            " -NoNewline
         Write-Host "  59. PotPlayer        " 
-        Write-Host "  10. shawl            " -NoNewline  
+        Write-Host "  10. Shawl            " -NoNewline  
         Write-Host "  60. NorthStar(java)  " 
         Write-Host "  11. Go-Lang          " -NoNewline -ForegroundColor Blue
-        Write-Host "  61. LocalSend        " 
+        Write-Host "  61. LocalSend        " -ForegroundColor Green
         Write-Host "  12. Node.js          " -NoNewline -ForegroundColor Blue
         Write-Host "  62. WanhoGM          " 
         Write-Host "  13. Rustup           " -NoNewline  
         Write-Host "  63. THS-Hevo         " 
-        Write-Host "  14.                  " -NoNewline -ForegroundColor Green
-        Write-Host "  64. Hiddify          " -ForegroundColor Blue
-        Write-Host "  15. gm-api           " -NoNewline 
-        Write-Host "  65. NekoBox          "  -ForegroundColor Yellow
+        Write-Host "  14. .Net9            " -NoNewline 
+        Write-Host "  64. TG(x64)          " 
+        Write-Host "  15.                  " -NoNewline 
+        Write-Host "  65. Hiddify          " -ForegroundColor Blue
+        Write-Host "  16. gm-api           " -NoNewline 
+        Write-Host "  66. NekoBox          " -ForegroundColor Yellow
         Write-Host "  98. All              " -NoNewline -ForegroundColor Green
-        Write-Host "  99. reinstall.bat    " 
+        Write-Host "  99. reinstall.bat    " -ForegroundColor Cyan
         Write-Host "   0. Exit             " -ForegroundColor Red
         Write-Host "======================================" -ForegroundColor Cyan
+    }
+    function download_tg {
+        $file = "tg-win-x64.exe"
+        $url_dl = Get_proxy_url "https://telegram.org/dl/desktop/win64"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_net9 {
+        $file = "windowsdesktop-runtime-9.0.4-win-x64.exe"
+        $url_dl = "https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/9.0.4/windowsdesktop-runtime-9.0.4-win-x64.exe"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_wechat {
         $file = "WeChatWin.exe"
@@ -1190,7 +1214,7 @@ start "" "$exePath"
             param([string]$batFileName = "c:\gm_api\run_gm.bat")
 
             $batContent = @"
-hypercorn gm_api:app --bind 0.0.0.0:5000 --workers 5
+hypercorn gm_api:app -b 0.0.0.0:5000 --bind :::5000 --workers 9
 "@
 
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
@@ -1277,7 +1301,7 @@ wsproto==1.2.0
 
             $tsk_dir  = "C:\gm_api"
             $tsk_path = "C:\gm_api\run_wh.bat"
-            $tsk_name = "gm_wh3"
+            $tsk_name = "gm_wh"
             $tsk_user = "NT AUTHORITY\SYSTEM"
             $action   = New-ScheduledTaskAction -Execute $tsk_path -WorkingDirectory $tsk_dir
             $trigger  = New-ScheduledTaskTrigger -AtStartup
@@ -1292,7 +1316,7 @@ wsproto==1.2.0
         Generate_cfg_toml    $(Join-Path -Path $targetDir -ChildPath "cfg.toml")    
         Generate_requirements_txt $(Join-Path -Path $targetDir -ChildPath "requirements.txt")  
         Add_task_scheduler_gm_api 
-        Add_port_in_out 5000
+        Add_port_in 5000
     }
 
     
@@ -1330,8 +1354,9 @@ wsproto==1.2.0
             "11" { download_golang }
             "12" { download_nodejs }
             "13" { download_rustup }
-            "14" {  }
-            "15" { download_gm_api }
+            "14" { download_net9 }
+            "15" {  }
+            "16" { download_gm_api }
 
             "51" { download_qbittorrent; }
             "52" { download_vc_redist_x64_alist }
@@ -1346,8 +1371,9 @@ wsproto==1.2.0
             "61" { download_localsend_latest }
             "62" { download_wanho_gm }
             "63" { download_ths_hevo }
-            "64" { download_hiddify }
-            "65" { download_nekobox_alist }
+            "64" { download_tg }
+            "65" { download_hiddify }
+            "66" { download_nekobox_alist }
             # "65"  { download_nekobox_latest; }
 
             "98" { download_all_software }
