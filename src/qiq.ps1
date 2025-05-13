@@ -389,15 +389,15 @@ function Manage_Python {
     function Show_manage_python_menu {
         Clear-Host
         Write-Host "========== Python Management ==========" -ForegroundColor Green
-        Write-Host " 1. Install Python Latest              "
-        Write-Host " 2. Install Python by ver.             "
-        Write-Host " 3. Install pyenv                      " -ForegroundColor Yellow
-        Write-Host " 4. Install pipenv                     "
-        Write-Host " 5. Install Poetry                     " -ForegroundColor Yellow
-        Write-Host " 6. Install Julia                      "
-        Write-Host " 7. Set Pip Source                     "
-        Write-Host " 8. Set poetry Source                  " -ForegroundColor Yellow
-        Write-Host " 0. Back                               "
+        Write-Host "  1. Install Python Latest              "
+        Write-Host "  2. Install Python by ver.             "
+        Write-Host "  3. Install pyenv                      " -ForegroundColor Yellow
+        Write-Host "  4. Install pipenv                     "
+        Write-Host "  5. Install Poetry                     " -ForegroundColor Blue
+        Write-Host "  6. Install Julia                      "
+        Write-Host " 98. Set poetry Mirror                  " -ForegroundColor Blue
+        Write-Host " 99. Set Pip Mirror                     " -ForegroundColor Green 
+        Write-Host "  0. Back                               "
         Write-Host "=======================================" -ForegroundColor Green
     }
     function show_jill_usage {
@@ -579,9 +579,10 @@ index-url = $mirrorURL
             "4" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
             "5" { Install-Poetry; Pause   }
             "6" { show_jill_usage; pip install jill; jill install; Pause }
+
+            "98" { Set-poetry-source; Pause }
+            "99" { Set-Pip-Mirror2; Pause   }
             # "7" { Set-Pip-Mirror; Pause   }
-            "7" { Set-Pip-Mirror2; Pause   }
-            "8" { Set-poetry-source; Pause}
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
