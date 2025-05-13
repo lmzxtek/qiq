@@ -134,7 +134,8 @@ function Get_proxy_url {
         # Parameter help description
         # [Parameter(AttributeValues)]
         [string]$Url,
-        [string]$proxy = "https://proxy.zwdk.org/proxy/"
+        [string]$proxy = "https://proxy.180102.xyz/proxy/"
+        # [string]$proxy = "https://proxy.zwdk.org/proxy/"
     )
     
     $region = Get_location_region
@@ -894,7 +895,7 @@ function App_download {
         $url_dl = $LATEST_VERSION
         # https://sourceforge.net/projects/qbittorrent/files/qbittorrent-win32/qbittorrent-5.1.0/qbittorrent_5.1.0_x64_setup.exe/download
         
-        # $url_dl = Get_proxy_url $url_dl
+        $url_dl = Get_proxy_url $url_dl
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
@@ -1316,7 +1317,6 @@ wsproto==1.2.0
         $choice = Read-Host " Please select "
         switch ($choice) {
             # "1"  { download_vc_redist_x64_ms; }
-            # "2"  { download_nekobox_latest; }
             "1"  { download_git; }
             "2"  { download_frp; }
             "3"  { download_7zip_latest; }
@@ -1347,7 +1347,8 @@ wsproto==1.2.0
             "62" { download_wanho_gm }
             "63" { download_ths_hevo }
             "64" { download_hiddify }
-            "65" { download_nekobox_latest }
+            "65" { download_nekobox_alist }
+            # "65"  { download_nekobox_latest; }
 
             "98" { download_all_software }
             "99" { download_reinstall; }
