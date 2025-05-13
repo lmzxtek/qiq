@@ -650,36 +650,36 @@ function App_download {
     function Show_Menu_app_download {
         Clear-Host
         Write-Host "========== Download Menu =============" -ForegroundColor Cyan
-        Write-Host "   1. VC_redist(x64)   " -NoNewline  
-        Write-Host "  51. frp              " -ForegroundColor Green
-        Write-Host "   2. RustDesk-Server  " -NoNewline  
-        Write-Host "  52. RustDesk         "  
-        Write-Host "   3. Python3.12.7     " -NoNewline  
-        Write-Host "  53. Pot-desk         "  
-        Write-Host "   4. PowerShell       " -NoNewline -ForegroundColor Yellow
-        Write-Host "  54. THS-Hevo         "  
-        Write-Host "   5. Notepad++        " -NoNewline  -ForegroundColor Blue
-        Write-Host "  55. WanhoGM          "  
-        Write-Host "   6. Hiddify          " -NoNewline
-        Write-Host "  56. Git              "  
-        Write-Host "   7. VSCode           " -NoNewline  
-        Write-Host "  57. 1Remote          " 
-        Write-Host "   8. 7zip             " -NoNewline  
-        Write-Host "  58. gm-api           " -ForegroundColor Blue
+        Write-Host "   1. Git              " -NoNewline 
+        Write-Host "  51. QBittorrent      " -ForegroundColor Blue
+        Write-Host "   2. frp              " -NoNewline -ForegroundColor Blue
+        Write-Host "  52. VC_redist(x64)   "  
+        Write-Host "   3. 7zip             " -NoNewline -ForegroundColor Yellow
+        Write-Host "  53. RustDesk-Server  "  
+        Write-Host "   4. VSCode           " -NoNewline 
+        Write-Host "  54. RustDesk         " -ForegroundColor Green
+        Write-Host "   5. 1Remote          " -NoNewline  -ForegroundColor Green
+        Write-Host "  55. ToDesk           "  
+        Write-Host "   6. Notepad++        " -NoNewline
+        Write-Host "  56. WeChat           " 
+        Write-Host "   7. PowerShell       " -NoNewline -ForegroundColor Blue  
+        Write-Host "  57. xdown            " -ForegroundColor Blue
+        Write-Host "   8. Python3.12.7     " -NoNewline
+        Write-Host "  58. Pot-desktop      "  
         Write-Host "   9. WinSW            " -NoNewline
-        Write-Host "  59. shawl            " 
-        Write-Host "  10. PotPlayer        " -NoNewline  
+        Write-Host "  59. PotPlayer        " 
+        Write-Host "  10. shawl            " -NoNewline  
         Write-Host "  60. NorthStar(java)  " 
-        Write-Host "  11. Go-Lang          " -NoNewline  
-        Write-Host "  61. Node.js          " 
-        Write-Host "  12. LocalSend        " -NoNewline  
-        Write-Host "  62. ToDesk           " 
-        Write-Host "  13. xdown            " -NoNewline  
-        Write-Host "  63. QBittorrent      " -ForegroundColor Blue
-        Write-Host "  14. WeChat           " -NoNewline  
-        Write-Host "  64. Rustup           " 
-        Write-Host "  15. NekoBox          " -NoNewline  -ForegroundColor Yellow
-        Write-Host "  65.            " 
+        Write-Host "  11. Go-Lang          " -NoNewline -ForegroundColor Blue
+        Write-Host "  61. LocalSend        " 
+        Write-Host "  12. Node.js          " -NoNewline -ForegroundColor Blue
+        Write-Host "  62. WanhoGM          " 
+        Write-Host "  13. Rustup           " -NoNewline  
+        Write-Host "  63. THS-Hevo         " 
+        Write-Host "  14.                  " -NoNewline -ForegroundColor Green
+        Write-Host "  64. Hiddify          " -ForegroundColor Blue
+        Write-Host "  15. gm-api           " -NoNewline 
+        Write-Host "  65. NekoBox          "  -ForegroundColor Yellow
         Write-Host "  98. All              " -NoNewline -ForegroundColor Green
         Write-Host "  99. reinstall.bat    " 
         Write-Host "   0. Exit             " -ForegroundColor Red
@@ -1008,7 +1008,7 @@ function App_download {
     }
     function download_pot_desktop {
         $url_gh = "https://github.com/pot-app/pot-desktop"
-        $fpattern = ".*-x64-setup.exe"
+        $fpattern = ".*_x64-setup.exe"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
@@ -1315,38 +1315,40 @@ wsproto==1.2.0
         Show_Menu_app_download
         $choice = Read-Host " Please select "
         switch ($choice) {
-            "1"  { download_vc_redist_x64_alist; }
             # "1"  { download_vc_redist_x64_ms; }
-            "51" { download_frp; }
             # "2"  { download_nekobox_latest; }
-            "2"  { download_rustdesk_server; }
-            "52" { download_rustdesk; }
-            "3"  { download_python3127; }
-            "53" { download_pot_desktop; }
-            "4"  { download_powershell; }
-            "54" { download_ths_hevo; }
-            "5"  { download_notepadpp; }
-            "55" { download_wanho_gm; }
-            "6"  { download_hiddify }
-            "56" { download_git; }
-            "7"  { download_vscode; }
-            "57" { download_1remote }
-            "8"  { download_7zip_latest }
-            "58" { download_gm_api }
+            "1"  { download_git; }
+            "2"  { download_frp; }
+            "3"  { download_7zip_latest; }
+            "4"  { download_vscode }
+            "5"  { download_1remote; }
+            "6"  { download_notepadpp }
+            "7"  { download_powershell; }
+            "8"  { download_python3127 }
             "9"  { download_winsw  }
-            "59" { download_shawl  }
-            "10" { download_potplayer }
-            "60" { download_northstar }
+            "10" { download_shawl }
             "11" { download_golang }
-            "61" { download_nodejs }
-            "12" { download_localsend_latest }
-            "62" { download_todesk }
-            "13" { download_xdown }
-            "63" { download_qbittorrent }
-            "14" { download_wechat }
-            "64" { download_rustup }
-            "15" { download_nekobox_latest }
-            "65" {  }
+            "12" { download_nodejs }
+            "13" { download_rustup }
+            "14" {  }
+            "15" { download_gm_api }
+
+            "51" { download_qbittorrent; }
+            "52" { download_vc_redist_x64_alist }
+            "53" { download_rustdesk_server; }
+            "54" { download_rustdesk; }
+            "55" { download_todesk; }
+            "56" { download_wechat; }
+            "57" { download_xdown }
+            "58" { download_pot_desktop }
+            "59" { download_potplayer  }
+            "60" { download_northstar }
+            "61" { download_localsend_latest }
+            "62" { download_wanho_gm }
+            "63" { download_ths_hevo }
+            "64" { download_hiddify }
+            "65" { download_nekobox_latest }
+
             "98" { download_all_software }
             "99" { download_reinstall; }
             "0"  { return }
