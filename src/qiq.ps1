@@ -652,11 +652,11 @@ function App_download {
         Write-Host "========== Download Menu =============" -ForegroundColor Cyan
         Write-Host "   1. VC_redist(x64)   " -NoNewline  
         Write-Host "  51. frp              " -ForegroundColor Green
-        Write-Host "   2. NekoBox          " -NoNewline  -ForegroundColor Yellow
+        Write-Host "   2. RustDesk-Server  " -NoNewline  
         Write-Host "  52. RustDesk         "  
         Write-Host "   3. Python3.12.7     " -NoNewline  
         Write-Host "  53. Pot-desk         "  
-        Write-Host "   4. PowerShell       " -NoNewline
+        Write-Host "   4. PowerShell       " -NoNewline -ForegroundColor Yellow
         Write-Host "  54. THS-Hevo         "  
         Write-Host "   5. Notepad++        " -NoNewline  -ForegroundColor Blue
         Write-Host "  55. WanhoGM          "  
@@ -678,8 +678,10 @@ function App_download {
         Write-Host "  63. QBittorrent      " -ForegroundColor Blue
         Write-Host "  14. WeChat           " -NoNewline  
         Write-Host "  64. Rustup           " 
-        Write-Host "  98. reinstall.bat    " -NoNewline
-        Write-Host "  99. All              " -ForegroundColor Green
+        Write-Host "  15. NekoBox          " -NoNewline  -ForegroundColor Yellow
+        Write-Host "  65.            " 
+        Write-Host "  98. All              " -NoNewline -ForegroundColor Green
+        Write-Host "  99. reinstall.bat    " 
         Write-Host "   0. Exit             " -ForegroundColor Red
         Write-Host "======================================" -ForegroundColor Cyan
     }
@@ -919,6 +921,14 @@ function App_download {
     function download_rustdesk {
         $url_gh = "https://github.com/rustdesk/rustdesk"
         $fpattern = ".*-x86_64.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_rustdesk_server {
+        $url_gh = "https://github.com/rustdesk/rustdesk-server"
+        $fpattern = ".*-x86_64-unsigned.zip"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
@@ -1289,13 +1299,13 @@ wsproto==1.2.0
         download_7zip_latest
         download_notepadpp
         download_python3127
+        download_powershell
         download_vc_redist_x64_alist
         download_wanho_gm
         # download_git
         # download_frp
         # download_nekobox_alist
         # download_nekobox_latest
-        # download_powershell
         # download_hiddify
         # download_vscode
         # download_1remote
@@ -1308,7 +1318,8 @@ wsproto==1.2.0
             "1"  { download_vc_redist_x64_alist; }
             # "1"  { download_vc_redist_x64_ms; }
             "51" { download_frp; }
-            "2"  { download_nekobox_latest; }
+            # "2"  { download_nekobox_latest; }
+            "2"  { download_rustdesk_server; }
             "52" { download_rustdesk; }
             "3"  { download_python3127; }
             "53" { download_pot_desktop; }
@@ -1334,8 +1345,10 @@ wsproto==1.2.0
             "63" { download_qbittorrent }
             "14" { download_wechat }
             "64" { download_rustup }
-            "98" { download_reinstall; }
-            "99" { download_all_software }
+            "15" { download_nekobox_latest }
+            "65" {  }
+            "98" { download_all_software }
+            "99" { download_reinstall; }
             "0"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
         }
