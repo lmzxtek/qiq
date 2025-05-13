@@ -23,7 +23,8 @@ SRC_VER=v0.7.6
 #==========================
 
 DOCKER_PROXY='m.daocloud.io/'
-URL_PROXY='https://proxy.zwdk.org/proxy/'
+# URL_PROXY='https://proxy.zwdk.org/proxy/'
+URL_PROXY='https://proxy.063643.xyz/proxy/'
 URL_REDIRECT='https://qiq.zwdk.org/sh'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
 URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh'
