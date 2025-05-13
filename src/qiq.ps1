@@ -677,7 +677,7 @@ function App_download {
         Write-Host "  13. xdown            " -NoNewline  
         Write-Host "  63. QBittorrent      " -ForegroundColor Blue
         Write-Host "  14. WeChat           " -NoNewline  
-        Write-Host "  64.        " 
+        Write-Host "  64. Rustup           " 
         Write-Host "  98. reinstall.bat    " -NoNewline
         Write-Host "  99. All              " -ForegroundColor Green
         Write-Host "   0. Exit             " -ForegroundColor Red
@@ -686,6 +686,17 @@ function App_download {
     function download_wechat {
         $file = "WeChatWin.exe"
         $url_dl = "https://dldir1v6.qq.com/weixin/Universal/Windows/WeChatWin.exe"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_rustup {
+        $file = "rustup-init.exe"
+        $url_dl = "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe"
         $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
@@ -1322,7 +1333,7 @@ wsproto==1.2.0
             "13" { download_xdown }
             "63" { download_qbittorrent }
             "14" { download_wechat }
-            "64" {  }
+            "64" { download_rustup }
             "98" { download_reinstall; }
             "99" { download_all_software }
             "0"  { return }
