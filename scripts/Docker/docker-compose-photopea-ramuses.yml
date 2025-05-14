@@ -1,0 +1,7 @@
+services:
+ photopea:
+  image: ramuses/photopea:latest
+  container_name: photopea
+  ports:
+   - 48887:8887
+  restart: unless-stopped
