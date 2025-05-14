@@ -6476,16 +6476,17 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "14|Docker-mac   |$WHITE"
     "15|WeChat(web)  |$WHITE"
     "………………………|$WHITE" 
-    "21|Dash.|$WHITE" 
-    "22|MyIP|$WHITE" 
-    "23|Neko|$WHITE" 
-    "24|Browser(KasmVNC)|$WHITE" 
-    "25|IT-Tools|$YELLOW" 
-    "26|Stirling PDF|$WHITE" 
-    "27|OpenCode Server|$WHITE" 
-    "28|Code Server(LinuxServer)|$YELLOW" 
-    "29|Code Server(Official,NOT recommend)|$WHITE" 
-    "30|Music-Tag|$WHITE" 
+    "51|Dash.|$WHITE" 
+    "52|MyIP|$WHITE" 
+    "53|Neko|$WHITE" 
+    "54|Browser(KasmVNC)|$WHITE" 
+    "55|IT-Tools|$YELLOW" 
+    "56|Stirling PDF|$WHITE" 
+    "57|OpenCode Server|$WHITE" 
+    "58|Code Server(LinuxServer)|$YELLOW" 
+    "59|Code Server(Official,NOT recommend)|$WHITE" 
+    "60|Music-Tag|$WHITE" 
+    "61|PhotoPea|$WHITE" 
 )
 function docker_deploy_menu(){
     function print_menu_docker_deploy(){
@@ -6983,7 +6984,57 @@ services:
         image: $dc_imag
         ports:
             - '$dc_port:80'
-        restart: always
+        restart: unless-stopped
+EOF
+
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+        
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_photopea(){    
+        local base_root="/home/dcc.d"
+        local dc_port=48887
+        local dc_name='photopea'
+        local dc_imag=ramuses/photopea:latest
+        local dc_desc="PhotoPea"
+        local urlgit='https://gitflic.ru/project/photopea-v2/photopea-v-2.git'
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port}): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        ports:
+            - '$dc_port:8887'
+        restart: unless-stopped
 EOF
 
         docker-compose up -d 
