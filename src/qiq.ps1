@@ -1033,7 +1033,7 @@ function App_download {
         # https://github.com/podman-desktop/podman-desktop/releases/download/v1.18.1/podman-desktop-1.18.1-setup-x64.exe
         # https://github.com/podman-desktop/podman-desktop/releases/download/v1.18.1/podman-desktop-1.18.1-x64.exe
         $url_gh = "https://github.com/podman-desktop/podman-desktop"
-        $fpattern = ".*-setup-x64.exe"
+        $fpattern = ".*-setup-x64.exe$"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
@@ -1041,7 +1041,8 @@ function App_download {
     }
     function download_1remote {
         $url_gh = "https://github.com/1Remote/1Remote"
-        $fpattern = ".*net9-x64.zip"
+        $fpattern = ".*-x64.zip$"
+        # $fpattern = ".*net9-x64.zip"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
