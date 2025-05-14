@@ -713,41 +713,41 @@ function App_download {
     function Show_Menu_app_download {
         Clear-Host
         Write-Host "========== Download Menu =============" -ForegroundColor Cyan
-        Write-Host "   1. Git              " -NoNewline 
-        Write-Host "  51. QBittorrent      " -ForegroundColor Blue
-        Write-Host "   2. frp              " -NoNewline -ForegroundColor Blue
-        Write-Host "  52. VC_redist(x64)   "  
-        Write-Host "   3. 7zip             " -NoNewline -ForegroundColor Yellow
-        Write-Host "  53. RustDesk-Server  "  
-        Write-Host "   4. VSCode           " -NoNewline 
-        Write-Host "  54. RustDesk         " -ForegroundColor Green
-        Write-Host "   5. 1Remote          " -NoNewline  -ForegroundColor Green
-        Write-Host "  55. ToDesk           "  
-        Write-Host "   6. Notepad++        " -NoNewline
-        Write-Host "  56. WeChat           " 
-        Write-Host "   7. PowerShell       " -NoNewline -ForegroundColor Blue  
-        Write-Host "  57. xdown            " -ForegroundColor Blue
-        Write-Host "   8. Python3.12.7     " -NoNewline
-        Write-Host "  58. Pot-desktop      " 
-        Write-Host "   9. WinSW            " -NoNewline
-        Write-Host "  59. PotPlayer        " 
-        Write-Host "  10. Shawl            " -NoNewline  
-        Write-Host "  60. NorthStar(java)  " 
-        Write-Host "  11. Go-Lang          " -NoNewline -ForegroundColor Blue
-        Write-Host "  61. LocalSend        " -ForegroundColor Green
-        Write-Host "  12. Node.js          " -NoNewline -ForegroundColor Blue
-        Write-Host "  62. WanhoGM          " 
-        Write-Host "  13. Rustup           " -NoNewline  
-        Write-Host "  63. THS-Hevo         " 
-        Write-Host "  14. .Net9            " -NoNewline 
-        Write-Host "  64. TG(x64)          " 
-        Write-Host "  15.                  " -NoNewline 
-        Write-Host "  65. Hiddify          " -ForegroundColor Blue
-        Write-Host "  16. gm-api           " -NoNewline 
-        Write-Host "  66. NekoBox          " -ForegroundColor Yellow
-        Write-Host "  98. All              " -NoNewline -ForegroundColor Green
-        Write-Host "  99. reinstall.bat    " -ForegroundColor Cyan
-        Write-Host "   0. Exit             " -ForegroundColor Red
+        Write-Host "   1. Git                  " -NoNewline 
+        Write-Host "  51. QBittorrent          " -ForegroundColor Blue
+        Write-Host "   2. frp                  " -NoNewline -ForegroundColor Blue
+        Write-Host "  52. VC_redist(x64)       "  
+        Write-Host "   3. 7zip                 " -NoNewline -ForegroundColor Yellow
+        Write-Host "  53. RustDesk-Server      "  
+        Write-Host "   4. VSCode               " -NoNewline 
+        Write-Host "  54. RustDesk             " -ForegroundColor Green
+        Write-Host "   5. 1Remote              " -NoNewline  -ForegroundColor Green
+        Write-Host "  55. ToDesk               "  
+        Write-Host "   6. Notepad++            " -NoNewline
+        Write-Host "  56. WeChat               " 
+        Write-Host "   7. PowerShell           " -NoNewline -ForegroundColor Blue  
+        Write-Host "  57. xdown                " -ForegroundColor Blue
+        Write-Host "   8. Python3.12.7         " -NoNewline
+        Write-Host "  58. Pot-desktop          " 
+        Write-Host "   9. WinSW                " -NoNewline
+        Write-Host "  59. PotPlayer            " 
+        Write-Host "  10. Shawl                " -NoNewline  
+        Write-Host "  60. NorthStar(java)      " 
+        Write-Host "  11. Go-Lang              " -NoNewline -ForegroundColor Blue
+        Write-Host "  61. LocalSend            " -ForegroundColor Green
+        Write-Host "  12. Node.js              " -NoNewline -ForegroundColor Blue
+        Write-Host "  62. WanhoGM              " 
+        Write-Host "  13. Rustup               " -NoNewline  
+        Write-Host "  63. THS-Hevo             " 
+        Write-Host "  14. dotNet9(Runtime)     " -NoNewline 
+        Write-Host "  64. TG(x64)              " 
+        Write-Host "  15. Podman(Desktop)      " -NoNewline 
+        Write-Host "  65. Hiddify              " -ForegroundColor Blue
+        Write-Host "  16. gm-api               " -NoNewline 
+        Write-Host "  66. NekoBox              " -ForegroundColor Yellow
+        Write-Host "  98. All                  " -NoNewline -ForegroundColor Green
+        Write-Host "  99. reinstall.bat        " -ForegroundColor Cyan
+        Write-Host "   0. Exit                 " -ForegroundColor Red
         Write-Host "======================================" -ForegroundColor Cyan
     }
     function download_tg {
@@ -1024,6 +1024,16 @@ function App_download {
     function download_git {
         $url_gh = "https://github.com/git-for-windows/git"
         $fpattern = ".*-64-bit.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_podman_desktop {
+        # https://github.com/podman-desktop/podman-desktop/releases/download/v1.18.1/podman-desktop-1.18.1-setup-x64.exe
+        # https://github.com/podman-desktop/podman-desktop/releases/download/v1.18.1/podman-desktop-1.18.1-x64.exe
+        $url_gh = "https://github.com/podman-desktop/podman-desktop"
+        $fpattern = ".*-setup-x64.exe"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
@@ -1417,7 +1427,7 @@ wsproto==1.2.0
             "12" { download_nodejs }
             "13" { download_rustup }
             "14" { download_net9 }
-            "15" {  }
+            "15" { download_podman_desktop }
             "16" { download_gm_api }
 
             "51" { download_qbittorrent; }

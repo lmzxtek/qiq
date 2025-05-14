@@ -3675,6 +3675,7 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "8|Cyberpanel|$WHITE"
     "9|NginxGUI|$GREEN"
     "10|OpenLiteSpeed|$WHITE"
+    "11|OpenRestyManager|$GREEN"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
@@ -5212,6 +5213,7 @@ EOF
         8 ) tools_install_cyberpanel ;;
         9 ) tools_install_nginxgui  ;;
         10) tools_install_openlitespeed ;;
+        11) sudo bash -c "$(curl -fsSL https://om.uusec.com/installer_cn.sh)" ;;
         21) tools_install_redis ;; 
         22) tools_install_mysql ;; 
         23) tools_install_mariadb ;; 
@@ -6462,16 +6464,17 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "2|RustDesk      |$WHITE"
     "3|NginxGUI      |$WHITE"
     "4|OpenLiteSpeed |$WHITE"
-    "5|DeepLX        |$WHITE"
-    "6|AKTools       |$CYAN"
-    "7|SubLinkX      |$WHITE"
-    "8|Lucky         |$WHITE"
-    "9|Alist         |$WHITE"
-    "10|IPTVa        |$WHITE"
-    "11|IPTVd        |$WHITE"
-    "12|Docker-win   |$WHITE"
-    "13|Docker-mac   |$WHITE"
-    "14|WeChat(web)  |$WHITE"
+    "5|OpenRestyManager |$GREEN"
+    "6|DeepLX        |$WHITE"
+    "7|AKTools       |$CYAN"
+    "8|SubLinkX      |$WHITE"
+    "9|Lucky         |$WHITE"
+    "10|Alist        |$WHITE"
+    "11|IPTVa        |$WHITE"
+    "12|IPTVd        |$WHITE"
+    "13|Docker-win   |$WHITE"
+    "14|Docker-mac   |$WHITE"
+    "15|WeChat(web)  |$WHITE"
     "………………………|$WHITE" 
     "21|Dash.|$WHITE" 
     "22|MyIP|$WHITE" 
@@ -8223,16 +8226,18 @@ EOF
         2 ) dc_deploy_rustdesk  ;;
         3 ) dc_deploy_nginxgui  ;;
         4 ) dc_deploy_openlitespeed  ;;
-        5 ) dc_deploy_deeplx  ;;
-        6 ) dc_deploy_aktools  ;;
-        7 ) dc_deploy_sublinkx  ;;
-        8 ) dc_deploy_lucky  ;;
-        9 ) dc_deploy_alist  ;;
-        10) dc_deploy_iptva  ;;
-        11) dc_deploy_iptvd  ;;
-        12) dc_deploy_docker_win  ;;
-        13) dc_deploy_docker_mac  ;;
-        14) dc_deploy_wechat  ;;
+        5 ) sudo bash -c "$(curl -fsSL https://om.uusec.com/docker_installer_cn.sh)"  ;;
+        6 ) dc_deploy_deeplx  ;;
+        7 ) dc_deploy_aktools  ;;
+        8 ) dc_deploy_sublinkx  ;;
+        9 ) dc_deploy_lucky  ;;
+        10) dc_deploy_alist  ;;
+        11) dc_deploy_iptva  ;;
+        12) dc_deploy_iptvd  ;;
+        13) dc_deploy_docker_win  ;;
+        14) dc_deploy_docker_mac  ;;
+        15) dc_deploy_wechat  ;;
+        
         21) dc_deploy_dashdot  ;;
         22) dc_deploy_myip  ;;
         23) dc_deploy_neko  ;;
