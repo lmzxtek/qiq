@@ -743,7 +743,7 @@ function App_download {
         Write-Host "  64. TG(x64)              " 
         Write-Host "  15. Podman(Desktop)      " -NoNewline 
         Write-Host "  65. Hiddify              " -ForegroundColor Blue
-        Write-Host "  16. gm-api               " -NoNewline 
+        Write-Host "  16. gm-api               " -NoNewline -ForegroundColor Yellow
         Write-Host "  66. NekoBox              " -ForegroundColor Yellow
         Write-Host "  98. All                  " -NoNewline -ForegroundColor Green
         Write-Host "  99. reinstall.bat        " -ForegroundColor Cyan
@@ -1153,6 +1153,17 @@ function App_download {
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
+    function download_wanho_alist {
+        $file = "Vanhogm.exe"
+        $url_dl = "https://ypora.zwdk.org/d/app/$file"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
     function download_frp {
         param([string]$sfld = "c:\frp")
         $targetDir = $sfld
@@ -1399,7 +1410,8 @@ wsproto==1.2.0
         download_python3127
         download_powershell
         download_vc_redist_x64_alist
-        download_wanho_gm
+        download_wanho_alist
+        # download_wanho_gm
         # download_git
         # download_frp
         # download_nekobox_alist
@@ -1442,7 +1454,8 @@ wsproto==1.2.0
             "59" { download_potplayer  }
             "60" { download_northstar }
             "61" { download_localsend_latest }
-            "62" { download_wanho_gm }
+            "62" { download_wanho_alist }
+            # "62" { download_wanho_gm }
             "63" { download_ths_hevo }
             "64" { download_tg }
             "65" { download_hiddify }
