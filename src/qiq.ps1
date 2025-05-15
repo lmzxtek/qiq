@@ -395,7 +395,7 @@ function Manage_Python {
         Write-Host "  4. Install pipenv                     "
         Write-Host "  5. Install Poetry                     " -ForegroundColor Blue
         Write-Host "  6. Install Julia                      "
-        Write-Host " 98. Set poetry Mirror                  " -ForegroundColor Blue
+        Write-Host " 98. Set poetry Mirror                  " #-ForegroundColor Blue
         Write-Host " 99. Set Pip Mirror                     " -ForegroundColor Green 
         Write-Host "  0. Back                               "
         Write-Host "=======================================" -ForegroundColor Green
@@ -647,7 +647,7 @@ function System_Settings {
         Write-Host "  3. Set Default Shell to pwsh         "
         Write-Host "  4. Open Port                         " -ForegroundColor Yellow
         Write-Host "  5. Set GO(cn)                        " -ForegroundColor Green
-        Write-Host "  0. Back to Main Menu                 " -ForegroundColor Red
+        Write-Host "  0. Back                              " -ForegroundColor Red
         Write-Host "=======================================" -ForegroundColor Yellow
     }
     # 启用 OpenSSH 服务
@@ -1316,7 +1316,7 @@ token = "9ac4d4a74c4daf280baa84512faf5612bac25ae3"
 host  = ""
 port  = 5000
 workers = 4 
-servertag = 'gm(demo)'
+servertag = 'gm'
 "@
             $batContent | Out-File -FilePath $batFileName -Encoding ASCII
             Write-Host " cfg.toml file saved: $batFileName"
@@ -1682,7 +1682,7 @@ function  main_menu {
         Write-Host "  8. Show region               "  -ForegroundColor Green
         Write-Host "  9. Show Excludepath          " 
         Write-Host " 10. Test Connection           "  -ForegroundColor Blue
-        Write-Host " 99. ReBoot System             "  -ForegroundColor Red
+        Write-Host " 99. ReBoot System             "  -ForegroundColor Cyan
         Write-Host "  x. Exit                      "  -ForegroundColor Red
         Write-Host "==============================="  -ForegroundColor Cyan
     }
