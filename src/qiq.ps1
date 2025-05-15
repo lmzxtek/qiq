@@ -1682,6 +1682,7 @@ function  main_menu {
         Write-Host "  8. Show region               "  -ForegroundColor Green
         Write-Host "  9. Show Excludepath          " 
         Write-Host " 10. Test Connection           "  -ForegroundColor Blue
+        Write-Host " 99. ReBoot System             "  -ForegroundColor Red
         Write-Host "  x. Exit                      "  -ForegroundColor Red
         Write-Host "==============================="  -ForegroundColor Cyan
     }
@@ -1690,17 +1691,18 @@ function  main_menu {
         Show-Menu
         $choice = Read-Host "Enter your choice"
         switch ($choice) {
-            "1" { activate_win_office }
-            "2" { App_download }
-            "3" { Software_install }
-            "4" { show_web_links; Pause }
-            "5" { show_github_links; Pause }
-            "6" { System_Settings }
-            "7" { Manage_Python }
-            "8" { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$global:LOCATION_REGION `n" -ForegroundColor Green ; Pause }
-            "9" { Get-MpPreference | Select-Object -ExpandProperty ExclusionPath ; Pause }
+            "1"  { activate_win_office }
+            "2"  { App_download }
+            "3"  { Software_install }
+            "4"  { show_web_links; Pause }
+            "5"  { show_github_links; Pause }
+            "6"  { System_Settings }
+            "7"  { Manage_Python }
+            "8"  { $region = Get_location_region; Write-Host "`n It is: $region, LOCATION_REGION=$global:LOCATION_REGION `n" -ForegroundColor Green ; Pause }
+            "9"  { Get-MpPreference | Select-Object -ExpandProperty ExclusionPath ; Pause }
             "10" { $port = Read-Host "Enter port(default: 5000)"; if (!$port) { $port = 5000 }; Test-NetConnection -ComputerName localhost -Port $port ; Pause }
-            "x" { return }
+            "99" { shutdown /r /t 0 }
+            "x"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
