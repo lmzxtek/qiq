@@ -518,13 +518,15 @@ index-url = $mirrorURL
         # Pause
     }
     function Set-poetry-source {
-        Write-Host " Select Source: "
-        Write-Host " 1. AliYun"
-        Write-Host " 2. TUNA"
-        Write-Host " 3. USTC"
-        Write-Host " 4. Doubanio"
-        Write-Host " 5. Custom"
-        Write-Host " 0. Back"
+        Write-Host "`n Select Mirror: "
+        Write-Host "================================"
+        Write-Host " 1. AliYun      " -ForegroundColor Green
+        Write-Host " 2. TUNA        "
+        Write-Host " 3. USTC        "
+        Write-Host " 4. Doubanio    "
+        Write-Host " 5. Custom      "
+        Write-Host " 0. Back        "
+        Write-Host "================================"
         $mirror_choice = Read-Host "Enter choice"
         switch ($mirror_choice) {
             "1" { poetry source add aliyun   "https://mirrors.aliyun.com/pypi/simple/"   --default  }
@@ -540,25 +542,47 @@ index-url = $mirrorURL
         }
     }
     function Install-Poetry {
-        Write-Host " Select Option: "
-        Write-Host " 1. Official"
-        Write-Host " 2. pip"
-        Write-Host " 3. Set source"
-        Write-Host " 0. Back"
+        Write-Host " Select Install Option: "
+        Write-Host "================================"
+        Write-Host " 1. Official      "
+        Write-Host " 2. pip           "
+        Write-Host " 3. Set source    "
+        Write-Host " 0. Back          "
+        Write-Host "================================"
         $mirror_choice = Read-Host "Enter choice"
         switch ($mirror_choice) {
             "1" { 
                 (Invoke-WebRequest -Uri "https://install.python-poetry.org" -UseBasicParsing).Content | python - 
-                write-host "`nPoetry installed! Please add %USERPROFILE%\.local\bin to your PATH `n" -ForegroundColor Green
+                # write-host "`nPoetry installed! Please add %USERPROFILE%\.local\bin to your PATH `n" -ForegroundColor Green
+                # write-host "`nPoetry installed! Please add %APPDATA%\pypoetry\venv\Scripts to your PATH `n" -ForegroundColor Green
+                write-host "`nPoetry installed! Please add %APPDATA%\Python\Scripts to your PATH `n" -ForegroundColor Green
+                
+                $prompt = "`n Add %APPDATA%\Python\Scripts to your PATH ? (Default:Y) [Y/n]"
+                $confirmation = Read-Host $prompt                
+                # 处理空输入（直接回车）和首尾空格
+                $userInput = $confirmation.Trim()
+                if ([string]::IsNullOrEmpty($userInput)) {
+                    $userInput = 'Y'  # 设置默认值
+                }
+                # 使用正则表达式进行智能匹配
+                if ($userInput -match '^(y|yes)$') {
+                    $tarpath = $env:APPDATA + "\Python\Scripts"
+                    # [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";%APPDATA%\Python\Scripts", "User")
+                    [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$tarpath", "User")
+                }else{
+                    Write-Host ""
+                    write-host " 1. In order to use poetry, please add %APPDATA%\Python\Scripts to your PATH " -ForegroundColor Green
+                    write-host " 2. Directory path for poetry: %APPDATA%\pypoetry\venv\Scripts " -ForegroundColor Green
+                }
             }
             "2" { pip install --user poetry; Pause }
             "3" { 
-                write-host "Change source: " -ForegroundColor Green
-                write-host " 1. > poetry source add tsinghua https://pypi.tuna.tsinghua.edu.cn/simple --default " -ForegroundColor Green
-                write-host " 2. > poetry source add tsinghua https://mirrors.aliyun.com/pypi/simple --default " -ForegroundColor Green
-                write-host " 3. > poetry source add tsinghua https://pypi.doubanio.com/simple --default " -ForegroundColor Green 
+                # write-host "Change source: " -ForegroundColor Green
+                # write-host " 1. > poetry source add tsinghua https://pypi.tuna.tsinghua.edu.cn/simple --default " -ForegroundColor Green
+                # write-host " 2. > poetry source add tsinghua https://mirrors.aliyun.com/pypi/simple --default " -ForegroundColor Green
+                # write-host " 3. > poetry source add tsinghua https://pypi.doubanio.com/simple --default " -ForegroundColor Green 
                 Set-poetry-source
-                Pause 
+                # Pause 
              }
             "0" { return }
             default { Write-Host "Invalid input"; return }
@@ -567,7 +591,7 @@ index-url = $mirrorURL
 
     while ($true) {
         Show_manage_python_menu
-        $py_choice = Read-Host "Enter your choice"        
+        $py_choice = Read-Host "Enter your choice" 
         switch ($py_choice) {
             "1" { Install-Software "Python.Python" "python" "https://www.python.org/downloads/"; Pause }
             "2" { 

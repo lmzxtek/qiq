@@ -5776,7 +5776,7 @@ function python_management_menu(){
                 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc  # 或 ~/.zshrc
                 source ~/.bashrc
                 ;;
-            2 )  pip install --user poetry ;;
+            2 )  pip install pipx && pipx install --user poetry ;;
             3 )  sudo pip install peotry  ;;
             0 )  echo -e "\n$WARN 返回 ${RESET}" && _IS_BREAK="false"  && return 0  ;;
             *)  _BREAK_INFO=" 请输入正确先项！" && _IS_BREAK="true" && return 0;;
@@ -8289,16 +8289,16 @@ EOF
         14) dc_deploy_docker_mac  ;;
         15) dc_deploy_wechat  ;;
         
-        21) dc_deploy_dashdot  ;;
-        22) dc_deploy_myip  ;;
-        23) dc_deploy_neko  ;;
-        24) dc_deploy_browser_kasmvnc  ;;
-        25) dc_deploy_ittools  ;;
-        26) dc_deploy_spdf  ;;
-        27) dc_deploy_openvscode_server  ;;
-        28) dc_deploy_code_linuxserver  ;;
-        29) dc_deploy_code_official  ;;
-        30) dc_deploy_music_tag_web  ;;
+        51) dc_deploy_dashdot  ;;
+        52) dc_deploy_myip  ;;
+        53) dc_deploy_neko  ;;
+        54) dc_deploy_browser_kasmvnc  ;;
+        55) dc_deploy_ittools  ;;
+        56) dc_deploy_spdf  ;;
+        57) dc_deploy_openvscode_server  ;;
+        58) dc_deploy_code_linuxserver  ;;
+        59) dc_deploy_code_official  ;;
+        60) dc_deploy_music_tag_web  ;;
         xx) sys_reboot ;;
         # 0)  echo -e "\n$TIP 返回上级菜单 ..." && _IS_BREAK="false"  && break  ;;
         0)  docker_management_menu && _IS_BREAK="false" && break  ;; 
