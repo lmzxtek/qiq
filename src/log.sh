@@ -54,6 +54,7 @@ echoY "   2.修改默认自定义DD系统链接为2025-04的版本"
 echoY "   3.修改Proxy链接为063643.xyz"
 echoY "   4.增加OpenRestyManager部署(Host, Docker)"
 echoY "   5.增加PhotoPea部署(Docker)"
+echoY "   6.将Poetry安装的卸载分开 "
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 

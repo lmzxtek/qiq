@@ -5500,18 +5500,19 @@ EOF
 # Python管理
 MENU_PYTHON_ITEMS=(
     "1|安装Python|$WHITE" 
-    "2|安装Poetry|$WHITE" 
-    "3|安装pipenv|$WHITE"
-    "4|安装miniForge|$YELLOW" 
-    "5|安装miniConda|$WHITE"  
-    "6|设置pip源|$WHITE" 
-    "7|设置conda源|$WHITE" 
-    "8|设置poetry源|$WHITE" 
+    "2|安装pipenv|$WHITE"
+    "3|安装Poetry|$GREEN" 
+    "4|卸载Poetry|$WHITE" 
+    "5|设置Poetry源|$CYAN" 
+    "6|安装miniForge|$YELLOW" 
+    "7|安装miniConda|$WHITE"  
+    "8|设置pip源|$WHITE" 
+    "9|设置conda源|$WHITE" 
     "………………………|$WHITE"
-    "31|安装hypercorn|$WHITE" 
-    "32|安装gunicorn|$WHITE" 
-    "33|安装julia|$WHITE" 
-    "34|安装dash|$WHITE"
+    "51|安装hypercorn|$WHITE" 
+    "52|安装gunicorn|$WHITE" 
+    "53|安装julia|$WHITE" 
+    "54|安装dash|$WHITE"
 )
 
 function python_management_menu(){
@@ -5746,23 +5747,32 @@ function python_management_menu(){
     }
     function py_subitem_install_poetry(){
         if command -v poetry &>/dev/null; then
-            _BREAK_INFO=" poetry已安装，无需重新安装！"
-            echo -e "\n$TIP poetry卸载方式: \n"
-            echo -e "   1. 官方 "
-            echo -e "   2. pip "
-            echo -e "   0. 返回"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项(默认0): ${PLAIN}")
-            read -rp "${CHOICE}" INPUT
-            [[ -z "$INPUT" ]] &&  INPUT="0"
-            case "${INPUT}" in
-            1 ) curl -sSL https://install.python-poetry.org | python3 - --uninstall  ;;
-            2 )  pip uninstall poetry ;;
-            0 )  echo -e "\n$WARN 返回 ${RESET}" && _IS_BREAK="false"  && return 0  ;;
-            *)  _BREAK_INFO=" 请输入正确先项！" && _IS_BREAK="true" && return 0;;
-            esac
-            _BREAK_INFO=" poetry安装成功！"
+            _BREAK_INFO=" Poetry已安装"
+            echo -e ""
+            echo -e "$TIP Poetry使用说明 "
+            echo -e "============================================================"
+            echo -e "   > poetry env list        # 显示当前目录关联的虚拟环境     "
+            echo -e "   > poetry env info        # 显示Poetry环境信息            "
+            echo -e "   > poetry env info --path # 查看Poetry关联的Python环境路径 "
+            echo -e ""
+            echo -e "   > poetry config --list   # 查看当前环境信息               "
+            echo -e "   > poetry show --true     # 显示当前环境中库的依赖关系      "
+            echo -e ""
+            echo -e "   > poetry init                  # 初始化, 生成pyproject.toml "
+            echo -e "   > iex (poetry env activate )   # 激活虚拟环境(Windows) "
+            echo -e "   > eval $(poetry env activate ) # 激活虚拟环境(Linux) "
+            echo -e ""
+            echo -e "   > poetry add numpy             # 添加numpy包 " 
+            echo -e "   > poetry remove numpy          # 移除numpy包 "
+            echo -e "   > poetry run python main.py    # 运行python代码 "
+            echo -e ""
+            echo -e "   > poetry install               # 安装依赖库(包含当前库) "
+            echo -e "   > poetry install --no-root     # 只安装依赖库 "
+            echo -e "============================================================"            
+            echo -e ""
+            # _BREAK_INFO=" poetry安装成功！"
         else
-            echo -e "\n$TIP poetry安装方式: \n"
+            echo -e "\n$TIP Poetry安装方式: \n"
             echo -e "   1. 官方 "
             echo -e "   2. 安装到用户 "
             echo -e "   3. 全局安装"
@@ -5781,6 +5791,28 @@ function python_management_menu(){
             0 )  echo -e "\n$WARN 返回 ${RESET}" && _IS_BREAK="false"  && return 0  ;;
             *)  _BREAK_INFO=" 请输入正确先项！" && _IS_BREAK="true" && return 0;;
             esac
+            _BREAK_INFO=" poetry安装成功！"
+        fi
+    }
+    function py_subitem_uninstall_poetry(){
+        if command -v poetry &>/dev/null; then
+            # _BREAK_INFO=" poetry已安装，无需重新安装！"
+            echo -e "\n$TIP poetry卸载方式: \n"
+            echo -e "   1. 官方 "
+            echo -e "   2. pip "
+            echo -e "   0. 返回"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项(默认0): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="0"
+            case "${INPUT}" in
+            1 )  curl -sSL https://install.python-poetry.org | python3 - --uninstall  ;;
+            2 )  pip uninstall poetry ;;
+            0 )  echo -e "\n$WARN 返回 ${RESET}" && _IS_BREAK="false"  && return 0  ;;
+            *)  _BREAK_INFO=" 请输入正确先项！" && _IS_BREAK="true" && return 0;;
+            esac
+            _BREAK_INFO=" poetry安装成功！"
+        else
+            echo -e "\n$TIP poetry未安装 \n"
             _BREAK_INFO=" poetry安装成功！"
         fi
     }
@@ -5897,17 +5929,19 @@ function python_management_menu(){
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
         1 ) py_subitem_install_python ;;
-        2 ) py_subitem_install_poetry ;;
-        3 ) py_subitem_install_pipenv ;;
-        4 ) py_subitem_install_miniforge ;;
-        5 ) py_subitem_install_miniconda ;;
-        6 ) py_subitem_set_source_pip ;;
-        7 ) py_subitem_set_source_poetry ;;
-        8 ) py_subitem_set_source_conda ;;
-        31) py_subitem_install_hypercorn ;;
-        32) py_subitem_install_gunicorn ;;
-        33) py_subitem_install_julia ;;
-        34) py_subitem_install_dash ;;
+        2 ) py_subitem_install_pipenv ;;
+        3 ) py_subitem_install_poetry ;;
+        4 ) py_subitem_uninstall_poetry ;;
+        5 ) py_subitem_set_source_poetry ;;
+        6 ) py_subitem_install_miniforge ;;
+        7 ) py_subitem_install_miniconda ;;
+        8 ) py_subitem_set_source_pip ;;
+        9 ) py_subitem_set_source_conda ;;
+
+        51) py_subitem_install_hypercorn ;;
+        52) py_subitem_install_gunicorn ;;
+        53) py_subitem_install_julia ;;
+        54) py_subitem_install_dash ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
