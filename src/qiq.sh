@@ -5760,7 +5760,7 @@ function python_management_menu(){
             echo -e ""
             echo -e "   > poetry init                  # 初始化, 生成pyproject.toml "
             echo -e "   > iex (poetry env activate )   # 激活虚拟环境(Windows) "
-            echo -e "   > eval $(poetry env activate ) # 激活虚拟环境(Linux) "
+            echo    '   > eval $(poetry env activate ) # 激活虚拟环境(Linux) '
             echo -e ""
             echo -e "   > poetry add numpy             # 添加numpy包 " 
             echo -e "   > poetry remove numpy          # 移除numpy包 "
