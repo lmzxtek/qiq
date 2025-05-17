@@ -5186,9 +5186,31 @@ EOF
         fetch_script_from_url $url $fname 1  
         # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
     }
-    function tools_install_nginx(){
-        apt install sudo && \
-        sudo apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring && \
+    function tools_install_nginx(){        
+        sudo apt install -y curl gnupg2 ca-certificates lsb-release
+        # 检查系统类型
+        if [ -f /etc/os-release ]; then
+            . /etc/os-release
+            case "$ID" in
+                debian)
+                    sudo apt debian-archive-keyring
+                    ;;
+                ubuntu)
+                    sudo apt ubuntu-keyring
+                    ;;
+                *)
+                    echo "错误：不支持的系统类型 $ID" >&2
+                    return 1
+                    ;;
+            esac
+        else
+            echo "错误：无法确定系统类型，缺少 /etc/os-release 文件" >&2
+            return 1
+        fi
+        # apt install sudo && \
+        # sudo apt install -y curl gnupg2 ca-certificates lsb-release debian-archive-keyring
+        # sudo apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring 
+
         curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null && \
         echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list && \
         echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx && \
