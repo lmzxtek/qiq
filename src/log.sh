@@ -56,6 +56,7 @@ echoY "   4.增加OpenRestyManager部署(Host, Docker)"
 echoY "   5.增加PhotoPea部署(Docker)"
 echoY "   6.将Poetry安装的卸载分开 "
 echoY "   7.更正NginxUI名称 "
+echoY "   8.增加Nginx安装 "
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 

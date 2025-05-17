@@ -3673,9 +3673,10 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "6|HestiaCP|$CYAN"
     "7|CloudPanel|$CYAN"
     "8|Cyberpanel|$WHITE"
-    "9|NginxGUI|$GREEN"
-    "10|OpenLiteSpeed|$WHITE"
-    "11|OpenRestyManager|$GREEN"
+    "9|Nginx|$GREEN"
+    "10|NginxUI|$GREEN"
+    "11|OpenLiteSpeed|$WHITE"
+    "12|OpenRestyManager|$GREEN"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
@@ -5185,6 +5186,14 @@ EOF
         fetch_script_from_url $url $fname 1  
         # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
     }
+    function tools_install_nginx(){
+        apt install sudo && \
+        sudo apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring && \
+        curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null && \
+        echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list && \
+        echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx && \
+        sudo apt update && sudo apt install -y nginx && systemctl start nginx && systemctl enable nginx
+    }
     function tools_install_nginxui(){
         _IS_BREAK="true"
         local app_name='Nginx UI'
@@ -5216,9 +5225,11 @@ EOF
         6 ) tools_install_hestiacp ;;
         7 ) tools_install_cloudpanel ;;
         8 ) tools_install_cyberpanel ;;
-        9 ) tools_install_nginxui  ;;
-        10) tools_install_openlitespeed ;;
-        11) sudo bash -c "$(curl -fsSL https://om.uusec.com/installer_cn.sh)" ;;
+        9 ) tools_install_nginx ;;
+        10) tools_install_nginxui ;;
+        11) tools_install_openlitespeed ;;
+        12) sudo bash -c "$(curl -fsSL https://om.uusec.com/installer_cn.sh)" ;;
+
         21) tools_install_redis ;; 
         22) tools_install_mysql ;; 
         23) tools_install_mariadb ;; 
