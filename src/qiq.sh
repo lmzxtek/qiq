@@ -5190,11 +5190,15 @@ EOF
         local app_name='Nginx UI'
         local app_cmd='nginxui'
             _BREAK_INFO=" 由${app_name}返回！"
-        local fname="nginxgui_install.sh"
+        local fname="nginxgui.sh"
         local ghurl="https://github.com/0xJacky/nginx-ui"
-        local url="https://raw.githubusercontent.com/0xJacky/nginx-ui/main/install.sh"
+        # local url="https://raw.githubusercontent.com/0xJacky/nginx-ui/main/install.sh"
+        local url="https://cloud.nginxui.com/https://raw.githubusercontent.com/0xJacky/nginx-ui/main/install.sh"
         echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-        fetch_script_from_url $url $fname 1  " @ install"
+        # fetch_script_from_url $url $fname 1  " @ install"
+        # fetch_script_from_url $url $fname 0  " @ install"
+        download_file_url $url $fname
+        chmod +x $fname && ./$fname @ install -r https://cloud.nginxui.com/ 
         # bash -c "$(curl -L https://raw.githubusercontent.com/0xJacky/nginx-ui/main/install.sh)" @ install
     }
 
