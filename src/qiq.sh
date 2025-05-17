@@ -640,14 +640,14 @@ function print_sub_items_2() {
         
 		case "$ID" in
         alpine)
+            chinese_left=0
+            emoji_count=0
+            ;;
+        *)
             # 计算中文字符数量
             chinese_left=$(echo -n "$l_formatted" | grep -oP '[\p{Han}]' | wc -l)
             # 计算Emoji数量
             emoji_count=$(echo -n "$l_formatted" | grep -oP "[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}]" | wc -l)
-            ;;
-        *)
-            chinese_left=0
-            emoji_count=0
             ;;
 		esac
 
