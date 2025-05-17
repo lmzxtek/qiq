@@ -626,6 +626,8 @@ function print_sub_items_2() {
     local total_items=${#items[@]}
     local half=$(( (total_items + 1) / 2 ))  # 计算左右分栏
 
+    . /etc/os-release
+
     for ((i=0; i<half; i++)); do
         local left_item=${items[i]}
         local right_index=$((i + half))
@@ -635,10 +637,20 @@ function print_sub_items_2() {
         IFS='|' read -r l_num l_text l_color <<< "$left_item"
         l_color=${l_color:-$RESET}  # 默认颜色
         local l_formatted="${l_color}${ITEM_CAT_CHAR}$l_text$RESET"
-        # 计算中文字符数量
-        chinese_left=$(echo -n "$l_formatted" | grep -oP '[\p{Han}]' | wc -l)
-        # 计算Emoji数量
-        emoji_count=$(echo -n "$l_formatted" | grep -oP "[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}]" | wc -l)
+        
+		case "$ID" in
+        alpine)
+            # 计算中文字符数量
+            chinese_left=$(echo -n "$l_formatted" | grep -oP '[\p{Han}]' | wc -l)
+            # 计算Emoji数量
+            emoji_count=$(echo -n "$l_formatted" | grep -oP "[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}]" | wc -l)
+            ;;
+        *)
+            chinese_left=0
+            emoji_count=0
+            ;;
+		esac
+
         adj_left_width=$((ncol + chinese_left + emoji_count))
 
         # adj_split_num=$((NUM_SPLIT - chinese_left - emoji_count ))
