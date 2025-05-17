@@ -5185,10 +5185,10 @@ EOF
         fetch_script_from_url $url $fname 1  
         # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
     }
-    function tools_install_nginxgui(){
+    function tools_install_nginxui(){
         _IS_BREAK="true"
-        local app_name='NginxGUI'
-        local app_cmd='nginxgui'
+        local app_name='Nginx UI'
+        local app_cmd='nginxui'
             _BREAK_INFO=" 由${app_name}返回！"
         local fname="nginxgui_install.sh"
         local ghurl="https://github.com/0xJacky/nginx-ui"
@@ -5211,7 +5211,7 @@ EOF
         6 ) tools_install_hestiacp ;;
         7 ) tools_install_cloudpanel ;;
         8 ) tools_install_cyberpanel ;;
-        9 ) tools_install_nginxgui  ;;
+        9 ) tools_install_nginxui  ;;
         10) tools_install_openlitespeed ;;
         11) sudo bash -c "$(curl -fsSL https://om.uusec.com/installer_cn.sh)" ;;
         21) tools_install_redis ;; 
@@ -6496,7 +6496,7 @@ function caddy_management_menu(){
 MENU_DOCKER_DEPLOY_ITEMS=(
     "1|WatchTower    |$YELLOW"
     "2|RustDesk      |$WHITE"
-    "3|NginxGUI      |$WHITE"
+    "3|Nginx UI      |$WHITE"
     "4|OpenLiteSpeed |$WHITE"
     "5|OpenRestyManager |$GREEN"
     "6|DeepLX        |$WHITE"
@@ -7088,12 +7088,12 @@ EOF
         
         cd - &>/dev/null # 返回原来目录 
     }
-    function dc_deploy_nginxgui(){    
+    function dc_deploy_nginxui(){    
         local base_root="/home/dcc.d"
         local dc_port=49000
-        local dc_name='nginxgui'
+        local dc_name='nginxui'
         local dc_imag=uozi/nginx-ui:latest
-        local dc_desc="NginxGUI"
+        local dc_desc="Nginx UI"
         local urlgit='https://openlitespeed.org/#install'
         local domain=''
 
@@ -8309,7 +8309,7 @@ EOF
         case "${INPUT}" in
         1 ) dc_deploy_watchtower  ;;
         2 ) dc_deploy_rustdesk  ;;
-        3 ) dc_deploy_nginxgui  ;;
+        3 ) dc_deploy_nginxui  ;;
         4 ) dc_deploy_openlitespeed  ;;
         5 ) sudo bash -c "$(curl -fsSL https://om.uusec.com/docker_installer_cn.sh)"  ;;
         6 ) dc_deploy_deeplx  ;;
