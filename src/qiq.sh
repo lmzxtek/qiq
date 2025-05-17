@@ -3679,16 +3679,17 @@ function commonly_tools_menu(){
 MENU_SERVICE_TOOLS_ITEMS=(
     "1|1Panel|$YELLOW"
     "2|aaPanel|$WHITE"
-    "3|Ajenti|$WHITE"
-    "4|Cockpit|$WHITE"
-    "5|VestaCP|$WHITE"
-    "6|HestiaCP|$CYAN"
-    "7|CloudPanel|$CYAN"
-    "8|Cyberpanel|$WHITE"
-    "9|Nginx|$GREEN"
-    "10|NginxUI|$GREEN"
-    "11|OpenLiteSpeed|$WHITE"
-    "12|OpenRestyManager|$GREEN"
+    "3|Ratpanel|$Yellow"
+    "4|Ajenti|$WHITE"
+    "5|Cockpit|$WHITE"
+    "6|VestaCP|$WHITE"
+    "7|HestiaCP|$CYAN"
+    "8|CloudPanel|$CYAN"
+    "9|Cyberpanel|$WHITE"
+    "10|Nginx|$GREEN"
+    "11|NginxUI|$GREEN"
+    "12|OpenLiteSpeed|$WHITE"
+    "13|OpenRestyManager|$GREEN"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
@@ -3782,6 +3783,44 @@ function service_tools_menu(){
         fi     
     }
 
+    function tools_install_ratpanel(){
+        _IS_BREAK="true"
+        local app_name='RatPanel'
+        if command -v panel-cli &> /dev/null; then
+            ## 系统已安装1Panel
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            echo -e ""
+            echo -e "$TIP ${app_name}使用说明 "
+            echo -e "============================================================"
+            echo -e "   > systemctl start   panel # 启动${app_name}服务 "
+            echo -e "   > systemctl stop    panel # 停止${app_name}服务"
+            echo -e "   > systemctl restart panel # 重启${app_name}服务 "
+            echo -e ""
+            echo -e "   > panel-cli              # ${app_name}管理菜单命令 "
+            echo -e "   > panel-cli https off    # 关闭面板https           "
+            echo -e "============================================================"            
+            echo -e ""
+        else 
+            ## 系统未安装1Panel
+            local system_type=$(get_system_type)
+            local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/n): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "${INPUT}" ]] && INPUT="Y" 
+            case "$INPUT" in
+            [Yy] | [Yy][Ee][Ss])
+                # sys_update 
+                _BREAK_INFO=" 成功安装${app_name}!"
+                curl -fsLm 10 -o ratpanel.sh https://dl.cdn.haozi.net/panel/install.sh && bash ratpanel.sh
+                ;;
+            [Nn] | [Nn][Oo])
+                _BREAK_INFO=" 取消安装${app_name}!"
+                ;;
+            *) 
+                _BREAK_INFO=" 输入错误，请重新输入!"
+                ;;
+            esac
+        fi     
+    }
     function tools_install_aaPanel(){
         _IS_BREAK="true"
         local app_name='aaPanel'
@@ -5255,15 +5294,17 @@ EOF
         case "${INPUT}" in
         1 ) tools_install_1panel ;;
         2 ) tools_install_aaPanel ;;
-        3 ) tools_install_ajenti ;;
-        4 ) tools_install_cockpit ;;
-        6 ) tools_install_hestiacp ;;
-        7 ) tools_install_cloudpanel ;;
-        8 ) tools_install_cyberpanel ;;
-        9 ) tools_install_nginx ;;
-        10) tools_install_nginxui ;;
-        11) tools_install_openlitespeed ;;
-        12) sudo bash -c "$(curl -fsSL https://om.uusec.com/installer_cn.sh)" ;;
+        3 ) tools_install_ratpanel ;;
+        4 ) tools_install_ajenti ;;
+        5 ) tools_install_cockpit ;;
+        6 ) tools_install_vestacp ;;
+        7 ) tools_install_hestiacp ;;
+        8 ) tools_install_cloudpanel ;;
+        9 ) tools_install_cyberpanel ;;
+        10) tools_install_nginx ;;
+        11) tools_install_nginxui ;;
+        12) tools_install_openlitespeed ;;
+        13) sudo bash -c "$(curl -fsSL https://om.uusec.com/installer_cn.sh)" ;;
 
         21) tools_install_redis ;; 
         22) tools_install_mysql ;; 
