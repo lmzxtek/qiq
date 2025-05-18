@@ -1,0 +1,16 @@
+[Unit]
+Description=Zoraxy Service
+After=network.target
+
+[Service]
+Type=simple
+
+User=root
+Group=root
+
+WorkingDirectory=/opt/zoraxy/src
+ExecStart=/opt/zoraxy/src/zoraxy -port=:8000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
