@@ -700,9 +700,12 @@ function System_Settings {
     }
     # 安装nssm
     function install_nssm {
+        $sfld = 'Apps'
+        $targetDir = Get_download_path $sfld 
         # $nssm_url = "https://nssm.cc/release/nssm-2.24.zip"
         $nssm_url = "https://ypora.zwdk.org/d/app/nssm-2.24.zip"
         # $nssm_url = "https://alistus.zwdk.im/d/a/apps/nssm-2.24.zip"
+        $nssm_file = "$targetDir/nssm-2.24.zip"
 
         # $nssm_file = "nssm-2.24.zip"
         # $nssm_dir = "nssm-2.24"
@@ -718,20 +721,22 @@ function System_Settings {
         # Move-Item -Path (Join-Path -Path $targetDir -ChildPath $nssm_dir) -Destination $targetDir
         
         # 下载并安装 NSSM
-        write-host "File URL: $nssm_url_target"
-        Invoke-WebRequest -Uri $nssm_url -OutFile "nssm.zip"
-        Expand-Archive -Path "nssm.zip" -DestinationPath "C:\nssm"
+        write-host "File URL: $nssm_url"
+        Invoke-WebRequest -Uri $nssm_url -OutFile $nssm_file
+        Expand-Archive -Path $nssm_file -DestinationPath "C:\nssm"
         Copy-Item "C:\nssm\nssm-2.24\win64\nssm.exe" -Destination "C:\Windows"
         Write-Host "nssm installed!" -ForegroundColor Green
         
         # 创建服务
         write-host "`nCreate service: frps"
         Write-Host ' > nssm install frps "C:\frp\frps.exe" -c "C:\frp\frps.toml"'
-        Write-Host ' > nssm start frps           # 启动服务 '  
-        Write-Host ' > nssm stop frps            # 停止服务 '
-        Write-Host ' > nssm restart frps         # 重启服务 '
-        Write-Host ' > nssm remove frps          # 删除服务 '
-        Write-Host ' > nssm remove frps confirm  # 删除服务，无需确认 '
+        write-host "  `n"
+        Write-Host ' > nssm start frps           # start frps service '  
+        Write-Host ' > nssm stop frps            # stop frps service '  
+        Write-Host ' > nssm restart frps         # restart frps service '  
+        Write-Host ' > nssm remove frps          # remove frps service '
+        Write-Host ' > nssm remove frps confirm  # revomve frps service with confirm '
+        write-host "  `n"
 
         Pause
     }
