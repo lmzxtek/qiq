@@ -723,8 +723,8 @@ function System_Settings {
         # 下载并安装 NSSM
         write-host "File URL: $nssm_url"
         Invoke-WebRequest -Uri $nssm_url -OutFile $nssm_file
-        Expand-Archive -Path $nssm_file -DestinationPath "C:\nssm"
-        Copy-Item "C:\nssm\nssm-2.24\win64\nssm.exe" -Destination "C:\Windows"
+        Expand-Archive -Path $nssm_file -Force -DestinationPath "C:\nssm"
+        Copy-Item "C:\nssm\nssm-2.24\win64\nssm.exe" -Force -Destination "C:\Windows"
         Write-Host "nssm installed!" -ForegroundColor Green
         
         # 创建服务
