@@ -717,7 +717,8 @@ function System_Settings {
             "5" { 
                 # go env -w GO111MODULE=on; 
                 go env -w GOPROXY=https://goproxy.cn,direct; 
-                Write-Host "GO(cn) set!"; Pause 
+                Write-Host "GO(cn) set!" -ForegroundColor Green
+                Pause 
             }
             "6" { npm install -g cnpm --registry=https://registry.npmmirror.com }
             "0" { return }
