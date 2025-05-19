@@ -671,6 +671,7 @@ function System_Settings {
         Write-Host "  3. Set Default Shell to pwsh         "
         Write-Host "  4. Open Port                         " -ForegroundColor Yellow
         Write-Host "  5. Set GO(cn)                        " -ForegroundColor Green
+        Write-Host "  6. Install cnpm                      " -ForegroundColor Green
         Write-Host "  0. Back                              " -ForegroundColor Red
         Write-Host "=======================================" -ForegroundColor Yellow
     }
@@ -718,6 +719,7 @@ function System_Settings {
                 go env -w GOPROXY=https://goproxy.cn,direct; 
                 Write-Host "GO(cn) set!"; Pause 
             }
+            "6" { npm install -g cnpm --registry=https://registry.npmmirror.com }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
