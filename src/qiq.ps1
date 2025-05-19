@@ -671,8 +671,9 @@ function System_Settings {
         Write-Host "  3. Set Default Shell to pwsh         "
         Write-Host "  4. Open Port                         " -ForegroundColor Yellow
         Write-Host "  5. Set GO(cn)                        " -ForegroundColor Green
-        Write-Host "  6. Install cnpm                      " -ForegroundColor Green
-        Write-Host "  0. Back                              " -ForegroundColor Red
+        Write-Host "  6. Install cnpm                      " 
+        Write-Host "  7. Install nssm                      " -ForegroundColor Green
+        Write-Host "  0. Back                              " 
         Write-Host "=======================================" -ForegroundColor Yellow
     }
     # 启用 OpenSSH 服务
@@ -695,6 +696,43 @@ function System_Settings {
         else {
             Write-Host "PowerShell 7 is not installed! Install it first." -ForegroundColor Red
         }
+        Pause
+    }
+    # 安装nssm
+    function install_nssm {
+        # $nssm_url = "https://nssm.cc/release/nssm-2.24.zip"
+        $nssm_url = "https://ypora.zwdk.org/d/app/nssm-2.24.zip"
+        # $nssm_url = "https://alistus.zwdk.im/d/a/apps/nssm-2.24.zip"
+
+        # $nssm_file = "nssm-2.24.zip"
+        # $nssm_dir = "nssm-2.24"
+        # $nssm_exe = "nssm.exe"
+        # $nssm_target = Join-Path -Path $targetDir -ChildPath $nssm_file
+        # $nssm_exe_target = Join-Path -Path $targetDir -ChildPath $nssm_exe
+        # $nssm_url_target = Get_proxy_url -Url $nssm_url
+
+        # Invoke-WebRequest -Uri $nssm_url_target -OutFile $nssm_target            # 
+        # # Start-BitsTransfer -Source $nssm_url_target -Destination  $nssm_target   # 适合下载大文件或需要后台下载的场景
+        # write-host "Success: $nssm_target" -ForegroundColor Green
+        # Expand-Archive -Path $nssm_target -DestinationPath $targetDir
+        # Move-Item -Path (Join-Path -Path $targetDir -ChildPath $nssm_dir) -Destination $targetDir
+        
+        # 下载并安装 NSSM
+        write-host "File URL: $nssm_url_target"
+        Invoke-WebRequest -Uri $nssm_url -OutFile "nssm.zip"
+        Expand-Archive -Path "nssm.zip" -DestinationPath "C:\nssm"
+        Copy-Item "C:\nssm\nssm-2.24\win64\nssm.exe" -Destination "C:\Windows"
+        Write-Host "nssm installed!" -ForegroundColor Green
+        
+        # 创建服务
+        write-host "`nCreate service: frps"
+        Write-Host ' > nssm install frps "C:\frp\frps.exe" -c "C:\frp\frps.toml"'
+        Write-Host ' > nssm start frps           # 启动服务 '  
+        Write-Host ' > nssm stop frps            # 停止服务 '
+        Write-Host ' > nssm restart frps         # 重启服务 '
+        Write-Host ' > nssm remove frps          # 删除服务 '
+        Write-Host ' > nssm remove frps confirm  # 删除服务，无需确认 '
+
         Pause
     }
 
@@ -721,6 +759,7 @@ function System_Settings {
                 Pause 
             }
             "6" { npm install -g cnpm --registry=https://registry.npmmirror.com }
+            "7" { install_nssm }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
