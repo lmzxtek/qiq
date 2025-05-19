@@ -728,15 +728,16 @@ function System_Settings {
         Write-Host "nssm installed!" -ForegroundColor Green
         
         # 创建服务
-        write-host "`nCreate service: frps"
+        write-host " "
+        write-host "===== Create service: frps ==================================="
         Write-Host ' > nssm install frps "C:\frp\frps.exe" -c "C:\frp\frps.toml"'
-        write-host "  `n"
+        write-host " "
         Write-Host ' > nssm start frps           # start frps service '  
         Write-Host ' > nssm stop frps            # stop frps service '  
         Write-Host ' > nssm restart frps         # restart frps service '  
         Write-Host ' > nssm remove frps          # remove frps service '
         Write-Host ' > nssm remove frps confirm  # revomve frps service with confirm '
-        write-host "  `n"
+        write-host " "
 
         Pause
     }
