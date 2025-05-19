@@ -73,6 +73,29 @@ function Add_port_in {
     # Write-Host " Add TCP outbound: $port" -ForegroundColor Green
 }
 
+function process_download_dir {
+    param (
+        [string]$sfld = "Apps"
+    )
+    # $sfld = 'Apps'
+    $targetDir = Get_download_path $sfld 
+    if (Test-Path -Path $targetDir) {
+        $prompt = "`n To add firewall exclusion for the target directory? (Default:N) [y/N]"
+        $confirmation = Read-Host $prompt
+        # 处理空输入（直接回车）和首尾空格
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) {
+            $userInput = 'N'  # 设置默认值
+        }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            # # 排除整个文件夹, 避免安全检测
+            Add-MpPreference -ExclusionPath $targetDir
+        }
+    }
+    return $targetDir
+}
+
 function get_region { 
     $ipapi = "" 
     $region = "Unknown"
@@ -673,6 +696,8 @@ function System_Settings {
         Write-Host "  5. Set GO(cn)                        " -ForegroundColor Green
         Write-Host "  6. Install cnpm                      " 
         Write-Host "  7. Install nssm                      " -ForegroundColor Green
+        Write-Host "  8. Download winsw                    " 
+        Write-Host "  9. Download shawl                    " 
         Write-Host "  0. Back                              " 
         Write-Host "=======================================" -ForegroundColor Yellow
     }
@@ -701,7 +726,9 @@ function System_Settings {
     # 安装nssm
     function install_nssm {
         $sfld = 'Apps'
-        $targetDir = Get_download_path $sfld 
+        $targetDir = process_download_dir $sfld 
+
+        # $targetDir = Get_download_path $sfld 
         # $nssm_url = "https://nssm.cc/release/nssm-2.24.zip"
         $nssm_url = "https://ypora.zwdk.org/d/app/nssm-2.24.zip"
         # $nssm_url = "https://alistus.zwdk.im/d/a/apps/nssm-2.24.zip"
@@ -721,6 +748,7 @@ function System_Settings {
         # Move-Item -Path (Join-Path -Path $targetDir -ChildPath $nssm_dir) -Destination $targetDir
         
         # 下载并安装 NSSM
+        write-host " "
         write-host "File URL: $nssm_url"
         Invoke-WebRequest -Uri $nssm_url -OutFile $nssm_file
         Expand-Archive -Path $nssm_file -Force -DestinationPath "C:\nssm"
@@ -742,6 +770,25 @@ function System_Settings {
         Pause
     }
 
+    function download_winsw {
+        process_download_dir
+
+        $url_gh = "https://github.com/winsw/winsw"
+        $fpattern = ".*WinSW-x64.exe"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
+    function download_shawl {
+        process_download_dir
+        $url_gh = "https://github.com/mtkennerly/shawl"
+        $fpattern = ".*-win64.zip"
+        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
+        if (-not $downloadedFile) {
+            Write-Host " Download failed" -ForegroundColor Red
+        }
+    }
     while ($true) {
         Show_system_menu
         $sys_choice = Read-Host "Enter choice " 
@@ -766,6 +813,8 @@ function System_Settings {
             }
             "6" { npm install -g cnpm --registry=https://registry.npmmirror.com }
             "7" { install_nssm }
+            "8" { download_winsw }
+            "9" { download_shawl }
             "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
@@ -773,15 +822,25 @@ function System_Settings {
 }
 
 
-
-
 function App_download {
     $sfld = 'Apps'
-    $targetDir = Get_download_path $sfld 
-    if (Test-Path -Path $targetDir) {
-        # # 排除整个文件夹, 避免安全检测
-        Add-MpPreference -ExclusionPath $targetDir
-    }
+    process_download_dir $sfld
+    # $targetDir = Get_download_path $sfld 
+    # if (Test-Path -Path $targetDir) {
+        
+    #     $prompt = "`n To add firewall exclusion for the target directory? (Default:N) [y/N]"
+    #     $confirmation = Read-Host $prompt
+    #     # 处理空输入（直接回车）和首尾空格
+    #     $userInput = $confirmation.Trim()
+    #     if ([string]::IsNullOrEmpty($userInput)) {
+    #         $userInput = 'N'  # 设置默认值
+    #     }
+    #     # 使用正则表达式进行智能匹配
+    #     if ($userInput -match '^(y|yes)$') {
+    #         # # 排除整个文件夹, 避免安全检测
+    #         Add-MpPreference -ExclusionPath $targetDir
+    #     }
+    # }
     function Show_Menu_app_download {
         Clear-Host
         Write-Host "========== Download Menu =============" -ForegroundColor Cyan
@@ -801,9 +860,9 @@ function App_download {
         Write-Host "  57. xdown                " -ForegroundColor Blue
         Write-Host "   8. Python3.12.7         " -NoNewline
         Write-Host "  58. Pot-desktop          " 
-        Write-Host "   9. WinSW                " -NoNewline
+        Write-Host "   9. Zoraxy               " -NoNewline -ForegroundColor Green
         Write-Host "  59. PotPlayer            " 
-        Write-Host "  10. Shawl                " -NoNewline  
+        Write-Host "  10. Nginx                " -NoNewline  
         Write-Host "  60. NorthStar(java)      " 
         Write-Host "  11. Go-Lang              " -NoNewline -ForegroundColor Blue
         Write-Host "  61. LocalSend            " -ForegroundColor Green
@@ -817,6 +876,10 @@ function App_download {
         Write-Host "  65. Hiddify              " -ForegroundColor Blue
         Write-Host "  16. gm-api               " -NoNewline -ForegroundColor Yellow
         Write-Host "  66. NekoBox              " -ForegroundColor Yellow
+        # Write-Host "  17. Zoraxy               " -NoNewline
+        # Write-Host "  67.                      " 
+        # Write-Host "  18. Nginx                " -NoNewline
+        # Write-Host "  68.                      " 
         Write-Host "  98. All                  " -NoNewline -ForegroundColor Green
         Write-Host "  99. reinstall.bat        " -ForegroundColor Cyan
         Write-Host "   0. Exit                 " -ForegroundColor Red
@@ -1128,6 +1191,29 @@ function App_download {
             Write-Host " Download failed" -ForegroundColor Red
         }
     }
+    function download_zoraxy {     
+        $file = "zoraxy_windows_amd64.exe"
+        # $url_gh = "https://github.com/tobychui/zoraxy"
+        $url_dl = Get_proxy_url "https://github.com/tobychui/zoraxy/releases/latest/download/zoraxy_windows_amd64.exe"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
+    function download_nginx {     
+        $file = "nginx-1.28.0.zip"
+        # $url_gh = "https://nginx.org/en/download.html"
+        # $url_gh = "https://github.com/nginx/nginx.org"
+        $url_dl = "https://nginx.org/download/$file"
+        $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success: $targetFilePath" -ForegroundColor Green
+    }
     function download_7zip_latest {
         $url_gh = "https://github.com/ip7z/7zip"
         $fpattern = ".*-x64.exe"
@@ -1155,22 +1241,6 @@ function App_download {
             $fpattern = ".*-windows-x86-64.zip"
         }
 
-        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
-        if (-not $downloadedFile) {
-            Write-Host " Download failed" -ForegroundColor Red
-        }
-    }
-    function download_winsw {
-        $url_gh = "https://github.com/winsw/winsw"
-        $fpattern = ".*WinSW-x64.exe"
-        $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
-        if (-not $downloadedFile) {
-            Write-Host " Download failed" -ForegroundColor Red
-        }
-    }
-    function download_shawl {
-        $url_gh = "https://github.com/mtkennerly/shawl"
-        $fpattern = ".*-win64.zip"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
@@ -1506,8 +1576,8 @@ wsproto==1.2.0
             "6"  { download_notepadpp }
             "7"  { download_powershell; }
             "8"  { download_python3127 }
-            "9"  { download_winsw  }
-            "10" { download_shawl }
+            "9"  { download_zoraxy  }
+            "10" { download_nginx }
             "11" { download_golang }
             "12" { download_nodejs }
             "13" { download_rustup }
