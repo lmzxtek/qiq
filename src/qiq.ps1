@@ -924,7 +924,14 @@ function System_Settings {
         Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
         
         # 添加万和运行环境计划任务 
-        add_task_scheduler_gm_wh $targetDir
+        $prompt = "`n To add Task (run_wh)? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            add_task_scheduler_gm_wh $targetDir
+        }
 
         $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
         $confirmation = Read-Host $prompt
@@ -943,7 +950,6 @@ function System_Settings {
         if ($userInput -match '^(y|yes)$') {
             Remove-Item $targetFilePath
         }
-
     }
     function set_sw_gmcsv {
         param([string]$sfld = "c:\gm_csv")
