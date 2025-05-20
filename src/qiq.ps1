@@ -841,7 +841,7 @@ function System_Settings {
         write-host "Success download: $targetFilePath" -ForegroundColor Green
 
         # 解压文件
-        Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
+        Expand-Archive -Path $targetFilePath -DestinationPath $targetDir -Force
 
         
         $prompt = "`n To open web Port(7400,7500)?(Default:N) [y/N]"
