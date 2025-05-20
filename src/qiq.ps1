@@ -854,7 +854,22 @@ function System_Settings {
             Add_port_in 7500 
         }
         
-        $prompt = "`n To remove target file:$targetFilePath? (Default:Y) [Y/n]"
+        $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            download_winsw2 $targetDir "sw_frpc.exe"
+        }
+        
+        $srcfile = Join-Path -Path $targetDir -ChildPath "sw_frpc.exe"
+        $tarfile = Join-Path -Path $targetDir -ChildPath "sw_frps.exe"
+        Copy-Item -Path $srcfile -Force -Destination $tarfile
+        # Copy-Item "$targetDir\winsw.exe" -Force -Destination '$targetDir\sw_frps.exe'
+        # Remove-Item "$targetDir\winsw.exe"
+
+        $prompt = "`n Remove target file:$targetFilePath? (Default:Y) [Y/n]"
         $confirmation = Read-Host $prompt
         $userInput = $confirmation.Trim()
         if ([string]::IsNullOrEmpty($userInput)) {
@@ -865,17 +880,6 @@ function System_Settings {
             Remove-Item $targetFilePath
         }
         
-        $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
-        $confirmation = Read-Host $prompt
-        $userInput = $confirmation.Trim()
-        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
-        # 使用正则表达式进行智能匹配
-        if ($userInput -match '^(y|yes)$') {
-            download_winsw2 $targetDir "sw_frpc.exe"
-        }        
-        Copy-Item -Path "$targetDir\sw_frpc.exe" -Force -Destination '$targetDir\sw_frps.exe'
-        # Copy-Item "$targetDir\winsw.exe" -Force -Destination '$targetDir\sw_frps.exe'
-        # Remove-Item "$targetDir\winsw.exe"
     }
     
     function Add_task_scheduler_gm_wh {
