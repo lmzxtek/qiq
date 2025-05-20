@@ -696,7 +696,7 @@ function System_Settings {
         Write-Host "  3. Enable OpenSSH Service            "
         Write-Host "  "
         Write-Host "  4. Open Port                         " -ForegroundColor Yellow
-        Write-Host "  5. Set GO(cn)                        " -ForegroundColor Green
+        Write-Host "  5. Set GO-cn                         " -ForegroundColor Green
         Write-Host "  6. Install cnpm                      " 
         Write-Host "  "
         Write-Host "  7. Install nssm                      "
@@ -707,6 +707,7 @@ function System_Settings {
         Write-Host " 11. Set gm-api service                " -ForegroundColor Blue
         Write-Host " 12. Set gm-csv service                " 
         Write-Host " 13. Set zoraxy service                " 
+        Write-Host " 14. Add Task (run_wh)                 " 
         Write-Host "  "
         Write-Host "  0. Back                              " 
         Write-Host "=======================================" -ForegroundColor Yellow
@@ -853,6 +854,35 @@ function System_Settings {
             Remove-Item $targetFilePath
         }
     }
+    
+    function Add_task_scheduler_gm_wh {
+        param([string]$sfld = "c:\gm_api")
+        # 以管理员运行
+        if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+            Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+            return 
+        }
+
+        $tsk_dir  = $sfld
+        $tsk_path = "$sfld\run_wh.bat"
+        $tsk_name = "gm_wh"
+        $currentUser = "$env:USERDOMAIN\$env:USERNAME" # 当前用户
+        # $tsk_user = "NT AUTHORITY\SYSTEM" # 服务账户 
+        $action   = New-ScheduledTaskAction -Execute $tsk_path -WorkingDirectory $tsk_dir
+        $Settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Seconds 0)
+
+        # $trigger  = New-ScheduledTaskTrigger -AtStartup
+		# 系统启动触发器
+        $BootTrigger = New-ScheduledTaskTrigger -AtStartup -RandomDelay 00:05:00
+        # 每日定时触发器（带容错机制）
+        $DailyTrigger = New-ScheduledTaskTrigger -Daily -At "00:30:00" -RandomDelay (New-TimeSpan -Minutes 15)
+        # 合并触发器数组
+        $Triggers = @($BootTrigger, $DailyTrigger)
+
+        Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $Triggers -Settings $Settings -Description "This task runs gm_wh.bat." -RunLevel Highest -User $currentUser
+        Write-Host " Task Added: $tsk_path"  -ForegroundColor Green
+
+    }
     function set_sw_gmapi {
         param([string]$sfld = "c:\gm_api")
         $targetDir = $sfld
@@ -891,6 +921,9 @@ function System_Settings {
         if ($userInput -match '^(y|yes)$') {
             Remove-Item $targetFilePath
         }
+
+        # 添加万和运行环境计划任务 
+
 
     }
     function set_sw_gmcsv {
@@ -1021,6 +1054,7 @@ function System_Settings {
             "11" { set_sw_gmapi; Pause }
             "12" { set_sw_gmcsv; Pause }
             "13" { set_sw_zoraxy; Pause }
+            "14" { Add_task_scheduler_gm_wh; Pause }
             "0"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
