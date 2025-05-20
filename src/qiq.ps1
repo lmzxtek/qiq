@@ -842,6 +842,17 @@ function System_Settings {
 
         # 解压文件
         Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
+
+        
+        $prompt = "`n To open web Port(7400,7500)?(Default:N) [y/N]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'n' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            Add_port_in 7400 
+            Add_port_in 7500 
+        }
         
         $prompt = "`n To remove target file:$targetFilePath? (Default:Y) [Y/n]"
         $confirmation = Read-Host $prompt
@@ -862,7 +873,7 @@ function System_Settings {
         if ($userInput -match '^(y|yes)$') {
             download_winsw2 $targetDir "sw_frpc.exe"
         }        
-        Copy-Item "$targetDir\sw_frpc.exe" -Force -Destination '$targetDir\sw_frps.exe'
+        Copy-Item -Path "$targetDir\sw_frpc.exe" -Force -Destination '$targetDir\sw_frps.exe'
         # Copy-Item "$targetDir\winsw.exe" -Force -Destination '$targetDir\sw_frps.exe'
         # Remove-Item "$targetDir\winsw.exe"
     }
