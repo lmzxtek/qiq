@@ -1,0 +1,7 @@
+<service>
+  <id>zoraxy</id>
+  <name>Zoraxy Server</name>
+  <description>This service runs zoraxy Server.</description>
+  <executable>zoraxy_windows_amd64.exe</executable>
+  <log mode="roll"></log>
+</service>

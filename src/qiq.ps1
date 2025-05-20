@@ -11,6 +11,7 @@
 
 # 设置脚本运行区域全局变量，避免脚本运行时出现乱码
 $global:LOCATION_REGION = "Unknown"
+$global:URL_PROXY = "https://proxy.180102.xyz/proxy/"
 
 # 设置 PowerShell 输出编码，确保中文显示正常
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -157,7 +158,8 @@ function Get_proxy_url {
         # Parameter help description
         # [Parameter(AttributeValues)]
         [string]$Url,
-        [string]$proxy = "https://proxy.180102.xyz/proxy/"
+        [string]$proxy = $global:URL_PROXY
+        # [string]$proxy = "https://proxy.180102.xyz/proxy/"
         # [string]$proxy = "https://proxy.zwdk.org/proxy/"
     )
     
@@ -690,20 +692,29 @@ function System_Settings {
         Clear-Host
         Write-Host "======= System Settings ===============" -ForegroundColor Yellow
         Write-Host "  1. Set PowerShell Execution Policy   "
-        Write-Host "  2. Enable OpenSSH Service            "
-        Write-Host "  3. Set Default Shell to pwsh         "
+        Write-Host "  2. Set Default Shell to pwsh         "
+        Write-Host "  3. Enable OpenSSH Service            "
+        Write-Host "  "
         Write-Host "  4. Open Port                         " -ForegroundColor Yellow
         Write-Host "  5. Set GO(cn)                        " -ForegroundColor Green
         Write-Host "  6. Install cnpm                      " 
-        Write-Host "  7. Install nssm                      " -ForegroundColor Green
-        Write-Host "  8. Download winsw                    " 
-        Write-Host "  9. Download shawl                    " 
+        Write-Host "  "
+        Write-Host "  7. Install nssm                      "
+        Write-Host "  8. Download WinSW                    "  -ForegroundColor Green
+        Write-Host "  9. Download Shawl                    " 
+        Write-Host "  "
+        Write-Host " 10. Set frp    service                " 
+        Write-Host " 11. Set gm-api service                " -ForegroundColor Blue
+        Write-Host " 12. Set gm-csv service                " 
+        Write-Host " 13. Set zoraxy service                " 
+        Write-Host "  "
         Write-Host "  0. Back                              " 
         Write-Host "=======================================" -ForegroundColor Yellow
     }
     # 启用 OpenSSH 服务
     function Enable-OpenSSH {
-        Write-Host "Enabling OpenSSH server..."
+        Write-Host "Enabling OpenSSH server ..."
+        Write-Host " Note: OpenSSH install need Windows Update service."
         Add-WindowsFeature -Name OpenSSH-Server
         Set-Service -Name sshd -StartupType Automatic
         Start-Service sshd
@@ -727,26 +738,12 @@ function System_Settings {
     function install_nssm {
         $sfld = 'Apps'
         $targetDir = process_download_dir $sfld 
-
         # $targetDir = Get_download_path $sfld 
         # $nssm_url = "https://nssm.cc/release/nssm-2.24.zip"
         $nssm_url = "https://ypora.zwdk.org/d/app/nssm-2.24.zip"
         # $nssm_url = "https://alistus.zwdk.im/d/a/apps/nssm-2.24.zip"
         $nssm_file = "$targetDir/nssm-2.24.zip"
 
-        # $nssm_file = "nssm-2.24.zip"
-        # $nssm_dir = "nssm-2.24"
-        # $nssm_exe = "nssm.exe"
-        # $nssm_target = Join-Path -Path $targetDir -ChildPath $nssm_file
-        # $nssm_exe_target = Join-Path -Path $targetDir -ChildPath $nssm_exe
-        # $nssm_url_target = Get_proxy_url -Url $nssm_url
-
-        # Invoke-WebRequest -Uri $nssm_url_target -OutFile $nssm_target            # 
-        # # Start-BitsTransfer -Source $nssm_url_target -Destination  $nssm_target   # 适合下载大文件或需要后台下载的场景
-        # write-host "Success: $nssm_target" -ForegroundColor Green
-        # Expand-Archive -Path $nssm_target -DestinationPath $targetDir
-        # Move-Item -Path (Join-Path -Path $targetDir -ChildPath $nssm_dir) -Destination $targetDir
-        
         # 下载并安装 NSSM
         write-host " "
         write-host "File URL: $nssm_url"
@@ -758,27 +755,54 @@ function System_Settings {
         # 创建服务
         write-host " "
         write-host "===== Create service: frps ==================================="
-        Write-Host ' > nssm install frps "C:\frp\frps.exe" -c "C:\frp\frps.toml"'
+        # 创建服务（指定 frps.exe 路径和参数）
+        write-host 'nssm install frps'
+        write-host 'nssm set frps Application "C:\frp\frps.exe"'
+        write-host 'nssm set frps AppParameters "-c C:\frp\frps.toml"'
+        write-host 'nssm set frps AppDirectory "C:\frp"'
+        write-host 'nssm set frps Start SERVICE_AUTO_START'
+        # Write-Host ' > nssm install frps "C:\frp\frps.exe" -c "C:\frp\frps.toml"'
+        # write-host " "
+        # Write-Host ' > nssm start frps           # start frps service '  
+        # Write-Host ' > nssm stop frps            # stop frps service '  
+        # Write-Host ' > nssm restart frps         # restart frps service '  
+        # Write-Host ' > nssm remove frps          # remove frps service '
+        # Write-Host ' > nssm remove frps confirm  # revomve frps service with confirm '
         write-host " "
-        Write-Host ' > nssm start frps           # start frps service '  
-        Write-Host ' > nssm stop frps            # stop frps service '  
-        Write-Host ' > nssm restart frps         # restart frps service '  
-        Write-Host ' > nssm remove frps          # remove frps service '
-        Write-Host ' > nssm remove frps confirm  # revomve frps service with confirm '
-        write-host " "
+
+        # 启动服务
+        nssm start frps
 
         Pause
     }
 
     function download_winsw {
+        # https://github.com/winsw/winsw/releases/download/v2.12.0/WinSW-x64.exe
+        # https://github.com/winsw/winsw/releases/latest/download/WinSW-x64.exe
         process_download_dir
-
         $url_gh = "https://github.com/winsw/winsw"
         $fpattern = ".*WinSW-x64.exe"
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl $url_gh -FileNamePattern $fpattern
         if (-not $downloadedFile) {
             Write-Host " Download failed" -ForegroundColor Red
         }
+    }
+    function download_winsw2 {        
+        param(
+            [string]$targetDir = "./APPs",
+            [string]$file = "WinSW-x64.exe"
+        )
+        # https://github.com/winsw/winsw/releases/download/v2.12.0/WinSW-x64.exe
+        # https://github.com/winsw/winsw/releases/latest/download/WinSW-x64.exe
+        
+        # $file = "WinSW-x64.exe"
+        $url_dl = Get_proxy_url "https://github.com/winsw/winsw/releases/latest/download/WinSW-x64.exe"
+        
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success download: $targetFilePath" -ForegroundColor Green
     }
     function download_shawl {
         process_download_dir
@@ -789,12 +813,190 @@ function System_Settings {
             Write-Host " Download failed" -ForegroundColor Red
         }
     }
+    function set_sw_frp {
+        param([string]$sfld = "c:\frp")
+        $targetDir = $sfld
+        if (-not (Test-Path -Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir
+            # # 排除整个文件夹, 避免安全检测
+            $prompt = "`n To exclude $sfld from Windows Defender? (Default:Y) [Y/n]"
+            $confirmation = Read-Host $prompt
+            $userInput = $confirmation.Trim()
+            if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+            # 使用正则表达式进行智能匹配
+            if ($userInput -match '^(y|yes)$') {
+                Add-MpPreference -ExclusionPath $targetDir
+            }
+        } 
+        
+        $file = "frp-win64.zip"
+        $url_dl = "https://ypora.zwdk.org/d/app/gm/$file"
+        # $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success download: $targetFilePath" -ForegroundColor Green
+
+        # 解压文件
+        Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
+        
+        $prompt = "`n To remove target file:$targetFilePath? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) {
+            $userInput = 'y'  # 设置默认值
+        }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            Remove-Item $targetFilePath
+        }
+    }
+    function set_sw_gmapi {
+        param([string]$sfld = "c:\gm_api")
+        $targetDir = $sfld
+        if (-not (Test-Path -Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir
+            $prompt = "`n To exclude $sfld from Windows Defender? (Default:Y) [Y/n]"
+            $confirmation = Read-Host $prompt
+            $userInput = $confirmation.Trim()
+            if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+            # 使用正则表达式进行智能匹配
+            if ($userInput -match '^(y|yes)$') {
+                Add-MpPreference -ExclusionPath $targetDir
+            }
+        } 
+        
+        $file = "gmapi-py-win64.zip"
+        $url_dl = "https://ypora.zwdk.org/d/app/gm/$file"
+        # $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success download: $targetFilePath" -ForegroundColor Green
+
+        # 解压文件
+        Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
+        
+        $prompt = "`n To remove target file:$targetFilePath? (Default:N) [y/N]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) {
+            $userInput = 'n'  # 设置默认值
+        }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            Remove-Item $targetFilePath
+        }
+
+    }
+    function set_sw_gmcsv {
+        param([string]$sfld = "c:\gm_csv")
+        $targetDir = $sfld
+        if (-not (Test-Path -Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir
+            $prompt = "`n To exclude $sfld from Windows Defender? (Default:Y) [Y/n]"
+            $confirmation = Read-Host $prompt
+            $userInput = $confirmation.Trim()
+            if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+            # 使用正则表达式进行智能匹配
+            if ($userInput -match '^(y|yes)$') {
+                Add-MpPreference -ExclusionPath $targetDir
+            }
+        } 
+        
+        $file = "gmcsv-go-win64.zip"
+        $url_dl = "https://ypora.zwdk.org/d/app/gm/$file"
+        # $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success download: $targetFilePath" -ForegroundColor Green
+
+        # 解压文件
+        Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
+        
+        $prompt = "`n To remove target file:$targetFilePath? (Default:N) [y/N]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) {
+            $userInput = 'n'  # 设置默认值
+        }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            Remove-Item $targetFilePath
+        }
+    }
+    function set_sw_zoraxy {
+        param([string]$sfld = "c:\zoraxy")
+        $targetDir = $sfld
+        if (-not (Test-Path -Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir
+            # # 排除整个文件夹, 避免安全检测            
+            $prompt = "`n To exclude $sfld from Windows Defender? (Default:Y) [Y/n]"
+            $confirmation = Read-Host $prompt
+            $userInput = $confirmation.Trim()
+            if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+            # 使用正则表达式进行智能匹配
+            if ($userInput -match '^(y|yes)$') {
+                Add-MpPreference -ExclusionPath $targetDir
+            }
+        } 
+        
+        $file = "zoraxy_windows_amd64.exe"
+        # $url_dl = "https://ypora.zwdk.org/d/app/gm/$file"
+        $url_dl = Get_proxy_url "https://github.com/tobychui/zoraxy/releases/latest/download/zoraxy_windows_amd64.exe"
+        # $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success download: $targetFilePath" -ForegroundColor Green
+
+        $xmlFileName = "$sfld\sw_zoraxy.xml"
+        $xmlContent = @"
+<service>
+  <id>zoraxy</id>
+  <name>Zoraxy-Server</name>
+  <description>This service runs zoraxy Server.</description>
+  <executable>zoraxy_windows_amd64.exe</executable>
+  <log mode="roll"></log>
+</service>
+"@
+        $xmlContent | Out-File -FilePath $xmlFileName -Encoding ASCII
+        Write-Host " WinSW config file saved: $xmlFileName" -ForegroundColor Green
+        
+        $prompt = "`n To open Port(80,443)?(Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            Add_port_in 80 
+            Add_port_in 443 
+        }
+
+        $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            download_winsw2 $targetDir "sw_zoraxy.exe"
+        }
+    }
     while ($true) {
         Show_system_menu
         $sys_choice = Read-Host "Enter choice " 
         switch ($sys_choice) {
-            "1" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!"; Pause }
-            "2" { Enable-OpenSSH }
+            "1" { Enable-OpenSSH }
+            "2" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!"; Pause }
             "3" { Set-DefaultShell-Pwsh }
             "4" { 
                 $port = Read-Host "Enter port need to set inbound (e.g.: 5000)"
@@ -811,11 +1013,15 @@ function System_Settings {
                 Write-Host "GO(cn) set!" -ForegroundColor Green
                 Pause 
             }
-            "6" { npm install -g cnpm --registry=https://registry.npmmirror.com }
-            "7" { install_nssm }
-            "8" { download_winsw }
-            "9" { download_shawl }
-            "0" { return }
+            "6"  { npm install -g cnpm --registry=https://registry.npmmirror.com }
+            "7"  { install_nssm }
+            "8"  { download_winsw }
+            "9"  { download_shawl }
+            "10" { set_sw_frp; Pause }
+            "11" { set_sw_gmapi; Pause }
+            "12" { set_sw_gmcsv; Pause }
+            "13" { set_sw_zoraxy; Pause }
+            "0"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
@@ -824,23 +1030,8 @@ function System_Settings {
 
 function App_download {
     $sfld = 'Apps'
-    process_download_dir $sfld
-    # $targetDir = Get_download_path $sfld 
-    # if (Test-Path -Path $targetDir) {
-        
-    #     $prompt = "`n To add firewall exclusion for the target directory? (Default:N) [y/N]"
-    #     $confirmation = Read-Host $prompt
-    #     # 处理空输入（直接回车）和首尾空格
-    #     $userInput = $confirmation.Trim()
-    #     if ([string]::IsNullOrEmpty($userInput)) {
-    #         $userInput = 'N'  # 设置默认值
-    #     }
-    #     # 使用正则表达式进行智能匹配
-    #     if ($userInput -match '^(y|yes)$') {
-    #         # # 排除整个文件夹, 避免安全检测
-    #         Add-MpPreference -ExclusionPath $targetDir
-    #     }
-    # }
+    $targetDir = process_download_dir $sfld
+    
     function Show_Menu_app_download {
         Clear-Host
         Write-Host "========== Download Menu =============" -ForegroundColor Cyan
@@ -874,7 +1065,7 @@ function App_download {
         Write-Host "  64. TG(x64)              " 
         Write-Host "  15. Podman(Desktop)      " -NoNewline 
         Write-Host "  65. Hiddify              " -ForegroundColor Blue
-        Write-Host "  16. gm-api               " -NoNewline -ForegroundColor Yellow
+        Write-Host "  16.                      " -NoNewline -ForegroundColor Yellow
         Write-Host "  66. NekoBox              " -ForegroundColor Yellow
         # Write-Host "  17. Zoraxy               " -NoNewline
         # Write-Host "  67.                      " 
@@ -888,7 +1079,7 @@ function App_download {
     function download_tg {
         $file = "tg-win-x64.exe"
         $url_dl = Get_proxy_url "https://telegram.org/dl/desktop/win64"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -899,7 +1090,7 @@ function App_download {
     function download_net9 {
         $file = "windowsdesktop-runtime-9.0.4-win-x64.exe"
         $url_dl = "https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/9.0.4/windowsdesktop-runtime-9.0.4-win-x64.exe"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -910,7 +1101,7 @@ function App_download {
     function download_wechat {
         $file = "WeChatWin.exe"
         $url_dl = "https://dldir1v6.qq.com/weixin/Universal/Windows/WeChatWin.exe"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -921,7 +1112,7 @@ function App_download {
     function download_rustup {
         $file = "rustup-init.exe"
         $url_dl = "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -932,7 +1123,7 @@ function App_download {
     function download_vc_redist_x64_alist {
         $file = "VC_redist.x64.exe"
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -943,7 +1134,7 @@ function App_download {
     function download_vc_redist_x64_ms {
         $file = "vc_redist.x64.exe"
         $url_dl = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -954,7 +1145,7 @@ function App_download {
     function download_python3127 {
         $file = "python-3.12.7-amd64.exe"
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -975,7 +1166,7 @@ function App_download {
             $file = "vscode-x64-user.exe"
             $url_dl = "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user"
         }
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -1002,7 +1193,7 @@ function App_download {
         # 下载 Notepad++ Julia语言配色方案
         $file = "npp_julia_style.xml"
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -1013,7 +1204,7 @@ function App_download {
         $file = "reinstall.bat"
         # $url_gh = "https://github.com/bin456789/reinstall"
         $url_dl = Get_proxy_url "https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.bat"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -1023,7 +1214,7 @@ function App_download {
     function download_potplayer {        
         $file = "PotPlayerSetup64.exe"
         $url_dl = Get_proxy_url "https://t1.daumcdn.net/potplayer/PotPlayer/Version/Latest/PotPlayerSetup64.exe"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -1039,7 +1230,7 @@ function App_download {
         # https://go.dev/dl/go1.24.2.windows-amd64.msi
         
         # $url_dl = Get_proxy_url $url_dl
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -1048,14 +1239,14 @@ function App_download {
     }
     function download_nodejs { 
         Write-Host "`n Node.js URL: https://nodejs.org/zh-cn/download `n" -ForegroundColor Green
-        $njs = Read-Host "Enter the Node.js (e.g., 22.15.0)"
+        $njs = Read-Host "Enter Node.js version (e.g., 22.15.0)"
         if ($njs -eq "") { $njs = "22.15.0" }
         $file = "node-v$njs-x64.msi"
         $url_dl = "https://nodejs.org/dist/v$njs/node-v$njs-x64.msi"
         # https://nodejs.org/dist/v22.15.0/node-v22.15.0-x64.msi
         
         # $url_dl = Get_proxy_url $url_dl
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -1064,14 +1255,15 @@ function App_download {
     }
     function download_todesk { 
         Write-Host "`n ToDesk URL: https://www.todesk.com/ `n" -ForegroundColor Green
-        $appver = Read-Host "Enter the ToDesk (e.g., 4.7.6.3)"
-        if ($appver -eq "") { $appver = "4.7.6.3" }
+        $appver = "4.7.7.1"
+        $userInput = Read-Host "Enter ToDesk version (e.g., $appver)"
+        if ($userInput.Trim() -ne "") { $appver = $userInput.Trim() }
         $file = "ToDesk_$appver.exe"
         $url_dl = "https://dl.todesk.com/irrigation/$file"
         # https://dl.todesk.com/irrigation/ToDesk_4.7.6.3.exe
         
         # $url_dl = Get_proxy_url $url_dl
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -1080,14 +1272,14 @@ function App_download {
     }
     function download_xdown { 
         Write-Host "`n xDown URL: https://www.xdown.org/ `n" -ForegroundColor Green
-        $appver = Read-Host "Enter the xdown (e.g., 2.0.9.4)"
+        $appver = Read-Host "Enter xdown version (e.g., 2.0.9.4)"
         if ($appver -eq "") { $appver = "2.0.9.4" }
         $file = "xdown-$appver.zip"
         $url_dl = "https://dl.xdown.dev/windows/i386/$file"
         # https://dl.xdown.dev/windows/i386/xdown-2.0.9.4.zip
         
         # $url_dl = Get_proxy_url $url_dl
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -1117,7 +1309,7 @@ function App_download {
         # https://sourceforge.net/projects/qbittorrent/files/qbittorrent-win32/qbittorrent-5.1.0/qbittorrent_5.1.0_x64_setup.exe/download
         
         $url_dl = Get_proxy_url $url_dl
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
@@ -1127,7 +1319,7 @@ function App_download {
     function download_northstar {        
         $file = "northstar_env.ps1"
         $url_dl = Get_proxy_url "https://gitee.com/dromara/northstar/raw/master/env.ps1"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "`nGit URL: https://gitee.com/dromara/northstar`n"
         write-host "File URL: $url_dl"
@@ -1195,23 +1387,28 @@ function App_download {
         $file = "zoraxy_windows_amd64.exe"
         # $url_gh = "https://github.com/tobychui/zoraxy"
         $url_dl = Get_proxy_url "https://github.com/tobychui/zoraxy/releases/latest/download/zoraxy_windows_amd64.exe"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
-        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
-        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_nginx {     
-        $file = "nginx-1.28.0.zip"
+        $fver = "1.28.0"
+        $userInput = Read-Host "Enter Nginx version (e.g., $fver)"
+        $userInput = $userInput.Trim()
+        if ($userInput -ne "") { $fver = $userInput }
+        $file = "nginx-$fver.zip"
+        # $file = "nginx-1.28.0.zip"
         # $url_gh = "https://nginx.org/en/download.html"
         # $url_gh = "https://github.com/nginx/nginx.org"
         $url_dl = "https://nginx.org/download/$file"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
-        Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
-        # Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
         write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_7zip_latest {
@@ -1265,7 +1462,7 @@ function App_download {
     function download_nekobox_alist {
         $file = "nekoray-4.0.1-2024-12-12-windows64.zip"
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -1276,7 +1473,7 @@ function App_download {
     function download_ths_hevo {
         $file = "ths-hevo.exe"
         $url_dl = "https://download.10jqka.com.cn/index/download/id/275/"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -1287,7 +1484,7 @@ function App_download {
     function download_wanho_gm {
         $file = "Vanhogm.exe"
         $url_dl = "https://download.vanho.cn/download/juejin/Vanhogm.exe"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -1298,7 +1495,7 @@ function App_download {
     function download_wanho_alist {
         $file = "Vanhogm.exe"
         $url_dl = "https://ypora.zwdk.org/d/app/$file"
-        $targetDir = Get_download_path $sfld
+        # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
         # write-host "Target dir: $targetDir" -ForegroundColor Cyan
@@ -1392,9 +1589,9 @@ Write-Host " Add TCP outbound: 7000" -ForegroundColor Green
             Write-Host " task_frps.ps1 file saved: $batFileName"
         }
 
-        Generate_frps_ps1
-        Generate_frpc_ps1
-        Generate_frps_port_ps1
+        # Generate_frps_ps1
+        # Generate_frpc_ps1
+        # Generate_frps_port_ps1
 
         $url_gh = "https://github.com/fatedier/frp"
         $fpattern = ".*windows_amd64.zip"
@@ -1525,6 +1722,14 @@ wsproto==1.2.0
             Register-ScheduledTask -TaskName $tsk_name -Action $action -Trigger $trigger -RunLevel Highest -User $tsk_user
             Write-Host " Added task: $tsk_path"
 
+        }
+        function Add_task_scheduler_gm_wh {
+            # 以管理员运行
+            if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+                Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -Command `"& '$PSCommandPath'`"" -Verb RunAs
+                return 
+            }
+
             $tsk_dir  = "C:\gm_api"
             $tsk_path = "C:\gm_api\run_wh.bat"
             $tsk_name = "gm_wh"
@@ -1542,6 +1747,7 @@ wsproto==1.2.0
         Generate_cfg_toml    $(Join-Path -Path $targetDir -ChildPath "cfg.toml")    
         Generate_requirements_txt $(Join-Path -Path $targetDir -ChildPath "requirements.txt")  
         Add_task_scheduler_gm_api 
+        Add_task_scheduler_gm_wh 
         Add_port_in 5000
     }
 
@@ -1583,7 +1789,7 @@ wsproto==1.2.0
             "13" { download_rustup }
             "14" { download_net9 }
             "15" { download_podman_desktop }
-            "16" { download_gm_api }
+            "16" {  }
 
             "51" { download_qbittorrent; }
             "52" { download_vc_redist_x64_alist }
