@@ -700,11 +700,11 @@ function System_Settings {
         Write-Host "  6. Install cnpm                      " 
         Write-Host "  "
         Write-Host "  7. Install nssm                      "
-        Write-Host "  8. Download WinSW                    "  -ForegroundColor Green
+        Write-Host "  8. Download WinSW                    "  -ForegroundColor Blue
         Write-Host "  9. Download Shawl                    " 
         Write-Host "  "
-        Write-Host " 10. Set frp    service                " 
-        Write-Host " 11. Set gm-api service                " -ForegroundColor Blue
+        Write-Host " 10. Set frp service                   " 
+        Write-Host " 11. Set gm-api service                " -ForegroundColor Green
         Write-Host " 12. Set gm-csv service                " 
         Write-Host " 13. Set zoraxy service                " 
         Write-Host " 14. Add Task (run_wh)                 " 
@@ -853,6 +853,18 @@ function System_Settings {
         if ($userInput -match '^(y|yes)$') {
             Remove-Item $targetFilePath
         }
+        
+        $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            download_winsw2 $targetDir "sw_frpc.exe"
+        }        
+        Copy-Item "$targetDir\sw_frpc.exe" -Force -Destination '$targetDir\sw_frps.exe'
+        # Copy-Item "$targetDir\winsw.exe" -Force -Destination '$targetDir\sw_frps.exe'
+        # Remove-Item "$targetDir\winsw.exe"
     }
     
     function Add_task_scheduler_gm_wh {
@@ -911,19 +923,26 @@ function System_Settings {
         # 解压文件
         Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
         
-        $prompt = "`n To remove target file:$targetFilePath? (Default:N) [y/N]"
+        # 添加万和运行环境计划任务 
+        add_task_scheduler_gm_wh $targetDir
+
+        $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
         $confirmation = Read-Host $prompt
         $userInput = $confirmation.Trim()
-        if ([string]::IsNullOrEmpty($userInput)) {
-            $userInput = 'n'  # 设置默认值
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            download_winsw2 $targetDir "sw_gmapi.exe"
         }
+
+        $prompt = "`n To remove target file:$targetFilePath? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
         # 使用正则表达式进行智能匹配
         if ($userInput -match '^(y|yes)$') {
             Remove-Item $targetFilePath
         }
-
-        # 添加万和运行环境计划任务 
-
 
     }
     function set_sw_gmcsv {
@@ -954,6 +973,15 @@ function System_Settings {
         # 解压文件
         Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
         
+        $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            download_winsw2 $targetDir "sw_gmcsv.exe"
+        }
+
         $prompt = "`n To remove target file:$targetFilePath? (Default:N) [y/N]"
         $confirmation = Read-Host $prompt
         $userInput = $confirmation.Trim()
@@ -981,17 +1009,6 @@ function System_Settings {
             }
         } 
         
-        $file = "zoraxy_windows_amd64.exe"
-        # $url_dl = "https://ypora.zwdk.org/d/app/gm/$file"
-        $url_dl = Get_proxy_url "https://github.com/tobychui/zoraxy/releases/latest/download/zoraxy_windows_amd64.exe"
-        # $targetDir = Get_download_path $sfld
-        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
-        write-host "File URL: $url_dl"
-        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
-        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
-        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
-        write-host "Success download: $targetFilePath" -ForegroundColor Green
-
         $xmlFileName = "$sfld\sw_zoraxy.xml"
         $xmlContent = @"
 <service>
@@ -1014,6 +1031,18 @@ function System_Settings {
             Add_port_in 80 
             Add_port_in 443 
         }
+
+        
+        $file = "zoraxy_windows_amd64.exe"
+        # $url_dl = "https://ypora.zwdk.org/d/app/gm/$file"
+        $url_dl = Get_proxy_url "https://github.com/tobychui/zoraxy/releases/latest/download/zoraxy_windows_amd64.exe"
+        # $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success download: $targetFilePath" -ForegroundColor Green
 
         $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
         $confirmation = Read-Host $prompt
@@ -2054,18 +2083,18 @@ function  main_menu {
     function Show-Menu {
         Clear-Host
         Write-Host "========== Tool Menu =========="  -ForegroundColor Cyan
-        Write-Host "  1. Activate Tool             "  -ForegroundColor Blue 
+        Write-Host "  1. Activate Tool             "  #-ForegroundColor Blue 
         Write-Host "  2. App Download              "  -ForegroundColor Green
         Write-Host "  3. App Install               "
         Write-Host "  4. Web Links                 "  -ForegroundColor Yellow
         Write-Host "  5. GitHub Links              "  
-        Write-Host "  6. Symtem Setting            "  
-        Write-Host "  7. Python Management         "  -ForegroundColor Cyan 
-        Write-Host "  8. Show region               "  -ForegroundColor Green
+        Write-Host "  6. Symtem Setting            "  -ForegroundColor Green  
+        Write-Host "  7. Python Management         "  
+        Write-Host "  8. Show region               "  -ForegroundColor Cyan 
         Write-Host "  9. Show Excludepath          " 
         Write-Host " 10. Test Connection           "  -ForegroundColor Blue
-        Write-Host " 99. ReBoot System             "  -ForegroundColor Cyan
-        Write-Host "  x. Exit                      "  -ForegroundColor Red
+        Write-Host " 99. ReBoot System             "  -ForegroundColor Red
+        Write-Host "  x. Exit                      "  #-ForegroundColor Red
         Write-Host "==============================="  -ForegroundColor Cyan
     }
     # 菜单循环
