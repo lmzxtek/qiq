@@ -1910,6 +1910,9 @@ function show_github_links {
     Write-Host "========== GitHub Urls ============" -ForegroundColor Cyan
     
     Write-Host " 51. Windows(.iso) : 
+    https://iso.zwdk.org/win2025
+    https://iso.zwdk.org/win2022
+    
     https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_april_2025_x64_dvd_ea86301d.iso
     https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso
     https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_jan_2025_x64_dvd_7a8e5a29.iso
@@ -1922,6 +1925,15 @@ function show_github_links {
         reinstall.bat windows 
             --image-name 'Windows server 2025 Serverdatacenter' 
             --iso 'https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_april_2025_x64_dvd_ea86301d.iso'
+
+    DD cmd: 
+        reinstall.bat windows 
+            --image-name 'Windows server 2025 Serverdatacenter' 
+            --iso 'https://iso.zwdk.org/win2025'
+    DD cmd: 
+        reinstall.bat windows 
+            --image-name 'Windows server 2022 Serverdatacenter' 
+            --iso 'https://iso.zwdk.org/win2022'
     "
 
     Write-Host " 52. Windows(images) : 

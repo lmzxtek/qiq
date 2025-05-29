@@ -3038,7 +3038,8 @@ EOF
                 img_name=${INPUT:-"Windows Server 2025 SERVERDATACENTER"}
                 
                 # local iso_default="https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso"
-                local iso_default="https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_april_2025_x64_dvd_ea86301d.iso"
+                # local iso_default="https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_april_2025_x64_dvd_ea86301d.iso"
+                local iso_default="https://iso.zwdk.org/win2025"
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请输镜像链接(默认: ${iso_default}): ${PLAIN}\n")
                 read -rp "${CHOICE}" INPUT
                 url_iso=${INPUT:-$iso_default}
