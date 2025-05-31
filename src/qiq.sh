@@ -3045,12 +3045,12 @@ EOF
                 url_iso=${INPUT:-$iso_default}
 
                 # 重定向URL：非iso结尾链接，需要重定向到iso链接
-                if [[ ! $url_iso =~ \.iso$ ]]; then
-                    echo " 链接不符合ISO格式，尝试自动重定向..."
-                    url_iso=$(curl -L -s -o /dev/null -w "%{url_effective}" "$url_iso")
-                    # 打印最终的URL
-                    echo " 重定向的真实链接是: $url_iso"
-                fi
+                # if [[ ! $url_iso =~ \.iso$ ]]; then
+                #     echo " 链接不符合ISO格式，尝试自动重定向..."
+                #     url_iso=$(curl -L -s -o /dev/null -w "%{url_effective}" "$url_iso")
+                #     # 打印最终的URL
+                #     echo " 重定向的真实链接是: $url_iso"
+                # fi
                 # REDIRECT_URL="http://iso.zwdk.org/win2025" # 替换为你自己的重定向URL
                 # # 使用 curl 获取最终的URL
                 # url_iso=$(curl -L -s -o /dev/null -w "%{url_effective}" "$url_iso")

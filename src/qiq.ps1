@@ -1936,11 +1936,10 @@ function GetRealURLforRedirect {
 function show_github_links {
     Clear-Host
     Write-Host "========== GitHub Urls ============" -ForegroundColor Cyan
-    GetRealURLforRedirect
+    # GetRealURLforRedirect
     # GetRealURLforRedirect "https://iso.zwdk.org/win2025"
-    GetRealURLforRedirect "https://iso.zwdk.org/win2022"
-
-    Write-Host ''
+    # GetRealURLforRedirect "https://iso.zwdk.org/win2022"
+    # Write-Host ''
     
     Write-Host " 51. Windows(.iso) : 
     https://iso.zwdk.org/win2025
@@ -1958,6 +1957,15 @@ function show_github_links {
         reinstall.bat windows 
             --image-name 'Windows server 2025 Serverdatacenter' 
             --iso 'https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_april_2025_x64_dvd_ea86301d.iso'
+
+            
+        reinstall.bat windows 
+            --image-name 'Windows server 2025 Serverdatacenter' 
+            --iso 'https://iso.zwdk.org/win2025'
+
+        reinstall.bat windows 
+            --image-name 'Windows server 2022 Serverdatacenter' 
+            --iso 'https://iso.zwdk.org/win2022'
     "
 
     Write-Host " 52. Windows(images) : 
