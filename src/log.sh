@@ -60,6 +60,7 @@ echoY "   8.增加Nginx安装 "
 echoY "   9.修复Alpine菜单显示问题 "
 echoY "  10.添加RatPanel服务器管理面板安装 "
 echoY "  11.修改DD系统时ISO镜像地址为重定向链接"
+echoY "  12.DD系统时自定义链接添加获取真实地址功能"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 

@@ -3037,12 +3037,27 @@ EOF
                 read -rp "${CHOICE}" INPUT 
                 img_name=${INPUT:-"Windows Server 2025 SERVERDATACENTER"}
                 
-                # local iso_default="https://alistus.zwdk.im/d/qbd/zh-cn_windows_server_2025_updated_feb_2025_x64_dvd_3733c10e.iso"
-                # local iso_default="https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_april_2025_x64_dvd_ea86301d.iso"
+                # local iso_default="https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2022_updated_may_2025_x64_dvd_0146f834.iso"
+                # local iso_default="https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_may_2025_x64_dvd_9c776dbb.iso"
                 local iso_default="https://iso.zwdk.org/win2025"
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请输镜像链接(默认: ${iso_default}): ${PLAIN}\n")
                 read -rp "${CHOICE}" INPUT
                 url_iso=${INPUT:-$iso_default}
+
+                # 重定向URL：非iso结尾链接，需要重定向到iso链接
+                if [[ ! $url_iso =~ \.iso$ ]]; then
+                    echo " 链接不符合ISO格式，尝试自动重定向..."
+                    url_iso=$(curl -L -s -o /dev/null -w "%{url_effective}" "$url_iso")
+                    # 打印最终的URL
+                    echo " 重定向的真实链接是: $url_iso"
+                fi
+                # REDIRECT_URL="http://iso.zwdk.org/win2025" # 替换为你自己的重定向URL
+                # # 使用 curl 获取最终的URL
+                # url_iso=$(curl -L -s -o /dev/null -w "%{url_effective}" "$url_iso")
+                # # 打印最终的URL
+                # echo " 重定向的真实链接是: $url_iso"
+
+                # 获取真实的镜像链接
                 
                 echo -e " "
                 generate_separator "=|$WHITE" 40

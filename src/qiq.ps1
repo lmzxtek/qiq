@@ -1905,9 +1905,42 @@ wsproto==1.2.0
     
 }
 
+function GetRealURLforRedirect {
+    param (
+        $redirectUrl = "https://iso.zwdk.org/win2025"
+    )
+    # 要处理的重定向URL
+
+    try {
+        # 使用 Invoke-WebRequest 发送请求
+        # -MaximumRedirection 属性指定允许的最大重定向次数
+        # -UseBasicParsing 可以加快解析速度，因为我们只关心URL，不关心HTML内容
+        $webRequest = Invoke-WebRequest -Uri $redirectUrl -MaximumRedirection 10 -UseBasicParsing -ErrorAction Stop
+
+        # 获取重定向后的真实URL
+        $finalUrl = $webRequest.BaseResponse.ResponseUri.AbsoluteUri
+
+        # 打印最终的URL
+        Write-Host " 重定向的真实链接: $redirectionUrl `n$finalUrl" -ForegroundColor Green
+
+        # 你现在可以在脚本中使用 $finalUrl 变量
+        # 例如：
+        # Invoke-WebRequest -Uri $finalUrl -OutFile "downloaded_file.txt"
+        # "真实链接的长度: $($finalUrl.Length)"
+
+    } catch {
+        Write-Error "获取真实链接时发生错误: $($_.Exception.Message)"
+    }
+}
+
 function show_github_links {
     Clear-Host
     Write-Host "========== GitHub Urls ============" -ForegroundColor Cyan
+    GetRealURLforRedirect
+    # GetRealURLforRedirect "https://iso.zwdk.org/win2025"
+    GetRealURLforRedirect "https://iso.zwdk.org/win2022"
+
+    Write-Host ''
     
     Write-Host " 51. Windows(.iso) : 
     https://iso.zwdk.org/win2025
@@ -1925,15 +1958,6 @@ function show_github_links {
         reinstall.bat windows 
             --image-name 'Windows server 2025 Serverdatacenter' 
             --iso 'https://alistus.zwdk.im/d/qbd/sys/zh-cn_windows_server_2025_updated_april_2025_x64_dvd_ea86301d.iso'
-
-    DD cmd: 
-        reinstall.bat windows 
-            --image-name 'Windows server 2025 Serverdatacenter' 
-            --iso 'https://iso.zwdk.org/win2025'
-    DD cmd: 
-        reinstall.bat windows 
-            --image-name 'Windows server 2022 Serverdatacenter' 
-            --iso 'https://iso.zwdk.org/win2022'
     "
 
     Write-Host " 52. Windows(images) : 
