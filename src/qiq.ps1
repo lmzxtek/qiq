@@ -1307,10 +1307,13 @@ function App_download {
     }
     function download_golang { 
         Write-Host "`n GoLang URL: https://go.dev/dl/ `n" -ForegroundColor Green
-        $go_version = Read-Host "Enter the GO version (e.g., 1.24.2)"
-        if ($go_version -eq "") { $go_version = "1.24.2" }
-        $file = "go$go_version.windows-amd64.msi"
-        $url_dl = "https://go.dev/dl/go$go_version.windows-amd64.msi"
+        $appver = "1.24.2"
+        $userInput = Read-Host "Enter ToDesk version (e.g., $appver)"
+        if ($userInput.Trim() -ne "") { $appver = $userInput.Trim() }
+        # $go_version = Read-Host "Enter the GO version (e.g., 1.24.2)"
+        # if ($go_version -eq "") { $go_version = "1.24.2" }
+        $file = "go$appver.windows-amd64.msi"
+        $url_dl = "https://go.dev/dl/go$appver.windows-amd64.msi"
         # https://go.dev/dl/go1.24.2.windows-amd64.msi
         
         # $url_dl = Get_proxy_url $url_dl
@@ -1323,11 +1326,14 @@ function App_download {
     }
     function download_nodejs { 
         Write-Host "`n Node.js URL: https://nodejs.org/zh-cn/download `n" -ForegroundColor Green
-        $njs = Read-Host "Enter Node.js version (e.g., 22.15.0)"
-        if ($njs -eq "") { $njs = "22.15.0" }
-        $file = "node-v$njs-x64.msi"
-        $url_dl = "https://nodejs.org/dist/v$njs/node-v$njs-x64.msi"
-        # https://nodejs.org/dist/v22.15.0/node-v22.15.0-x64.msi
+        $appver = "22.16.0"
+        $userInput = Read-Host "Enter ToDesk version (e.g., $appver)"
+        if ($userInput.Trim() -ne "") { $appver = $userInput.Trim() }
+        # $njs = Read-Host "Enter Node.js version (e.g., 22.15.0)"
+        # if ($njs -eq "") { $njs = "22.15.0" }
+        $file = "node-v$appver-x64.msi"
+        $url_dl = "https://nodejs.org/dist/v$appver/node-v$appver-x64.msi"
+        # https://nodejs.org/dist/v22.16.0/node-v22.16.0-x64.msi
         
         # $url_dl = Get_proxy_url $url_dl
         # $targetDir = Get_download_path $sfld
@@ -1356,8 +1362,11 @@ function App_download {
     }
     function download_xdown { 
         Write-Host "`n xDown URL: https://www.xdown.org/ `n" -ForegroundColor Green
-        $appver = Read-Host "Enter xdown version (e.g., 2.0.9.4)"
-        if ($appver -eq "") { $appver = "2.0.9.4" }
+        $appver = "2.0.9.4"
+        $userInput = Read-Host "Enter ToDesk version (e.g., $appver)"
+        if ($userInput.Trim() -ne "") { $appver = $userInput.Trim() }
+        # $appver = Read-Host "Enter xdown version (e.g., 2.0.9.4)"
+        # if ($appver -eq "") { $appver = "2.0.9.4" }
         $file = "xdown-$appver.zip"
         $url_dl = "https://dl.xdown.dev/windows/i386/$file"
         # https://dl.xdown.dev/windows/i386/xdown-2.0.9.4.zip
@@ -2122,7 +2131,7 @@ function show_web_links {
     Write-Host " 18. Node.js : 
     https://nodejs.org
     https://nodejs.org/zh-cn/download
-    https://nodejs.org/dist/v22.15.0/node-v22.15.0-x64.msi
+    https://nodejs.org/dist/v22.16.0/node-v22.16.0-x64.msi
     Add cnpm: npm install -g cnpm --registry=https://registry.npm.taobao.org
     Add yarn: corepack enable yarn
     Add pnpm: corepack enable pnpm
