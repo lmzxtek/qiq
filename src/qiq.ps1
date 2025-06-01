@@ -1362,7 +1362,7 @@ function App_download {
     }
     function download_xdown { 
         Write-Host "`n xDown URL: https://www.xdown.org/ `n" -ForegroundColor Green
-        $appver = "2.0.9.4"
+        $appver = "2.0.9.5"
         $userInput = Read-Host "Enter ToDesk version (e.g., $appver)"
         if ($userInput.Trim() -ne "") { $appver = $userInput.Trim() }
         # $appver = Read-Host "Enter xdown version (e.g., 2.0.9.4)"
