@@ -720,7 +720,7 @@ function System_Settings {
         Set-Service -Name sshd -StartupType Automatic
         Start-Service sshd
         Write-Host "OpenSSH is enabled!" -ForegroundColor Green
-        Pause
+        # Pause
     }
 
     # 设置 PowerShell 7 为默认 shell
@@ -733,7 +733,7 @@ function System_Settings {
         else {
             Write-Host "PowerShell 7 is not installed! Install it first." -ForegroundColor Red
         }
-        Pause
+        # Pause
     }
     # 安装nssm
     function install_nssm {
@@ -1074,12 +1074,103 @@ function System_Settings {
             download_winsw2 $targetDir "sw_zoraxy.exe"
         }
     }
+    function set_sw_alist {
+        param([string]$sfld = "c:\alist")
+        $targetDir = $sfld
+        if (-not (Test-Path -Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir
+            # # 排除整个文件夹, 避免安全检测            
+            $prompt = "`n To exclude $sfld from Windows Defender? (Default:Y) [Y/n]"
+            $confirmation = Read-Host $prompt
+            $userInput = $confirmation.Trim()
+            if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+            # 使用正则表达式进行智能匹配
+            if ($userInput -match '^(y|yes)$') {
+                Add-MpPreference -ExclusionPath $targetDir
+            }
+        } 
+        
+        $vbsFileName = "$sfld\run.vbs"
+        $vbsContent = @"
+Dim ws
+Set ws = Wscript.CreateObject("Wscript.Shell")
+ws.run "alist.exe server",vbhide
+Wscript.quit
+"@
+        $vbsContent | Out-File -FilePath $vbsFileName -Encoding ASCII
+        Write-Host " Run .vbs file saved: $vbsFileName" -ForegroundColor Green
+        
+        $vbsFileName = "$sfld\stop.vbs"
+        $vbsContent = @"
+Dim ws
+Set ws = Wscript.CreateObject("Wscript.Shell")
+ws.run "taskkill /f /im alist.exe",0
+Wscript.quit
+"@
+        $vbsContent | Out-File -FilePath $vbsFileName -Encoding ASCII
+        Write-Host " Stop .vbs file saved: $vbsFileName" -ForegroundColor Green
+
+        $xmlFileName = "$sfld\sw_alist.xml"
+        $xmlContent = @"
+<service>
+  <id>alist</id>
+  <name>Alist-Server</name>
+  <description>This service runs Alist Server.</description>
+  <executable>alist.exe</executable>
+  <arguments>server</arguments>
+  <log mode="roll"></log>
+</service>
+"@
+        $xmlContent | Out-File -FilePath $xmlFileName -Encoding ASCII
+        Write-Host " WinSW config file saved: $xmlFileName" -ForegroundColor Green
+        
+        $prompt = "`n To open Port(:5244)?(Default:N) [y/N]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'n' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            Add_port_in 5244 
+        }
+
+        
+        $file = "alist-windows-amd64.zip"
+        $url_dl = Get_proxy_url "https://github.com/AlistGo/alist/releases/latest/download/alist-windows-amd64.zip"
+        # $targetDir = Get_download_path $sfld
+        $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
+        write-host "File URL: $url_dl"
+        # write-host "Target dir: $targetDir" -ForegroundColor Cyan
+        # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
+        Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
+        write-host "Success download: $targetFilePath" -ForegroundColor Green
+        
+        # 解压文件
+        Expand-Archive -Path $targetFilePath -DestinationPath $targetDir
+        
+        $prompt = "`n To remove target file:$targetFilePath? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            Remove-Item $targetFilePath
+        }
+
+        $prompt = "`n To download WinSW? (Default:Y) [Y/n]"
+        $confirmation = Read-Host $prompt
+        $userInput = $confirmation.Trim()
+        if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
+        # 使用正则表达式进行智能匹配
+        if ($userInput -match '^(y|yes)$') {
+            download_winsw2 $targetDir "sw_alist.exe"
+        }
+    }
     while ($true) {
         Show_system_menu
         $sys_choice = Read-Host "Enter choice " 
         switch ($sys_choice) {
             "1" { Enable-OpenSSH }
-            "2" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!"; Pause }
+            "2" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!";  }
             "3" { Set-DefaultShell-Pwsh }
             "4" { 
                 $port = Read-Host "Enter port need to set inbound (e.g.: 5000)"
@@ -1088,26 +1179,27 @@ function System_Settings {
                 }else {
                     write-host " !!! Invalid input for port:  $port"
                 }
-                Pause 
+                 
             }
             "5" { 
                 # go env -w GO111MODULE=on; 
                 go env -w GOPROXY=https://goproxy.cn,direct; 
                 Write-Host "GO(cn) set!" -ForegroundColor Green
-                Pause 
+                 
             }
             "6"  { npm install -g cnpm --registry=https://registry.npmmirror.com }
             "7"  { install_nssm }
             "8"  { download_winsw }
             "9"  { download_shawl }
-            "10" { set_sw_frp; Pause }
-            "11" { set_sw_gmapi; Pause }
-            "12" { set_sw_gmcsv; Pause }
-            "13" { set_sw_zoraxy; Pause }
-            "14" { Add_task_scheduler_gm_wh; Pause }
+            "10" { set_sw_frp;  }
+            "11" { set_sw_gmapi;  }
+            "12" { set_sw_gmcsv;  }
+            "13" { set_sw_zoraxy;  }
+            "14" { Add_task_scheduler_gm_wh;  }
             "0"  { return }
-            default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
+            default { Write-Host "Invalid input!" -ForegroundColor Red;  }
         }
+        Pause
     }
 }
 

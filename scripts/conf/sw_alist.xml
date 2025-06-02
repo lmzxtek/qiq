@@ -1,0 +1,8 @@
+<service>
+  <id>alist</id>
+  <name>Alist Server</name>
+  <description>This service runs Alist Server.</description>
+  <executable>alist.exe</executable>
+  <arguments>server</arguments>
+  <log mode="roll"></log>
+</service>
