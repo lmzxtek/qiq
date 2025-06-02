@@ -695,19 +695,20 @@ function System_Settings {
         Write-Host "  2. Set Default Shell to pwsh         "
         Write-Host "  3. Enable OpenSSH Service            "
         Write-Host "  "
-        Write-Host "  4. Open Port                         " -ForegroundColor Yellow
-        Write-Host "  5. Set GO-cn                         " -ForegroundColor Green
-        Write-Host "  6. Install cnpm                      " 
+        Write-Host "  4. Open Port                         " -ForegroundColor Green
+        Write-Host "  5. Add Task (run_wh)                 " 
+        Write-Host "  6. Set GO-cn                         " -ForegroundColor Blue
+        Write-Host "  7. Install cnpm                      " 
         Write-Host "  "
-        Write-Host "  7. Install nssm                      "
-        Write-Host "  8. Download WinSW                    "  -ForegroundColor Blue
-        Write-Host "  9. Download Shawl                    " 
+        Write-Host "  8. Install nssm                      "
+        Write-Host "  9. Download WinSW                    "  -ForegroundColor Blue
+        Write-Host " 10. Download Shawl                    " 
         Write-Host "  "
-        Write-Host " 10. Set frp service                   " 
-        Write-Host " 11. Set gm-api service                " -ForegroundColor Green
-        Write-Host " 12. Set gm-csv service                " 
-        Write-Host " 13. Set zoraxy service                " 
-        Write-Host " 14. Add Task (run_wh)                 " 
+        Write-Host " 11. Setup frp service                 " 
+        Write-Host " 12. Setup alist service               " 
+        Write-Host " 13. Setup zoraxy service              " 
+        Write-Host " 14. Setup gm-api service              " -ForegroundColor Green
+        Write-Host " 15. Setup gm-csv service              " 
         Write-Host "  "
         Write-Host "  0. Back                              " 
         Write-Host "=======================================" -ForegroundColor Yellow
@@ -1181,21 +1182,22 @@ Wscript.quit
                 }
                  
             }
-            "5" { 
+            "5" { Add_task_scheduler_gm_wh;  }
+            "6" { 
                 # go env -w GO111MODULE=on; 
                 go env -w GOPROXY=https://goproxy.cn,direct; 
                 Write-Host "GO(cn) set!" -ForegroundColor Green
                  
             }
-            "6"  { npm install -g cnpm --registry=https://registry.npmmirror.com }
-            "7"  { install_nssm }
-            "8"  { download_winsw }
-            "9"  { download_shawl }
-            "10" { set_sw_frp;  }
-            "11" { set_sw_gmapi;  }
-            "12" { set_sw_gmcsv;  }
-            "13" { set_sw_zoraxy;  }
-            "14" { Add_task_scheduler_gm_wh;  }
+            "7"  { npm install -g cnpm --registry=https://registry.npmmirror.com }
+            "8"  { install_nssm }
+            "9"  { download_winsw }
+            "10" { download_shawl }
+            "11" { set_sw_frp;  }
+            "12" { set_sw_alist;  }
+            "13" { set_sw_gmapi;  }
+            "14" { set_sw_gmcsv;  }
+            "15" { set_sw_zoraxy;  }
             "0"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red;  }
         }
