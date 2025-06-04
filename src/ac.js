@@ -5,6 +5,7 @@
 // @description  在AcckCloud页面右下角添加自动加载按钮
 // @author       AI助手
 // @match        https://acck.io/console/pushshop
+// @match        https://sign-service.acck.io/pushShop?*
 // @grant        GM_addStyle
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow  // 添加这一行
@@ -277,15 +278,56 @@
   jumpBtn.className = "action-btn";
   jumpBtn.style.color = "rgba(208, 0, 255, 0.94)";
 
+  // 打开页面按钮
+  const openURLBtn = document.createElement("button");
+  openURLBtn.id = "openURLBtn";
+  openURLBtn.innerHTML = "开";
+  openURLBtn.className = "action-btn";
+  openURLBtn.style.color = "rgba(3, 49, 252, 0.96)";
+  openURLBtn.style.cursor = 'pointer';
+  
+  // 获取当前页面的完整 URL
+  const currentUrl = window.location.href;
+
+  let isIFrame = false; 
+  // 检查是否匹配 https://acck.io/console/pushshop
+  if (currentUrl === 'https://acck.io/console/pushshop') {
+      console.log('当前访问的是 https://acck.io/console/pushshop');
+      // 在这里执行你的逻辑
+  } else {
+      console.log('当前访问的是 https://sign-service.acck.io/pushShop?*');
+      isIFrame = true;
+  }
+
   // 添加按钮到容器
   // panel.appendChild(closeBtn);
-  panel.appendChild(toggleBtn);
-  panel.appendChild(filtBtn);
-  panel.appendChild(supperBtn);
-  panel.appendChild(allBtn);
-  panel.appendChild(jumpBtn);
-  panel.appendChild(loadMoreBtn);
-  panel.appendChild(loadScrollBtn);
+  if (isIFrame) {
+    panel.appendChild(toggleBtn);
+    panel.appendChild(filtBtn);
+    panel.appendChild(supperBtn);
+    panel.appendChild(allBtn);
+    panel.appendChild(jumpBtn);
+    panel.appendChild(loadMoreBtn);
+    panel.appendChild(loadScrollBtn);
+  } else {
+    // // 打开页面按钮
+    // const openURLBtn = document.createElement("button");
+    // openURLBtn.id = "openURLBtn";
+    // openURLBtn.innerHTML = "开";
+    // openURLBtn.className = "action-btn";
+    // openURLBtn.style.color = "rgba(3, 252, 32, 0.96)";
+    // openURLBtn.style.cursor = 'pointer';
+    
+    // const iframe = document.querySelector('iframe');
+    // if (!iframe.src) {
+    //     console.log(`iframe #${index + 1} 没有 src 属性，跳过`);
+    //     showMessage(" ⛔ iframe 没有 src 属性，跳过！");
+    //     // return;
+    // }else {
+    // }
+
+    panel.appendChild(openURLBtn);
+  }
 
   // 真实点击模拟器
   function simulateRealClick(element) {
@@ -619,24 +661,36 @@
       const oldTable = document.querySelector('#akile-scrape-table');
       if (oldTable) oldTable.remove();
 
+      // 注意：这里和Akile的接口有些许差异，需要注意，Acck使用iFrame加载另一个页面，所以需要获取另一个页面的DOM
+      // const iframe = document.querySelector('.iframe-container');
+      // const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      // const cardBodies = iframeDoc.querySelectorAll('div.server-card');
       // 获取数据容器
-      const cardBodies = document.querySelectorAll('div.arco-card-body');
+      // const cardBodies = document.querySelectorAll('div.arco-card-body');
+      // const serverGrid = document.querySelectorAll('div[data-v-d5b7f2e0].server-grid');
+      const cardBodies = document.querySelectorAll('div[data-v-d5b7f2e0].server-card');
       const data = [];
+
+      showMessage(" -=> 找到卡片: "+cardBodies.length+"个...");
 
       // 遍历数据卡片
       cardBodies.forEach(card => {
           try {
-              const name = card.querySelector('.server-name')?.textContent.trim() || 'N/A';
-              const detailStr = card.querySelector('.server-detail')?.textContent.trim() || 'N/A';
-              let detail = detailStr.slice(-3).split(']')[0] || 'N/A';
+              // showMessage(" -=> 开始处理卡片... ");
+              const name = card.querySelector('.card-header')?.textContent.trim() || 'N/A';
 
-              const infoBodies = card.querySelectorAll('div.server-info');
-              const location   = infoBodies[0].querySelector('.info-value')?.textContent.trim() || 'N/A';
-              const node       = infoBodies[1].querySelector('.info-value')?.textContent.trim() || 'N/A';
-              const type       = infoBodies[2].querySelector('.info-value')?.textContent.trim() || 'N/A';
+              const detailStr = card.querySelector('.card-desc div')?.textContent.trim() || 'N/A';
+              // let detail = detailStr.slice(5).split(']')[0] || 'N/A';
+              let detail = detailStr.slice(1,5) || 'N/A';
+              // let detail = detailStr
 
-              const conf = infoBodies[3].querySelector('.info-value')?.textContent.trim() || 'N/A';
-          //   const cpu  = conf.split(' ')[0] || 'N/A';
+              const infoItems = card.querySelectorAll('div.info-item');
+              const location   = infoItems[0].querySelector('.flag')?.textContent.trim() || 'N/A';
+              const node       = infoItems[1].querySelector('.value')?.textContent.trim() || 'N/A';
+              const type       = infoItems[2].querySelector('.value')?.textContent.trim() || 'N/A';
+
+              const conf = infoItems[3].querySelector('.value')?.textContent.trim() || 'N/A';
+              //   const cpu  = conf.split(' ')[0] || 'N/A';
               const cpu  = conf.split(' ')[0].split('核')[0] || 'N/A';
               let mem  = conf.split(' ')[0].split('核')[1] || 'N/A';              
               if (mem.slice(-1) === 'M') {
@@ -650,9 +704,9 @@
                   }
                 }
               }
-              const disk = conf.split(' ')[1] || 'N/A';
+              const disk = conf.split(' ')[1] || 'N/A';              
 
-              const network = infoBodies[4].querySelector('.info-value')?.textContent.trim() || 'N/A';
+              const network = infoItems[4].querySelector('.value')?.textContent.trim() || 'N/A';
               let bandw   = network.split(' ')[1]  || 'N/A' ;            
               if (bandw.slice(-1) === 'M') {
                 let bandwNum = parseFloat(bandw.slice(0, -1));
@@ -665,10 +719,12 @@
                   }
                 }
               }
+
               // if (bandw.length>4 && bandw.slice(1) === 'M') {
               //   bandw = (bandw.split('M')[0]/1024).toFixed(2) + 'G';
               // }
-              const used    = network.split(' ')[3]  || 'N/A' ;
+              const usedStr = infoItems[5].querySelector('.value')?.textContent.trim() || 'N/A';
+              const used    = usedStr.split('/')[0].trim()  || 'N/A' ;
               let usedv  = 0;
               let totalv = 0;
               let usedu  = '';
@@ -677,7 +733,7 @@
                 usedu   = '无限制' ;
                 totalu  = '无限制' ;
               }else{
-                const total   = network.split(' ')[5]  || 'N/A' ;
+                const total   = usedStr.split('/')[1].trim()  || 'N/A' ;
                 usedv  = parseQuantity(used).num   || 0;
                 totalv = parseQuantity(total).num  || 0;
                 usedu  = parseQuantity(used).unit  || '';
@@ -690,11 +746,11 @@
                 if (totalu === 'MB' ) { totalv = (totalv / 1024).toFixed(2); totalu = 'GB'; }
               }
 
-              const ipstr = infoBodies[5].querySelector('.info-value')?.textContent.trim() || 'N/A';
+              const ipstr = infoItems[6].querySelector('.value')?.textContent.trim() || 'N/A';
               const ipv4  = ipstr.split(' ')[1] || 'N/A';
               const ipv6  = ipstr.split(' ')[3] || 'N/A';
 
-              const renewStr   = infoBodies[6].querySelector('.info-value')?.textContent.trim() || 'N/A';
+              const renewStr   = infoItems[7].querySelector('.value')?.textContent.trim() || 'N/A';
               const renew      = parsePricePeriod(renewStr)
           //   const period     = renew.period[renew.period.length - 1] || 'N/A'; // 获取最后一个字符作为周期
           //   const period     = renewStr[renewStr.length - 1] || 'N/A';
@@ -702,7 +758,7 @@
               const renewPrice = renew.price;
           //   console.log(period, renewPrice);
 
-              const expire     = infoBodies[8].querySelector('.info-value')?.textContent.trim() || 'N/A';
+              const expire     = infoItems[9].querySelector('.value')?.textContent.trim() || 'N/A';
               const timeDiff   = calculateTimeDifference(expire);
               const daysleft   = timeDiff.days.toString();
               const hourleft   = timeDiff.hours.toString();
@@ -710,8 +766,8 @@
               // const dayOK = timeDiff.days >= 14 ? '✅' : '⛔';
               //   const dayOK = timeDiff.days >= 14 ? 'Yes' : 'No';
 
-              const srvManage = card.querySelector('.server-manage') || 'N/A';
-              const priceStr  = srvManage.querySelector('.shop-server-price')?.textContent.trim() || 'N/A';
+              const srvManage = card.querySelector('.card-footer') || 'N/A';
+              const priceStr  = srvManage.querySelector('.total-price')?.textContent.trim() || 'N/A';
               const price     = parsePricePeriod(priceStr).price;
               const sellPrice = Math.ceil(price/0.9) || 0;
             //   const buyButton = srvManage.querySelector('.manage-btn button');
@@ -720,14 +776,16 @@
               buyBtn.innerHTML = "B";
               buyBtn.className = "buy-button";
               buyBtn.addEventListener('click', () => {
-                const realBtn = srvManage.querySelector('.manage-btn button');
+                const realBtn = srvManage.querySelector('.buyButton');
                 if (realBtn) {
                   realBtn.click();
                 } else {
-                  console.warn('⚠️ 未找到加载更多按钮');
                   showMessage('⚠️ >> 未找到购买按钮 << ');
                 }
               });
+
+              // showMessage(" => 找到了: "+price);
+              // return 
 
               // 买的条件：剩余流量大于50%，剩余天数大于14天
               const okBuy = timeDiff.days >= 23 && usedv < totalv*0.5 && (period === '月' && price<renewPrice*0.7 ) ? '✅' : '';
@@ -748,22 +806,26 @@
               // }
 
               if ( is2Push ) {
-                  data.push({ card, name, detail, location, period,node, type, cpu, mem, disk,
-                      network, bandw, usedv,usedu, totalv,totalu, ipv4,ipv6,
-                      price,sellPrice, renew,renewPrice, pricetorenew,
-                      expire, daysleft,hourleft,dayOK: okBuy,isBuy,buyBtn,
-                  });
+                data.push({ card, name, detail, location, period,node, type, cpu, mem, disk,
+                    network, bandw, usedv,usedu, totalv,totalu, ipv4,ipv6,
+                    price,sellPrice, renew,renewPrice, pricetorenew,
+                    expire, daysleft,hourleft,dayOK: okBuy,isBuy,buyBtn,
+                });
               }
           } catch (error) {
               console.error('数据处理错误:', error,card);
+              showMessage(" -=> 卡片处理出错... ");
           }
       });
 
+      // showMessage(" -=> 开始生成表格... ");
       // 生成结果表格
       const table = createResultTable(data);
       document.body.appendChild(table);
       table.scrollIntoView({ behavior: 'smooth' });
       toggleBtn.style.display = 'block'; // 显示隐藏按钮
+      // showMessage(" -=> 生成表格完成... ");
+
   }
 
   // 创建关闭按钮
@@ -991,7 +1053,9 @@
 
         const locationCell = document.createElement('td');
         locationCell.className = 'td-second';
-        locationCell.textContent = item.location.slice(-2) || 'N/A';
+        // locationCell.textContent = item.location.slice(-2) || 'N/A';
+        // locationCell.textContent = item.location.split(" ")[1].slice(-2) || 'N/A';
+        locationCell.textContent = item.location.split(" ")[0] || 'N/A';
 
         const typeCell = document.createElement('td');
         typeCell.textContent = item.type;
@@ -1078,7 +1142,7 @@
   function closeTable() {
       const oldTable = document.querySelector('#akile-scrape-table');
       if (oldTable) oldTable.remove();
-    }
+  }
   // 关闭结果表格
   function showTable() {
     const oldTable = document.querySelector('#akile-scrape-table');
@@ -1092,41 +1156,77 @@
     if (!isVisible) { smoothScrollToTable(); }
   }
 
+  // 关闭结果表格
+  function openIFrameSRC() {    
+    // 查找所有 iframe 元素
+    const iframes = document.querySelectorAll('iframe');
+
+    if (iframes.length === 0) {
+        console.log('当前页面没有 iframe 元素');
+        showMessage(" 当前页面没有 iframe 元素");
+        return;
+    }
+
+    console.log(`找到 ${iframes.length} 个 iframe 元素`);
+    showMessage(" 当前页面没有 iframe 元素");
+
+    const iframe = iframes[0];
+    if (!iframe.src) {
+        console.log(`iframe #1 没有 src 属性，跳过`);
+        showMessage(" ⛔ iframe 没有 src 属性，跳过！");
+        // return;
+    }else {
+      // 点击按钮时，在新标签页打开 iframe 的 src
+      showMessage(" iframe 链接: "+iframe.src);
+      window.open(iframe.src, '_blank');
+      // window.location.href = iframe.src;
+    }
+  }
+
   //==============
   // 绑定点击事件
-  closeBtn.addEventListener("click", closeTable);
-  allBtn.addEventListener("click", () => {scrapeData(false);});
-  filtBtn.addEventListener("click", () => {scrapeData(true);});
-  supperBtn.addEventListener("click", () => {scrapeData(false,true);});
-  jumpBtn.addEventListener("click", () => {smoothScrollToBottom(false);});
+  if (isIFrame){ 
+    closeBtn.addEventListener("click", closeTable);
+    allBtn.addEventListener("click", () => {scrapeData(false);});
+    filtBtn.addEventListener("click", () => {scrapeData(true);});
+    supperBtn.addEventListener("click", () => {scrapeData(false,true);});
+    jumpBtn.addEventListener("click", () => {smoothScrollToBottom(false);});
+  
+    // loadMoreBtn.addEventListener('click', () => {clickLoadMore(false);});
+    loadMoreBtn.addEventListener('click', () => {triggerLoadMore();});
+  
+    // loadScrollBtn.addEventListener('click', () => {clickLoadMore(true);});
+    // loadScrollBtn.addEventListener('click', () => {handleLoadMore();});
+    // loadScrollBtn.addEventListener('click', () => { if (!loadScrollBtn.disabled) handleAutoLoadMore(loadScrollBtn);});
+    loadScrollBtn.addEventListener('click', () => { if (!loadScrollBtn.disabled) autoLoadMoreClicker(loadScrollBtn);});
+  
+  
+    // 按钮点击切换显示状态
+    toggleBtn.addEventListener('click', () => { showTable(); });
 
-  // loadMoreBtn.addEventListener('click', () => {clickLoadMore(false);});
-  loadMoreBtn.addEventListener('click', () => {triggerLoadMore();});
-
-  // loadScrollBtn.addEventListener('click', () => {clickLoadMore(true);});
-  // loadScrollBtn.addEventListener('click', () => {handleLoadMore();});
-  // loadScrollBtn.addEventListener('click', () => { if (!loadScrollBtn.disabled) handleAutoLoadMore(loadScrollBtn);});
-  loadScrollBtn.addEventListener('click', () => { if (!loadScrollBtn.disabled) autoLoadMoreClicker(loadScrollBtn);});
-
-
-  // 按钮点击切换显示状态
-  toggleBtn.addEventListener('click', () => { showTable(); });
+  } else {
+    openURLBtn.addEventListener('click', () => {openIFrameSRC();});
+  }
 
   // 按钮状态管理
-  let isScrolled = false;
+  // let isScrolled = false;
   window.addEventListener("scroll", () => {
     const threshold = 200;
     const shouldShow = window.scrollY < document.documentElement.scrollHeight - threshold;
 
-    jumpBtn.style.display       = shouldShow ? "flex" : "none";
-    closeBtn.style.display      = shouldShow ? "flex" : "none";
-    // toggleBtn.style.display     = shouldShow ? "flex" : "none";
-
-    allBtn.style.display        = shouldShow ? "flex" : "none";
-    filtBtn.style.display       = shouldShow ? "flex" : "none";
-    supperBtn.style.display     = shouldShow ? "flex" : "none";
-    loadMoreBtn.style.display   = shouldShow ? "flex" : "none";
-    loadScrollBtn.style.display = shouldShow ? "flex" : "none";
+    if (isIFrame){
+      jumpBtn.style.display       = shouldShow ? "flex" : "none";
+      closeBtn.style.display      = shouldShow ? "flex" : "none";
+      // toggleBtn.style.display     = shouldShow ? "flex" : "none";
+      
+      allBtn.style.display        = shouldShow ? "flex" : "none";
+      filtBtn.style.display       = shouldShow ? "flex" : "none";
+      supperBtn.style.display     = shouldShow ? "flex" : "none";
+      loadMoreBtn.style.display   = shouldShow ? "flex" : "none";
+      loadScrollBtn.style.display = shouldShow ? "flex" : "none";
+    }else{
+      openURLBtn.style.display    = shouldShow ? "flex" : "none";
+    }
   });
 
   // 初始状态设置

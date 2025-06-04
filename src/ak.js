@@ -623,6 +623,8 @@
       const cardBodies = document.querySelectorAll('div.arco-card-body');
       const data = [];
 
+      showMessage(" -=> 找到卡片: "+cardBodies.length+"个...");
+
       // 遍历数据卡片
       cardBodies.forEach(card => {
           try {
@@ -724,7 +726,6 @@
                 if (realBtn) {
                   realBtn.click();
                 } else {
-                  console.warn('⚠️ 未找到加载更多按钮');
                   showMessage('⚠️ >> 未找到购买按钮 << ');
                 }
               });
