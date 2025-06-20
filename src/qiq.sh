@@ -19,7 +19,7 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.6
+SRC_VER=v0.7.7
 #==========================
 
 DOCKER_PROXY='m.daocloud.io/'
@@ -5302,6 +5302,34 @@ EOF
         bash -c "$(curl -L https://cloud.nginxui.com/https://raw.githubusercontent.com/0xJacky/nginx-ui/main/install.sh)" @ install -r https://cloud.nginxui.com/
     }
 
+    function tools_install_oneclickdesktop(){
+        _IS_BREAK="true"
+        local app_name='OneClickDesktop'
+        local app_cmd='oneclickdesktop'
+        _BREAK_INFO=" 由${app_name}返回！"
+
+        local fname="OneClickDesktop.sh"
+        local ghurl="https://github.com/Har-Kuun/OneClickDesktop"
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否安装中文版？(否则安装英文版) (Y/n): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT 
+        [[ -z "${INPUT}" ]] && INPUT="Y" 
+        case "$INPUT" in
+        [Yy] | [Yy][Ee][Ss])
+            fname="OneClickDesktop_zh-CN.sh"
+            ;;
+        esac
+        
+        local url="https://raw.githubusercontent.com/Har-Kuun/OneClickDesktop/master/${fname}"
+        echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+        # # fetch_script_from_url $url $fname 1  " @ install"
+        download_file_url $url $fname
+        chmod +x $fname && sudo bash $fname
+    
+        # wget https://raw.githubusercontent.com/Har-Kuun/OneClickDesktop/master/OneClickDesktop.sh && sudo bash OneClickDesktop.sh
+        # wget https://raw.githubusercontent.com/Har-Kuun/OneClickDesktop/master/OneClickDesktop_zh-CN.sh && sudo bash OneClickDesktop_zh-CN.sh
+    }
+
     while true; do
         print_menu_service_tools
 
@@ -5345,16 +5373,17 @@ EOF
             echo -e "" 
             ;; 
 
-        41) tools_install_rustdesk ;; 
-        42) tools_install_sublinkx ;; 
-        43) tools_install_deeplx ;; 
-        44) tools_install_iycms ;; 
-        45) tools_install_v2raya ;; 
-        46) tools_install_sbfarsman ;; 
-        47) tools_install_sbygkkk;; 
-        48) tools_install_warpfarsman ;; 
-        49) tools_install_warpygkkk ;; 
-        50) tools_install_warphamid ;; 
+        41) tools_install_oneclickdesktop ;; 
+        42) tools_install_rustdesk ;; 
+        43) tools_install_sublinkx ;; 
+        44) tools_install_deeplx ;; 
+        45) tools_install_iycms ;; 
+        46) tools_install_v2raya ;; 
+        47) tools_install_sbfarsman ;; 
+        48) tools_install_sbygkkk;; 
+        49) tools_install_warpfarsman ;; 
+        50) tools_install_warpygkkk ;; 
+        51) tools_install_warphamid ;; 
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
