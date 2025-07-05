@@ -1193,11 +1193,12 @@ Wscript.quit
             "8"  { install_nssm }
             "9"  { download_winsw }
             "10" { download_shawl }
+            
             "11" { set_sw_frp;  }
             "12" { set_sw_alist;  }
-            "13" { set_sw_gmapi;  }
-            "14" { set_sw_gmcsv;  }
-            "15" { set_sw_zoraxy;  }
+            "13" { set_sw_zoraxy; }
+            "14" { set_sw_gmapi;  }
+            "15" { set_sw_gmcsv;  }
             "0"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red;  }
         }
