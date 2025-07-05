@@ -1170,9 +1170,9 @@ Wscript.quit
         Show_system_menu
         $sys_choice = Read-Host "Enter choice " 
         switch ($sys_choice) {
-            "1" { Enable-OpenSSH }
-            "2" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!";  }
-            "3" { Set-DefaultShell-Pwsh }
+            "1" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!";  }
+            "2" { Set-DefaultShell-Pwsh }
+            "3" { Enable-OpenSSH }
             "4" { 
                 $port = Read-Host "Enter port need to set inbound (e.g.: 5000)"
                 if ( ($port -ne "") -and ($port -match "^\d+$") -and ($port -le 65535) -and ($port -ge 1) )  { 
