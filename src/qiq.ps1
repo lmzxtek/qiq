@@ -710,6 +710,7 @@ function System_Settings {
         Write-Host " 14. Setup gm-api service              " -ForegroundColor Green
         Write-Host " 15. Setup gm-csv service              " 
         Write-Host "  "
+        Write-Host " 99. Show reinstall for win 2025       " -ForegroundColor Green
         Write-Host "  0. Back                              " 
         Write-Host "=======================================" -ForegroundColor Yellow
     }
@@ -1193,12 +1194,13 @@ Wscript.quit
             "8"  { install_nssm }
             "9"  { download_winsw }
             "10" { download_shawl }
-            
+
             "11" { set_sw_frp;  }
             "12" { set_sw_alist;  }
             "13" { set_sw_zoraxy; }
             "14" { set_sw_gmapi;  }
             "15" { set_sw_gmcsv;  }
+            "99" { Write-Host "Comand for reinstall: `n./reinstall.bat windows --image-name 'Windows server 2025 Serverdatacenter' --iso 'https://iso.zwdk.org/win2025'`n" -ForegroundColor Green;;  }
             "0"  { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red;  }
         }
