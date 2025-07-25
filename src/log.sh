@@ -62,9 +62,10 @@ echoT "  10.添加RatPanel服务器管理面板安装 "
 echoT "  11.修改DD系统时ISO镜像地址为重定向链接"
 echoT "  12.DD系统时自定义链接添加获取真实地址功能"
 echoT "--------------------------------"
-echoR " -=> 2025-06-20   v0.7.7" " $VLATEST"
+echoR " -=> 2025-07-25   v0.7.7" " $VLATEST"
 echoY "   1.修正系统安装时选项的序号"
 echoY "   2.更新Caddy默认配置文件中的根路径"
+echoY "   3.添加ufw的安装"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 

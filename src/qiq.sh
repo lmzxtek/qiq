@@ -3458,12 +3458,13 @@ MENU_COMMONLY_TOOLS_ITEMS=(
     "2|wget|$WHITE"
     "3|fnm|$YELLOW"
     "4|gdu|$MAGENTA"
-    "5|btop|$WHITE"
-    "6|htop|$WHITE"
-    "7|iftop|$WHITE"
-    "8|unzip|$WHITE"
-    "9|Fail2Ban|$YELLOW"
-    "10|SuperVisor|$YELLOW"
+    "5|ufw|$YELLOW"
+    "6|btop|$WHITE"
+    "7|htop|$WHITE"
+    "8|iftop|$WHITE"
+    "9|unzip|$WHITE"
+    "10|Fail2Ban|$YELLOW"
+    "11|SuperVisor|$YELLOW"
     "………………………|$WHITE" 
     "21|安装常用|$CYAN"
     "22|安装指定|$WHITE" 
@@ -3525,34 +3526,41 @@ function commonly_tools_menu(){
             _IS_BREAK='true'
             ;;
         5) 
-            local app_name='btop'
+            local app_name='ufw'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install btop 
             _IS_BREAK='true'
             ;;
         6) 
+            local app_name='btop'
+            app_install ${app_name}
+            echo -e "\n $PRIGHT ${app_name}已安装："
+            # app_install btop 
+            _IS_BREAK='true'
+            ;;
+        7) 
             local app_name='htop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install htop 
             _IS_BREAK='true'
             ;;
-        7) 
+        8) 
             local app_name='iftop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install iftop 
             _IS_BREAK='true'
             ;;
-        8) 
+        9) 
             local app_name='unzip'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             app_install unzip 
             _IS_BREAK='true'
             ;;
-        9) 
+        10) 
             local app_name='fail2ban'
             app_install ${app_name}
             app_install rsyslog 
@@ -3565,7 +3573,7 @@ function commonly_tools_menu(){
             echo -e "\n $PRIGHT ${app_name}已安装："
             _IS_BREAK='true'
             ;;
-        10) 
+        11) 
             local app_name='supervisor'
             if ! systemctl status ${app_name} > /dev/null 2>&1; then
                 app_install ${app_name}
