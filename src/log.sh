@@ -66,6 +66,7 @@ echoR " -=> 2025-07-25   v0.7.7" " $VLATEST"
 echoY "   1.修正系统安装时选项的序号"
 echoY "   2.更新Caddy默认配置文件中的根路径"
 echoY "   3.添加ufw的安装"
+echoY "   4.添加开放8881:8888端口(ufw)"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 

@@ -2596,6 +2596,7 @@ function system_tools_menu(){
             "3.关闭所有端口"
             "4.开放指定端口"
             "5.关闭指定端口"
+            "6.开放8881:8888"
             "0.退出"
         )
 
@@ -2651,6 +2652,15 @@ EOF
             sed -i "/--dport $INPUT/d" /etc/iptables/rules.v4
             iptables-restore < /etc/iptables/rules.v4
             _BREAK_INFO=" 已关闭端口: $INPUT！"
+            ;;
+        6) 
+            if command -v ufw >/dev/null 2>&1; then  
+                sudo ufw allow 8881:8888/tcp
+                sudo ufw allow 8881:8888/udp
+                _BREAK_INFO=" 已开放8881:8888端口！"
+            else
+                _BREAK_INFO=" 请先安装ufw！"
+            fi
             ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
         *) _BREAK_INFO=" 请输入正确选项！" ;;
