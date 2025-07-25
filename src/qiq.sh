@@ -3456,13 +3456,13 @@ EOF
 MENU_COMMONLY_TOOLS_ITEMS=(
     "1|curl|$WHITE"
     "2|wget|$WHITE"
-    "3|fnm|$YELLOW"
-    "4|gdu|$MAGENTA"
-    "5|ufw|$YELLOW"
-    "6|btop|$WHITE"
-    "7|htop|$WHITE"
-    "8|iftop|$WHITE"
-    "9|unzip|$WHITE"
+    "3|htop|$WHITE"
+    "4|btop|$WHITE"
+    "5|iftop|$WHITE"
+    "6|unzip|$WHITE"
+    "7|fnm|$WHITE"
+    "8|gdu|$MAGENTA"
+    "9|ufw|$YELLOW"
     "10|Fail2Ban|$YELLOW"
     "11|SuperVisor|$YELLOW"
     "………………………|$WHITE" 
@@ -3511,53 +3511,53 @@ function commonly_tools_menu(){
             # app_install wget 
             _IS_BREAK='true'
             ;;
-        3)  
-            local app_name='fnm'
-            curl -fsSL $(get_proxy_url "https://fnm.vercel.app/install") | bash 
-            echo -e "\n $PRIGHT ${app_name}已安装："
-            echo -e " $PRIGHT 安装node.js: fnm install 22 "
-            _IS_BREAK='true' 
-            ;;
-        4) 
-            local app_name='gdu'
-            app_install ${app_name}
-            echo -e "\n $PRIGHT ${app_name}已安装："
-            # app_install gdu 
-            _IS_BREAK='true'
-            ;;
-        5) 
-            local app_name='ufw'
-            app_install ${app_name}
-            echo -e "\n $PRIGHT ${app_name}已安装："
-            # app_install btop 
-            _IS_BREAK='true'
-            ;;
-        6) 
-            local app_name='btop'
-            app_install ${app_name}
-            echo -e "\n $PRIGHT ${app_name}已安装："
-            # app_install btop 
-            _IS_BREAK='true'
-            ;;
-        7) 
+        3) 
             local app_name='htop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install htop 
             _IS_BREAK='true'
             ;;
-        8) 
+        4) 
+            local app_name='btop'
+            app_install ${app_name}
+            echo -e "\n $PRIGHT ${app_name}已安装："
+            # app_install btop 
+            _IS_BREAK='true'
+            ;;
+        5) 
             local app_name='iftop'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             # app_install iftop 
             _IS_BREAK='true'
             ;;
-        9) 
+        6) 
             local app_name='unzip'
             app_install ${app_name}
             echo -e "\n $PRIGHT ${app_name}已安装："
             app_install unzip 
+            _IS_BREAK='true'
+            ;;
+        7)  
+            local app_name='fnm'
+            curl -fsSL $(get_proxy_url "https://fnm.vercel.app/install") | bash 
+            echo -e "\n $PRIGHT ${app_name}已安装："
+            echo -e " $PRIGHT 安装node.js: fnm install 22 "
+            _IS_BREAK='true' 
+            ;;
+        8) 
+            local app_name='gdu'
+            app_install ${app_name}
+            echo -e "\n $PRIGHT ${app_name}已安装："
+            # app_install gdu 
+            _IS_BREAK='true'
+            ;;
+        9) 
+            local app_name='ufw'
+            app_install ${app_name}
+            echo -e "\n $PRIGHT ${app_name}已安装："
+            # app_install btop 
             _IS_BREAK='true'
             ;;
         10) 
