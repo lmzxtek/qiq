@@ -3473,7 +3473,7 @@ MENU_COMMONLY_TOOLS_ITEMS=(
     "7|fnm|$WHITE"
     "8|gdu|$MAGENTA"
     "9|ufw|$YELLOW"
-    "10|Fail2Ban|$YELLOW"
+    "10|Fail2Ban|$GREEN"
     "11|SuperVisor|$YELLOW"
     "………………………|$WHITE" 
     "21|安装常用|$CYAN"
