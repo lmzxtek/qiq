@@ -1174,6 +1174,80 @@
 
   // 按钮点击切换显示状态
   toggleBtn.addEventListener('click', () => { showTable(); });
+   // 保存原始XMLHttpRequest对象
+    const originalXHR = unsafeWindow.XMLHttpRequest;
+    
+    // 重写XMLHttpRequest拦截所有AJAX请求
+    unsafeWindow.XMLHttpRequest = function() {
+        const xhr = new originalXHR();
+        
+        const originalOpen = xhr.open;
+        const originalSend = xhr.send;
+        const requestData = {};
+        
+        xhr.open = function(method, url) {
+            requestData.method = method;
+            requestData.url = url;
+            return originalOpen.apply(xhr, arguments);
+        };
+        
+        xhr.send = function(body) {
+            requestData.body = body;
+            
+            // 响应监听器
+            const handleResponse = () => {
+                if (xhr.readyState === 4) {
+                    console.group("请求捕获");
+                    console.log("请求地址:", requestData.url);
+                    console.log("请求方法:", requestData.method);
+                    console.log("请求数据:", requestData.body);
+                    console.log("响应状态:", xhr.status);
+                    console.log("响应数据:", xhr.responseText);
+                    console.groupEnd();
+                }
+            };
+            
+            xhr.addEventListener('readystatechange', handleResponse);
+            return originalSend.apply(xhr, arguments);
+        };
+        
+        return xhr;
+    };
+    
+    // 保存原始fetch函数
+    const originalFetch = unsafeWindow.fetch;
+    
+    // 重写fetch拦截所有Fetch请求
+    unsafeWindow.fetch = function(...args) {
+        const requestData = {
+            url: args[0],
+            options: args[1] || {}
+        };
+        
+        return originalFetch.apply(this, args).then(response => {
+            const clonedResponse = response.clone();
+            
+            clonedResponse.text().then(body => {
+                console.group("Fetch请求捕获");
+                console.log("请求地址:", requestData.url);
+                console.log("请求方法:", requestData.options.method || 'GET');
+                console.log("请求数据:", requestData.options.body);
+                console.log("响应状态:", response.status);
+                console.log("响应数据:", body);
+                console.groupEnd();
+            });
+            
+            return response;
+        });
+    };
+    // 记录按钮点击
+    document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' || 
+            e.target.type === 'submit' || 
+            e.target.closest('button')) {
+            console.log(`按钮被点击: ${e.target.textContent}`);
+        }
+    });
 
   // 按钮状态管理
   let isScrolled = false;

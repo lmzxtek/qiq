@@ -930,7 +930,7 @@
         
         const detailCell = document.createElement('td');
         detailCell.textContent = item.detail;
-        if (item.detail === '被墙') {
+        if (item.detail === 'IP被墙') {
             detailCell.style.color = '#ff4d4f';
             detailCell.style.fontWeight = '700';
         }
