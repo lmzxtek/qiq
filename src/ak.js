@@ -4,7 +4,7 @@
 // @version      2.0.0
 // @description  在AkileCloud页面右下角添加自动加载按钮
 // @author       AI助手
-// @match        https://console.akile.io/pushshop/
+// @match        https://console.akile.io/pushshop
 // @grant        GM_addStyle
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow  // 添加这一行

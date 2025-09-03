@@ -2769,12 +2769,13 @@ EOF
             "3|Alpine 3.19|$WHITE"
             "4|Alpine 3.18|$WHITE"
             "…………………………………|$WHITE" 
-            "11|Debian 12|$YELLOW"
-            "12|Debian 11|$WHITE"
-            "13|Debian 10|$WHITE"
-            "14|Ubuntu 24.04|$YELLOW"
-            "15|Ubuntu 22.04|$WHITE"
-            "16|Ubuntu 20.04|$WHITE"
+            "11|Debian 13|$YELLOW"
+            "12|Debian 12|$WHITE"
+            "13|Debian 11|$WHITE"
+            "14|Debian 10|$WHITE"
+            "15|Ubuntu 24.04|$YELLOW"
+            "16|Ubuntu 22.04|$WHITE"
+            "17|Ubuntu 20.04|$WHITE"
             "…………………………………|$WHITE" 
             "21|AlmaLinux 9|$WHITE"
             "22|AlmaLinux 8|$WHITE"
@@ -2897,6 +2898,14 @@ EOF
                 sys_reboot 
                 ;;
             11) 
+                dd_get_bin456789
+                dd_print_login_info 'root' '123@@@' '22'
+                bash reinstall.sh debian 13
+                dd_print_login_info 'root' '123@@@' '22'
+                _IS_BREAK="false" 
+                sys_reboot 
+                ;;
+            12) 
                 dd_get_mollylau 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
                 bash InstallNET.sh -debian 12
@@ -2904,7 +2913,7 @@ EOF
                 _IS_BREAK="false" 
                 sys_reboot 
                 ;;
-            12) 
+            13) 
                 dd_get_mollylau 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
                 bash InstallNET.sh -debian 11
@@ -2912,7 +2921,7 @@ EOF
                 _IS_BREAK="false" 
                 sys_reboot 
                 ;;
-            13) 
+            14) 
                 dd_get_mollylau 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
                 bash InstallNET.sh -debian 10
@@ -2920,7 +2929,7 @@ EOF
                 _IS_BREAK="false" 
                 sys_reboot 
                 ;;
-            14) 
+            15) 
                 dd_get_mollylau 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
                 bash InstallNET.sh -ubuntu 24.04
@@ -2928,7 +2937,7 @@ EOF
                 _IS_BREAK="false" 
                 sys_reboot 
                 ;;
-            15) 
+            16) 
                 dd_get_mollylau 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
                 bash InstallNET.sh -ubuntu 22.04
@@ -2936,7 +2945,7 @@ EOF
                 _IS_BREAK="false" 
                 sys_reboot 
                 ;;
-            16) 
+            17) 
                 dd_get_mollylau 
                 dd_print_login_info 'root' 'LeitboGi0ro' '22'
                 bash InstallNET.sh -ubuntu  20.04
