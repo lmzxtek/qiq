@@ -9,30 +9,21 @@
         },
         {"data": "keyboard_release:56","extra1": "","extra2": "","timing": 52,"type": "keyboard"},
         {"data": "keyboard_release:31","extra1": "","extra2": "","timing": 38,"type": "keyboard"},
-        
+                
         {"data": "press_rel:(0.225,0.0798611)","extra1": "11","extra2": "","timing": 300,"type": "touch"},
-        {"data": "release","extra1": "11","extra2": "","timing": 120,"type": "touch"},    
+        {"data": "release","extra1": "11","extra2": "","timing": 100,"type": "touch"},        
 
-        {"data": "press_rel:(0.119141,0.305556)","extra1": "2","extra2": "","timing": 240,"type": "touch"},
-        {"data": "press_rel:(0.133984,0.305556)","extra1": "2","extra2": "","timing": 32,"type": "touch"},
-        {"data": "press_rel:(0.148828,0.305556)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
-        {"data": "press_rel:(0.163281,0.305556)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
-        {"data": "press_rel:(0.178125,0.305556)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
-        {"data": "press_rel:(0.192578,0.305556)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
-        {"data": "press_rel:(0.205469,0.305556)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
-        {"data": "release","extra1": "2","extra2": "","timing": 810,"type": "touch"},
-        
-        {"data": "press_rel:(0.119141,0.305556)","extra1": "2","extra2": "","timing": 780,"type": "touch"},
-        {"data": "press_rel:(0.119531,0.331944)","extra1": "2","extra2": "","timing": 32,"type": "touch"},
-        {"data": "press_rel:(0.119531,0.358333)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
-        {"data": "press_rel:(0.119531,0.384028)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
-        {"data": "press_rel:(0.119531,0.410417)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
-        {"data": "press_rel:(0.119531,0.436111)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
-        {"data": "press_rel:(0.119531,0.459028)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
-        {"data": "release","extra1": "2","extra2": "","timing": 1000,"type": "touch"},
-		
-        {"data": "press_rel:(0.196875,0.420833)","extra1": "11","extra2": "","timing": 300,"type": "touch"},
-        {"data": "release","extra1": "11","extra2": "","timing": 200,"type": "touch"},
+        {"data": "press_rel:(0.117578,0.307639)","extra1": "2","extra2": "","timing": 600,"type": "touch"},
+        {"data": "press_rel:(0.132031,0.307639)","extra1": "2","extra2": "","timing": 32,"type": "touch"},
+        {"data": "press_rel:(0.146875,0.307639)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.161328,0.307639)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.176172,0.307639)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "press_rel:(0.190625,0.307639)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.203516,0.307639)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "press_rel:(0.178125,0.415278)","extra1": "2","extra2": "","timing": 376,"type": "touch"},
+        {"data": "press_rel:(0.117578,0.450417)","extra1": "2","extra2": "","timing": 1280,"type": "touch"},
+        {"data": "release","extra1": "2","extra2": "","timing": 23,"type": "touch"},
+
 
         {"data": "release","extra1": "11","extra2": "","timing": 120,"type": "touch"},
         {"data": "press_rel:(0.24,1.35)","extra1": "11","extra2": "","timing": 600,"type": "touch"},

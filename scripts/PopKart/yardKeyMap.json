@@ -291,7 +291,7 @@
                 "text": "Direction_down",
                 "virtual_key": 40
             },
-            "editor_icon_scale": 0.9990234375,
+            "editor_icon_scale": 1,
             "first_point_policy": {
                 "handle_type": "Move",
                 "idle_before_first_press": 0,
@@ -309,8 +309,8 @@
                 "description": "东西南北",
                 "radius_correction": 1,
                 "rel_position": {
-                    "rel_x": 0.17187309078690127,
-                    "rel_y": 0.788191425120773
+                    "rel_x": 0.173,
+                    "rel_y": 0.791
                 },
                 "visibility": true
             },
@@ -329,8 +329,8 @@
             },
             "rel_radius": 0.0859375,
             "rel_work_position": {
-                "rel_x": 0.17187309078690127,
-                "rel_y": 0.788191425120773
+                "rel_x": 0.173,
+                "rel_y": 0.791
             },
             "right_key": {
                 "device": "keyboard",

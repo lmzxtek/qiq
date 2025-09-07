@@ -1,0 +1,39 @@
+{
+    "actions": [
+        {
+            "data": "{\"cmd\":\"detect_app\",\"params\":{\"app\":\"跑跑卡丁车官方竞速版\",\"package\":\"com.tencent.tmgp.WePop\"}}",
+            "extra1": "",
+            "extra2": "",
+            "timing": 0,
+            "type": "vcontrol"
+        },
+        {"data": "keyboard_release:56","extra1": "","extra2": "","timing": 100,"type": "keyboard"},
+        {"data": "keyboard_release:31","extra1": "","extra2": "","timing": 10,"type": "keyboard"},
+
+        {"data": "press_rel:(0.532,0.069)","extra1": "1","extra2": "","timing": 900,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 150,"type": "touch"},
+
+        {"data": "press_rel:(0.177,1.187)","extra1": "1","extra2": "","timing": 1000,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 150,"type": "touch"},
+        {"data": "release","extra1": "5","extra2": "","timing": 2400,"type": "touch"},
+
+        {"data": "press_rel:(0.537,1.6)","extra1": "1","extra2": "","timing": 200,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 10,"type": "touch"},
+        {"data": "press_rel:(0.043,1.656)","extra1": "1","extra2": "","timing": 1500,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 150,"type": "touch"},
+
+        {"data": "press_rel:(0.138,1.131)","extra1": "1","extra2": "","timing": 1500,"type": "touch"},
+        {"data": "press_rel:(0.138,1.133)","extra1": "1","extra2": "","timing": 75,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 100,"type": "touch"},
+
+        {"data": "release","extra1": "5","extra2": "","timing": 3000,"type": "touch"}
+
+    ],
+    "info": {
+        "create_time": 1757222510222,
+        "package_name": "com.tencent.tmgp.WePop",
+        "resolution_x": 2560,
+        "resolution_y": 1440,
+        "total_running_time": 12473
+    }
+}
