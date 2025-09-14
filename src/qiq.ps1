@@ -1404,8 +1404,8 @@ function App_download {
     }
     function download_golang { 
         Write-Host "`n GoLang URL: https://go.dev/dl/ `n" -ForegroundColor Green
-        $appver = "1.24.2"
-        $userInput = Read-Host "Enter ToDesk version (e.g., $appver)"
+        $appver = "1.25.1"
+        $userInput = Read-Host "Enter GoLang version (e.g., $appver)"
         if ($userInput.Trim() -ne "") { $appver = $userInput.Trim() }
         # $go_version = Read-Host "Enter the GO version (e.g., 1.24.2)"
         # if ($go_version -eq "") { $go_version = "1.24.2" }
@@ -1423,8 +1423,8 @@ function App_download {
     }
     function download_nodejs { 
         Write-Host "`n Node.js URL: https://nodejs.org/zh-cn/download `n" -ForegroundColor Green
-        $appver = "22.16.0"
-        $userInput = Read-Host "Enter ToDesk version (e.g., $appver)"
+        $appver = "22.19.0"
+        $userInput = Read-Host "Enter Node.js version (e.g., $appver)"
         if ($userInput.Trim() -ne "") { $appver = $userInput.Trim() }
         # $njs = Read-Host "Enter Node.js version (e.g., 22.15.0)"
         # if ($njs -eq "") { $njs = "22.15.0" }
@@ -1442,7 +1442,7 @@ function App_download {
     }
     function download_todesk { 
         Write-Host "`n ToDesk URL: https://www.todesk.com/ `n" -ForegroundColor Green
-        $appver = "4.7.7.1"
+        $appver = "4.8.2.0"
         $userInput = Read-Host "Enter ToDesk version (e.g., $appver)"
         if ($userInput.Trim() -ne "") { $appver = $userInput.Trim() }
         $file = "ToDesk_$appver.exe"
@@ -2148,6 +2148,7 @@ function show_web_links {
 
     Write-Host "  4. Python : 
     https://www.python.org/downloads/windows/
+    https://www.python.org/ftp/python/3.12.7/python-3.12.7-amd64.exe
     https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe
     "
 
