@@ -1,0 +1,36 @@
+{
+    "actions": [
+        {
+            "data": "{\"cmd\":\"detect_app\",\"params\":{\"app\":\"跑跑卡丁车官方竞速版\",\"package\":\"com.tencent.tmgp.WePop\"}}",
+            "extra1": "","extra2": "","timing": 0,"type": "vcontrol"},
+        {"data": "keyboard_release:30","extra1": "","extra2": "","timing": 152,"type": "keyboard"},
+        {"data": "release","extra1": "11","extra2": "","timing": 41,"type": "touch"},
+
+        {"data": "press_rel:(0.119531,0.304861)","extra1": "2","extra2": "","timing": 414,"type": "touch"},
+        {"data": "press_rel:(0.129297,0.322222)","extra1": "2","extra2": "","timing": 34,"type": "touch"},
+        {"data": "press_rel:(0.139063,0.339583)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "press_rel:(0.148828,0.356944)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "press_rel:(0.158594,0.374306)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.168359,0.391667)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "press_rel:(0.180469,0.4125)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.119531,0.457639)","extra1": "2","extra2": "","timing": 1589,"type": "touch"},
+        {"data": "release","extra1": "2","extra2": "","timing": 44,"type": "touch"},
+        {"data": "press_rel:(0.119531,0.304861)","extra1": "2","extra2": "","timing": 296,"type": "touch"},
+        {"data": "press_rel:(0.119531,0.330556)","extra1": "2","extra2": "","timing": 33,"type": "touch"},
+        {"data": "press_rel:(0.119531,0.356944)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "press_rel:(0.119531,0.383333)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.119531,0.409028)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "press_rel:(0.119531,0.435417)","extra1": "2","extra2": "","timing": 18,"type": "touch"},
+        {"data": "press_rel:(0.119531,0.457639)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+
+        {"data": "release","extra1": "2","extra2": "","timing": 18,"type": "touch"},
+        {"data": "release","extra1": "5","extra2": "","timing": 2182,"type": "touch"}
+    ],
+    "info": {
+        "create_time": 1759556599648,
+        "package_name": "com.tencent.tmgp.WePop",
+        "resolution_x": 2560,
+        "resolution_y": 1440,
+        "total_running_time": 4968
+    }
+}
