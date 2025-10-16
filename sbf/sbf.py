@@ -8,7 +8,8 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8333
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import PlainTextResponse, HTMLResponse
 
-import httpx
+import toml,os 
+import httpx,base64 
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
@@ -362,6 +363,54 @@ async def route_clashnode(    type: str ):
     elif type == 'c': return fetch_text_sync(clash_list[0])
 
     raise HTTPException(status_code=404, detail="Invalid node type: {type}")
+
+
+def load_nodes(fpath:str = "nodes.toml"):
+    """    加载节点信息    """
+    
+    # 检查配置文件是否存在
+    if not os.path.exists(fpath):
+        print(f"节点文件 {fpath} 不存在")
+        raise FileNotFoundError(f"文件 {fpath} 不存在")
+    
+    # 读取现有配置文件
+    try: 
+        with open(fpath, "r", encoding="utf-8") as f:
+            cfg = toml.load(f)
+        return cfg
+    except Exception as e:
+        print(f"加载节点配置文件失败: {e}") 
+        return {}
+
+@app.get("/sb/{tag}", 
+         response_class=PlainTextResponse,
+         summary="SingBox Nodes",tags=["SingBox",],
+         description=f"QiQ的节点(singbox)", 
+         )
+async def route_mibei(tag: str,t:str ):
+    cfg = load_nodes()
+
+    if t!=cfg['TOKEN']:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    if tag not in [ "all"] and tag not in cfg:
+        raise HTTPException(status_code=404, detail=f"Invalid node tag: {tag}")
+
+    nodes_list = []
+    if tag=='all':
+        for k,v in cfg.items():
+            if k.strip() in ['TOKEN']: continue 
+            
+            # nodes = v.strip().split('\n')
+            lines = [line.strip() for line in v.splitlines() if line.strip()]
+            nodes_list.extend(lines)
+    else: 
+        # nodes_list = cfg[tag].strip().split('\n')
+        nodes_list = [line.strip() for line in cfg[tag].splitlines() if line.strip()]
+    
+    nodes_list = list(set(nodes_list)) # 去重 
+    result_str = '\n'.join(nodes_list).replace('hy2:','hysteria2:') 
+    return base64.b64encode(result_str.encode()).decode()
 
 
 #=========== Index =====================
