@@ -19,110 +19,6 @@
                 "description": "",
                 "radius_correction": 1,
                 "rel_position": {
-                    "rel_x": 0.04407443682664055,
-                    "rel_y": 0.4738675958188153
-                },
-                "visibility": true
-            },
-            "key": {
-                "device": "keyboard",
-                "scan_code": 46,
-                "text": "C",
-                "virtual_key": 67
-            },
-            "press_actions": [
-                "sleep:843",
-                "keyboard_press:44",
-                "sleep:170",
-                "keyboard_release:44",
-                "sleep:667",
-                "keyboard_press:328",
-                "sleep:1673",
-                "keyboard_press:331",
-                "sleep:1964",
-                "keyboard_release:328",
-                "sleep:556",
-                "keyboard_press:336",
-                "sleep:354",
-                "keyboard_release:336",
-                "sleep:426",
-                "keyboard_press:336",
-                "sleep:1303",
-                "keyboard_release:336",
-                "sleep:5",
-                "keyboard_release:331",
-                "sleep:229",
-                "keyboard_press:29",
-                "sleep:105",
-                "keyboard_release:29",
-                "sleep:3145"
-            ],
-            "rel_work_position": {
-                "rel_x": 0.04407443682664055,
-                "rel_y": 0.4738675958188153
-            },
-            "release_actions": [
-
-            ],
-            "type": "OperationRecorder"
-        },
-        {
-            "editor_icon_scale": 1,
-            "icon": {
-                "background_color": "00000066",
-                "description": "",
-                "radius_correction": 1,
-                "rel_position": {
-                    "rel_x": 0.043095004897159644,
-                    "rel_y": 0.39372822299651566
-                },
-                "visibility": true
-            },
-            "key": {
-                "device": "keyboard",
-                "scan_code": 45,
-                "text": "X",
-                "virtual_key": 88
-            },
-            "press_actions": [
-                "sleep:103",
-                "keyboard_press:44",
-                "sleep:138",
-                "keyboard_release:44",
-                "sleep:875",
-                "keyboard_press:333",
-                "sleep:494",
-                "keyboard_release:333",
-                "sleep:535",
-                "keyboard_press:333",
-                "sleep:107",
-                "keyboard_release:333",
-                "sleep:892",
-                "keyboard_press:29",
-                "sleep:112",
-                "keyboard_release:29",
-                "sleep:3423",
-                "keyboard_press:44",
-                "sleep:139",
-                "keyboard_release:44",
-                "sleep:40"
-            ],
-            "rel_work_position": {
-                "rel_x": 0.043095004897159644,
-                "rel_y": 0.39372822299651566
-            },
-            "release_actions": [
-
-            ],
-            "type": "OperationRecorder"
-        },
-        {
-            "editor_icon_scale": 1,
-            "icon": {
-                "background_color": "00000066",
-                "description": "",
-                "radius_correction": 1,
-                "rel_position": {
                     "rel_x": 0.043,
                     "rel_y": 0.3
                 },
@@ -395,7 +291,7 @@
                 "text": "Direction_down",
                 "virtual_key": 40
             },
-            "editor_icon_scale": 1,
+            "editor_icon_scale": 0.9970703125,
             "first_point_policy": {
                 "handle_type": "Move",
                 "idle_before_first_press": 0,
@@ -467,6 +363,111 @@
                 "virtual_key": 38
             },
             "type": "Swipehold"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.043095004897159644,
+                    "rel_y": 0.39372822299651566
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 45,
+                "text": "X",
+                "virtual_key": 88
+            },
+            "press_actions": [
+                "sleep:825",
+                "keyboard_press:44",
+                "sleep:151",
+                "keyboard_release:44",
+                "sleep:914",
+                "keyboard_press:333",
+                "sleep:539",
+                "keyboard_release:333",
+                "sleep:728",
+                "keyboard_press:29",
+                "sleep:184",
+                "keyboard_release:29",
+                "sleep:3820",
+                "keyboard_press:44",
+                "sleep:110",
+                "keyboard_release:44",
+                "sleep:879",
+                "vmouse_move:(0.273262,0.437282)",
+                "sleep:491",
+                "vmouse_move:(0.636631,0.283972)",
+                "sleep:247",
+                "vmouse_move:(0.926543,0.0261324)"
+            ],
+            "rel_work_position": {
+                "rel_x": 0.043095004897159644,
+                "rel_y": 0.39372822299651566
+            },
+            "release_actions": [
+
+            ],
+            "type": "OperationRecorder"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.04407443682664055,
+                    "rel_y": 0.4738675958188153
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 46,
+                "text": "C",
+                "virtual_key": 67
+            },
+            "press_actions": [
+                "sleep:843",
+                "keyboard_press:44",
+                "sleep:170",
+                "keyboard_release:44",
+                "sleep:667",
+                "keyboard_press:328",
+                "sleep:1673",
+                "keyboard_press:331",
+                "sleep:1964",
+                "keyboard_release:328",
+                "sleep:556",
+                "keyboard_press:336",
+                "sleep:354",
+                "keyboard_release:336",
+                "sleep:426",
+                "keyboard_press:336",
+                "sleep:1303",
+                "keyboard_release:336",
+                "sleep:5",
+                "keyboard_release:331",
+                "sleep:229",
+                "keyboard_press:29",
+                "sleep:105",
+                "keyboard_release:29",
+                "sleep:3145"
+            ],
+            "rel_work_position": {
+                "rel_x": 0.04407443682664055,
+                "rel_y": 0.4738675958188153
+            },
+            "release_actions": [
+
+            ],
+            "type": "OperationRecorder"
         }
     ],
     "param": {
