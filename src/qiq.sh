@@ -19,14 +19,15 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.7
+SRC_VER=v0.7.8
 #==========================
 
 DOCKER_PROXY='m.daocloud.io/'
 # URL_PROXY='https://proxy.zwdk.org/proxy/'
 URL_PROXY='https://proxy.063643.xyz/proxy/'
+URL_LOG='https://qiq.zwdk.org/log'
 URL_REDIRECT='https://qiq.zwdk.org/sh'
-URL_REDIRECT='https://sub.zwdk.org/qiq'
+# URL_REDIRECT='https://sub.zwdk.org/qiq' # Redirect to github repo. file 
 URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/qiq.sh'
 URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiq/refs/heads/main/src/log.sh'
 
@@ -3733,6 +3734,7 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "11|NginxUI|$GREEN"
     "12|OpenLiteSpeed|$WHITE"
     "13|OpenRestyManager|$GREEN"
+    "14|EasyTier|$Yellow"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
@@ -3806,15 +3808,17 @@ function service_tools_menu(){
             [Yy] | [Yy][Ee][Ss])
                 # sys_update 
                 _BREAK_INFO=" 成功安装${app_name}!"
-                if [ "$system_type" == "centos" ]; then
-                    curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
-                elif [ "$system_type" == "ubuntu" ]; then
-                    curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
-                elif [ "$system_type" == "debian" ]; then
-                    curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
-                else
-                    bash <(curl -sSL https://linuxmirrors.cn/docker.sh) && curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
-                fi
+                # url_1pctl = 'https://resource.fit2cloud.com/1panel/package/quick_start.sh'
+                bash -c "$(curl -sSL https://resource.fit2cloud.com/1panel/package/v2/quick_start.sh)"
+                # if [ "$system_type" == "centos" ]; then
+                #     curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
+                # elif [ "$system_type" == "ubuntu" ]; then
+                #     curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+                # elif [ "$system_type" == "debian" ]; then
+                #     curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+                # else
+                #     bash <(curl -sSL https://linuxmirrors.cn/docker.sh) && curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
+                # fi
                 ;;
             [Nn] | [Nn][Oo])
                 _BREAK_INFO=" 取消安装${app_name}!"
@@ -5376,6 +5380,10 @@ EOF
         11) tools_install_nginxui ;;
         12) tools_install_openlitespeed ;;
         13) sudo bash -c "$(curl -fsSL https://om.uusec.com/installer_cn.sh)" ;;
+        14) 
+            url_et = "https://raw.githubusercontent.com/EasyTier/EasyTier/main/script/install.sh"
+            wget -O- $(get_proxy_url "$url_et")  | sudo bash -s install 
+            ;;
 
         21) tools_install_redis ;; 
         22) tools_install_mysql ;; 
