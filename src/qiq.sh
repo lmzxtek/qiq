@@ -3734,7 +3734,7 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "11|NginxUI|$GREEN"
     "12|OpenLiteSpeed|$WHITE"
     "13|OpenRestyManager|$GREEN"
-    "14|EasyTier|$Yellow"
+    "14|EasyTier|$YELLOW"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
