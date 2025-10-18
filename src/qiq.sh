@@ -5381,8 +5381,13 @@ EOF
         12) tools_install_openlitespeed ;;
         13) sudo bash -c "$(curl -fsSL https://om.uusec.com/installer_cn.sh)" ;;
         14) 
-            local url_et="https://raw.githubusercontent.com/EasyTier/EasyTier/main/script/install.sh"
-            wget -O- $(get_proxy_url "$url_et")  | sudo bash -s install 
+            _IS_BREAK="true" 
+            if command -v easytier-cli &>/dev/null; then
+                _BREAK_INFO=" 已安装EasyTier"
+            else
+                local url_et="https://raw.githubusercontent.com/EasyTier/EasyTier/main/script/install.sh"
+                wget -O- $(get_proxy_url "$url_et")  | sudo bash -s install 
+                _BREAK_INFO=" 安装EasyTier成功！"
             ;;
 
         21) tools_install_redis ;; 
