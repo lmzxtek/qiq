@@ -1,0 +1,34 @@
+# https://gofrp.org/zh-cn/docs/
+# https://gofrp.org/zh-cn/docs/setup/systemd/
+# $ sudo vim /etc/systemd/system/frps.service
+
+[Unit]
+Description=EasyTier Service
+After=network.target syslog.target
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/easytier-core --hostname <your-hostname> --network-name <your-network> --network-secret <your-secret> -p tcp://public.easytier.top:11010
+Restart=always
+RestartSec=3
+LimitNOFILE=1048576
+Environment=TOKIO_CONSOLE=1
+
+[Install]
+WantedBy = multi-user.target
+
+
+##===========================
+# # 启动frp
+# sudo systemctl start easytier
+# # 停止frp
+# sudo systemctl stop easytier
+# # 重启frp
+# sudo systemctl restart easytier
+# # 查看frp状态
+# sudo systemctl status easytier
+
+##===========================
+# 开机启动frp
+# sudo systemctl enable easytier
