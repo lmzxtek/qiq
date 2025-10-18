@@ -3733,8 +3733,8 @@ MENU_SERVICE_TOOLS_ITEMS=(
     "10|Nginx|$GREEN"
     "11|NginxUI|$GREEN"
     "12|OpenLiteSpeed|$WHITE"
-    "13|OpenRestyManager|$GREEN"
-    "14|EasyTier|$YELLOW"
+    "13|OpenRestyManager|$WHITE"
+    "14|EasyTier|$GREEN"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
@@ -5388,6 +5388,7 @@ EOF
                 local url_et="https://raw.githubusercontent.com/EasyTier/EasyTier/main/script/install.sh"
                 wget -O- $(get_proxy_url "$url_et")  | sudo bash -s install 
                 _BREAK_INFO=" 安装EasyTier成功！"
+            fi
             ;;
 
         21) tools_install_redis ;; 
