@@ -6,16 +6,6 @@ vless://1ae6dcb3-8d05-4eee-b550-32904c88c312@172.67.160.44:443?security=tls&sni=
 vless://1ae6dcb3-8d05-4eee-b550-32904c88c312@172.67.160.44:443?security=tls&sni=8dbc269c-38ed-0d38-7a26-970a14604a96.huangshang.site&type=ws&path=/0SCvfqSaeeB74kgXZ&host=8dbc269c-38ed-0d38-7a26-970a14604a96.huangshang.site&packetEncoding=xudp&encryption=none#%E7%BE%8E%E5%9B%BD
 '''
 
-hy = '''
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@45.87.175.197:8080#%E5%BE%B7%E5%9B%BD
-'''
-
-
-tu = '''
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@45.87.175.197:8080#%E5%BE%B7%E5%9B%BD
-'''
-
-
 us = '''
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@45.87.175.197:8080#%E5%BE%B7%E5%9B%BD
 '''

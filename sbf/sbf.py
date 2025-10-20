@@ -397,7 +397,7 @@ async def route_mibei(tag: str,t:str ):
         raise HTTPException(status_code=404, detail=f"Invalid node tag: {tag}")
 
     nodes_list = []
-    if tag=='all':
+    if tag in ['all','hy','tu','an','vl','tr']:
         for k,v in cfg.items():
             if k.strip() in ['TOKEN']: continue 
             
@@ -408,7 +408,20 @@ async def route_mibei(tag: str,t:str ):
         # nodes_list = cfg[tag].strip().split('\n')
         nodes_list = [line.strip() for line in cfg[tag].splitlines() if line.strip()]
     
-    nodes_list = list(set(nodes_list)) # 去重 
+    results = nodes_list
+    if tag=='hy':
+        results = [node for node in nodes_list 
+                   if node.startswith('hysteria2:')  or node.startswith('hy2:')]
+    elif tag=='tu':
+        results = [node for node in nodes_list if node.startswith('tuic:')]
+    elif tag=='an':
+        results = [node for node in nodes_list if node.startswith('anytls:')]
+    elif tag=='vl':
+        results = [node for node in nodes_list if node.startswith('vless:')]
+    elif tag=='tr':
+        results = [node for node in nodes_list if node.startswith('trojan:')]
+
+    nodes_list = list(set(results)) # 去重 
     result_str = '\n'.join(nodes_list).replace('hy2:','hysteria2:') 
     return base64.b64encode(result_str.encode()).decode()
 
