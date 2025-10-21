@@ -8534,6 +8534,7 @@ MENU_DOCKER_MANAGE_ITEMS=(
     "31|站点部署|$YELLOW" 
     "32|站点管理|$WHITE" 
     "33|设置dcc|$WHITE" 
+    "34|自定义root|$YELLOW" 
 )
 function docker_management_menu(){
     function print_menu_dcc_manage(){
@@ -8715,6 +8716,67 @@ function docker_management_menu(){
             docker_check_docker_compose
         fi
     }    
+    function docker_custom_root(){
+        echo -e "\n $TIP 设置容器自定义根目录"
+        
+        # 设置默认路径
+        DEFAULT_DATA_ROOT="/mnt/db1/docker_data"
+        read -rp "请输入 Docker data-root 路径 (默认: $DEFAULT_DATA_ROOT): " INPUT_PATH
+        DATA_ROOT=${INPUT_PATH:-$DEFAULT_DATA_ROOT}
+
+        # 创建目录（如果不存在）
+        if [ ! -d "$DATA_ROOT" ]; then
+            echo "目录 $DATA_ROOT 不存在，正在创建..."
+            sudo mkdir -p "$DATA_ROOT"
+        fi
+
+        DAEMON_FILE="/etc/docker/daemon.json"
+        TEMP_FILE="/tmp/daemon_temp.json"
+
+        # 检查 daemon.json 是否存在
+        if [ -f "$DAEMON_FILE" ]; then
+            echo "检测到 $DAEMON_FILE 文件存在，正在检查是否已配置 data-root..."
+
+            # 使用 jq 检查是否已有 data-root 字段
+            if command -v jq &> /dev/null; then
+                CURRENT_ROOT=$(jq -r '.["data-root"] // empty' "$DAEMON_FILE")
+                if [ -n "$CURRENT_ROOT" ]; then
+                    echo "当前 data-root 已设置为: $CURRENT_ROOT"
+                    read -rp "是否替换为新的路径 $DATA_ROOT? (y/N): " CONFIRM
+                    if [[ "$CONFIRM" =~ ^[Yy]$ ]]; then
+                        jq --arg newroot "$DATA_ROOT" '.["data-root"] = $newroot' "$DAEMON_FILE" > "$TEMP_FILE"
+                        sudo mv "$TEMP_FILE" "$DAEMON_FILE"
+                        echo "已更新 data-root 为: $DATA_ROOT"
+                    else
+                        echo "未进行更改。"
+                        return 0
+                    fi
+                else
+                    echo "未检测到 data-root 配置，正在添加..."
+                    jq --arg newroot "$DATA_ROOT" '. + {"data-root": $newroot}' "$DAEMON_FILE" > "$TEMP_FILE"
+                    sudo mv "$TEMP_FILE" "$DAEMON_FILE"
+                    echo "已添加 data-root 配置: $DATA_ROOT"
+                fi
+            else
+                echo "未安装 jq，无法安全编辑 JSON 文件，请先安装 jq。"
+                return 1
+            fi
+        else
+            echo "未检测到 $DAEMON_FILE 文件，正在创建..."
+            sudo mkdir -p "$(dirname "$DAEMON_FILE")"
+            echo "{\"data-root\": \"$DATA_ROOT\"}" | sudo tee "$DAEMON_FILE" > /dev/null
+            echo "已创建 $DAEMON_FILE 并设置 data-root 为: $DATA_ROOT"
+        fi
+
+        # 提示重启 Docker
+        read -rp "是否立即重启 Docker 服务以应用更改? (y/N): " RESTART
+        if [[ "$RESTART" =~ ^[Yy]$ ]]; then
+            sudo systemctl restart docker
+            echo "Docker 服务已重启。"
+        else
+            echo "请手动重启 Docker 服务以应用更改。"
+        fi
+    }
     function docker_enable_ipv6(){
         echo -e "\n $TIP 开启容器IPv6网络"
         local CONFIG_FILE="/etc/docker/daemon.json"
@@ -9088,6 +9150,7 @@ function docker_management_menu(){
         31) docker_deploy_menu && _IS_BREAK="false" && break ;;
         32) caddy_management_menu && _IS_BREAK="false" ;;
         33) docker_set_1ckl && _IS_BREAK="true" ;;
+        34) docker_custom_root && _IS_BREAK="true" ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && break  ;;
         # 0)  main_menu && _IS_BREAK="false"  && break  ;;
