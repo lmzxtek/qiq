@@ -389,15 +389,16 @@ def load_nodes(fpath:str = "nodes.toml"):
          )
 async def route_mibei(tag: str,t:str ):
     cfg = load_nodes()
+    tags_list = ['all','hy','tu','an','vl','tr']
 
     if t!=cfg['TOKEN']:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    if tag not in [ "all"] and tag not in cfg:
+    if tag not in tags_list and tag not in cfg:
         raise HTTPException(status_code=404, detail=f"Invalid node tag: {tag}")
 
     nodes_list = []
-    if tag in ['all','hy','tu','an','vl','tr']:
+    if tag in tags_list:
         for k,v in cfg.items():
             if k.strip() in ['TOKEN']: continue 
             
