@@ -123,13 +123,8 @@
             "type": "OperationRecorder"
         },
         {
-            "bottom_key": {
-                "device": "keyboard",
-                "scan_code": 336,
-                "text": "Direction_down",
-                "virtual_key": 40
-            },
             "editor_icon_scale": 0.8330078125,
+            "hold_center_interval_after_release": 0,
             "first_point_policy": {
                 "handle_type": "Move",
                 "idle_before_first_press": 0,
@@ -141,41 +136,7 @@
                 "steps": 6,
                 "wait_for_second": 8
             },
-            "hold_center_interval_after_release": 0,
-            "icon": {
-                "background_color": "00000066",
-                "description": "东西南北",
-                "radius_correction": 1,
-                "rel_position": {
-                    "rel_x": 0.171484375,
-                    "rel_y": 0.7875
-                },
-                "visibility": true
-            },
             "in_line_policy": "Just_Use_Last",
-            "key": {
-                "device": "",
-                "scan_code": 2147483647,
-                "text": "",
-                "virtual_key": 2147483647
-            },
-            "left_key": {
-                "device": "keyboard",
-                "scan_code": 331,
-                "text": "Direction_left",
-                "virtual_key": 37
-            },
-            "rel_radius": 0.0859375,
-            "rel_work_position": {
-                "rel_x": 0.171484375,
-                "rel_y": 0.7875
-            },
-            "right_key": {
-                "device": "keyboard",
-                "scan_code": 333,
-                "text": "Direction_right",
-                "virtual_key": 39
-            },
             "subsequent_point_policy": {
                 "handle_type": "Click",
                 "period": 16,
@@ -183,7 +144,7 @@
             },
             "target_point_input_compensatory_policy": {
                 "count": 3,
-                "distance": 0.01,
+                "distance": 0.001,
                 "enable": false,
                 "period": 8,
                 "steps": 3,
@@ -193,6 +154,45 @@
                 "y_policy": "Default",
                 "y_policy_intercept_phaseshift": 0,
                 "y_policy_slope_period": 1
+            },
+            "rel_radius": 0.0859375,
+            "rel_work_position": {
+                    "rel_x": 0.17405,
+                    "rel_y": 0.788
+            },
+            "icon": {
+                "background_color": "00000066",
+                "description": "东西南北",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.17405,
+                    "rel_y": 0.788
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "",
+                "scan_code": 2147483647,
+                "text": "",
+                "virtual_key": 2147483647
+            },
+            "bottom_key": {
+                "device": "keyboard",
+                "scan_code": 336,
+                "text": "Direction_down",
+                "virtual_key": 40
+            },
+            "left_key": {
+                "device": "keyboard",
+                "scan_code": 331,
+                "text": "Direction_left",
+                "virtual_key": 37
+            },
+            "right_key": {
+                "device": "keyboard",
+                "scan_code": 333,
+                "text": "Direction_right",
+                "virtual_key": 39
             },
             "top_key": {
                 "device": "keyboard",
