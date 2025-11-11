@@ -7,16 +7,16 @@
             "timing": 0,
             "type": "vcontrol"
         },
-        {"data": "press_rel:(0.225,0.0798611)","extra1": "11","extra2": "","timing": 300,"type": "touch"},
-        {"data": "release","extra1": "11","extra2": "","timing": 120,"type": "touch"},        
-
-        {"data": "release","extra1": "11","extra2": "","timing": 150,"type": "touch"}
+        {"desp":"开始浇水","data": "press_rel:(0.135,1.5)","extra1": "11","extra2": "","timing": 100,"type": "touch"},
+        {"desp":"结束浇水","data": "release","extra1": "11","extra2": "","timing": 150,"type": "touch"},
+        
+        {"data": "release","extra1": "11","extra2": "","timing": 300,"type": "touch"}
     ],
     "info": {
-        "create_time": 1757160125701,
+        "create_time": 1757161227624,
         "package_name": "com.tencent.tmgp.WePop",
         "resolution_x": 2560,
         "resolution_y": 1440,
-        "total_running_time": 903
+        "total_running_time": 250
     }
 }

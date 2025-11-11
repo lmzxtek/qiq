@@ -1,0 +1,27 @@
+{
+    "actions": [
+        {
+            "data": "{\"cmd\":\"detect_app\",\"params\":{\"app\":\"跑跑卡丁车官方竞速版\",\"package\":\"com.tencent.tmgp.WePop\"}}",
+            "extra1": "",
+            "extra2": "",
+            "timing": 0,
+            "type": "vcontrol"
+        },
+        {"desp":"开始复位","data": "press_rel:(0.225,0.0798611)","extra1": "11","extra2": "","timing": 540,"type": "touch"},
+        {"desp":"开始复位","data": "release","extra1": "11","extra2": "","timing": 120,"type": "touch"},
+
+        {"data": "press_rel:(0.05,0.447222)","extra1": "11","extra2": "","timing": 600,"type": "touch"},
+        {"data": "release","extra1": "11","extra2": "","timing": 400,"type": "touch"},
+        {"data": "press_rel:(0.196875,0.420833)","extra1": "11","extra2": "","timing": 300,"type": "touch"},
+        {"data": "release","extra1": "11","extra2": "","timing": 2274,"type": "touch"},
+
+        {"data": "release","extra1": "11","extra2": "","timing": 300,"type": "touch"}
+    ],
+    "info": {
+        "create_time": 1762840367830,
+        "package_name": "com.tencent.tmgp.WePop",
+        "resolution_x": 2560,
+        "resolution_y": 1440,
+        "total_running_time": 5323
+    }
+}

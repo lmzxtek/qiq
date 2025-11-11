@@ -1,0 +1,502 @@
+{
+    "info": {
+        "background_color": "000000FF",
+        "is_joystick": false,
+        "response_cursor_point_icon": false,
+        "transparent_ESC": false,
+        "transparent_keyboard": true,
+        "transparent_mouse": "Mouse_No_Transparent",
+        "transparent_mouse_windows_raw_move_period": 0,
+        "transparent_mouse_windows_raw_move_sensitivity": 1,
+        "transparent_wheel": false,
+        "visibility": true
+    },
+    "keymaps": [
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.04407443682664055,
+                    "rel_y": 0.4738675958188153
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 46,
+                "text": "C",
+                "virtual_key": 67
+            },
+            "press_actions": [
+                "keyboard_press:44",
+                "sleep:91",
+                "keyboard_release:44",
+                "sleep:723",
+                "keyboard_press:22",
+                "sleep:1130",
+                "keyboard_press:35",
+                "sleep:47",
+                "keyboard_release:22",
+                "sleep:612",
+                "keyboard_release:35",
+                "sleep:97",
+                "keyboard_press:35",
+                "sleep:6096",
+                "keyboard_release:35",
+                "sleep:111",
+                "keyboard_press:36",
+                "sleep:2556",
+                "keyboard_release:36",
+                "sleep:1511",
+                "vmouse_move:(0.854631,0.76875)",
+                "sleep:0",
+                "vmouse_press:1",
+                "sleep:136",
+                "vmouse_move:(0.854631,0.76875)",
+                "sleep:0",
+                "vmouse_release:1",
+                "sleep:2368",
+                "vmouse_move:(0.855803,0.754167)",
+                "sleep:26"
+            ],
+            "rel_work_position": {
+                "rel_x": 0.04407443682664055,
+                "rel_y": 0.4738675958188153
+            },
+            "release_actions": [
+
+            ],
+            "type": "OperationRecorder"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.043095004897159644,
+                    "rel_y": 0.39372822299651566
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 45,
+                "text": "X",
+                "virtual_key": 88
+            },
+            "press_actions": [
+                "keyboard_press:44",
+                "sleep:91",
+                "keyboard_release:44",
+                "sleep:723",
+                "keyboard_press:37",
+                "sleep:497",
+                "keyboard_release:37",
+                "sleep:213",
+                "keyboard_press:22",
+                "sleep:321",
+                "keyboard_release:22",
+                "sleep:704",
+                "keyboard_press:29",
+                "sleep:149",
+                "keyboard_release:29",
+                "sleep:2924",
+                "keyboard_press:44",
+                "sleep:108",
+                "keyboard_release:44",
+                "sleep:728",
+                "vmouse_move:(0.849941,0.760417)",
+                "sleep:13"
+            ],
+            "rel_work_position": {
+                "rel_x": 0.043095004897159644,
+                "rel_y": 0.39372822299651566
+            },
+            "release_actions": [
+
+            ],
+            "type": "OperationRecorder"
+        },
+        {
+            "bottom_key": {
+                "device": "keyboard",
+                "scan_code": 336,
+                "text": "Direction_down",
+                "virtual_key": 40
+            },
+            "editor_icon_scale": 0.8330078125,
+            "first_point_policy": {
+                "handle_type": "Move",
+                "idle_before_first_press": 0,
+                "interval": 32,
+                "move_type": "Constant",
+                "no_press_first_center_point": false,
+                "period": 16,
+                "speed": 100,
+                "steps": 6,
+                "wait_for_second": 8
+            },
+            "hold_center_interval_after_release": 0,
+            "icon": {
+                "background_color": "00000066",
+                "description": "东西南北",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.171484375,
+                    "rel_y": 0.7875
+                },
+                "visibility": true
+            },
+            "in_line_policy": "Just_Use_Last",
+            "key": {
+                "device": "",
+                "scan_code": 2147483647,
+                "text": "",
+                "virtual_key": 2147483647
+            },
+            "left_key": {
+                "device": "keyboard",
+                "scan_code": 331,
+                "text": "Direction_left",
+                "virtual_key": 37
+            },
+            "rel_radius": 0.0859375,
+            "rel_work_position": {
+                "rel_x": 0.171484375,
+                "rel_y": 0.7875
+            },
+            "right_key": {
+                "device": "keyboard",
+                "scan_code": 333,
+                "text": "Direction_right",
+                "virtual_key": 39
+            },
+            "subsequent_point_policy": {
+                "handle_type": "Click",
+                "period": 16,
+                "steps": 6
+            },
+            "target_point_input_compensatory_policy": {
+                "count": 3,
+                "distance": 0.01,
+                "enable": false,
+                "period": 8,
+                "steps": 3,
+                "x_policy": "Default",
+                "x_policy_intercept_phaseshift": 0,
+                "x_policy_slope_period": 1,
+                "y_policy": "Default",
+                "y_policy_intercept_phaseshift": 0,
+                "y_policy_slope_period": 1
+            },
+            "top_key": {
+                "device": "keyboard",
+                "scan_code": 328,
+                "text": "Direction_up",
+                "virtual_key": 38
+            },
+            "type": "Swipehold"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "复位",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.045,
+                    "rel_y": 0.6
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 44,
+                "text": "Z",
+                "virtual_key": 90
+            },
+            "rel_work_position": {
+                "rel_x": 0.045,
+                "rel_y": 0.6
+            },
+            "type": "Click"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "进",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.23655913978494622,
+                    "rel_y": 0.65
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 22,
+                "text": "U",
+                "virtual_key": 85
+            },
+            "rel_work_position": {
+                "rel_x": 0.23655913978494622,
+                "rel_y": 0.65
+            },
+            "type": "Click"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "左",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.10000000000000002,
+                    "rel_y": 0.67
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 35,
+                "text": "H",
+                "virtual_key": 72
+            },
+            "rel_work_position": {
+                "rel_x": 0.10000000000000002,
+                "rel_y": 0.67
+            },
+            "type": "Click"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "右",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.251505376344086,
+                    "rel_y": 0.9112608695652172
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 37,
+                "text": "K",
+                "virtual_key": 75
+            },
+            "rel_work_position": {
+                "rel_x": 0.251505376344086,
+                "rel_y": 0.9112608695652172
+            },
+            "type": "Click"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "回",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.115,
+                    "rel_y": 0.92
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 36,
+                "text": "J",
+                "virtual_key": 74
+            },
+            "rel_work_position": {
+                "rel_x": 0.115,
+                "rel_y": 0.92
+            },
+            "type": "Click"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "挖",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.76,
+                    "rel_y": 0.57
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 42,
+                "text": "Shift",
+                "virtual_key": 16
+            },
+            "rel_work_position": {
+                "rel_x": 0.76,
+                "rel_y": 0.57
+            },
+            "type": "Click"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "浇水",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.85,
+                    "rel_y": 0.76
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 29,
+                "text": "Ctrl",
+                "virtual_key": 17
+            },
+            "rel_work_position": {
+                "rel_x": 0.85,
+                "rel_y": 0.76
+            },
+            "type": "Click"
+        },
+        {
+            "bottom_key": {
+                "device": "keyboard",
+                "scan_code": 33,
+                "text": "F",
+                "virtual_key": 70
+            },
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.5,
+                    "rel_y": 0.5
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "",
+                "scan_code": 2147483647,
+                "text": "",
+                "virtual_key": 2147483647
+            },
+            "left_key": {
+                "device": "keyboard",
+                "scan_code": 32,
+                "text": "D",
+                "virtual_key": 68
+            },
+            "rel_work_position": {
+                "rel_x": 0.5,
+                "rel_y": 0.5
+            },
+            "right_key": {
+                "device": "keyboard",
+                "scan_code": 34,
+                "text": "G",
+                "virtual_key": 71
+            },
+            "sensitivity": 10,
+            "top_key": {
+                "device": "keyboard",
+                "scan_code": 19,
+                "text": "R",
+                "virtual_key": 82
+            },
+            "type": "Eye"
+        },
+        {
+            "editor_icon_scale": 1,
+            "icon": {
+                "background_color": "00000066",
+                "description": "",
+                "radius_correction": 1,
+                "rel_position": {
+                    "rel_x": 0.043,
+                    "rel_y": 0.3
+                },
+                "visibility": true
+            },
+            "key": {
+                "device": "keyboard",
+                "scan_code": 16,
+                "text": "Q",
+                "virtual_key": 81
+            },
+            "press_actions": [
+                "sleep:100",
+                "vmouse_move:(0.035,0.045)",
+                "vmouse_press:1",
+                "sleep:300",
+                "vmouse_release:1",
+                "sleep:1000",
+                "vmouse_move:(0.65,0.7)",
+                "vmouse_press:1",
+                "sleep:300",
+                "vmouse_release:1",
+                "sleep:2700",
+                "vmouse_move:(0.9,0.036)",
+                "vmouse_press:1",
+                "sleep:300",
+                "vmouse_release:1",
+                "sleep:1200",
+                "vmouse_move:(0.935,0.92)",
+                "vmouse_press:1",
+                "sleep:300",
+                "vmouse_release:1",
+                "sleep:1000",
+                "vmouse_move:(0.64,0.75)",
+                "vmouse_press:1",
+                "sleep:300",
+                "vmouse_release:1",
+                "sleep:900"
+            ],
+            "rel_work_position": {
+                "rel_x": 0.043,
+                "rel_y": 0.3
+            },
+            "release_actions": [
+
+            ],
+            "type": "OperationRecorder"
+        }
+    ],
+    "param": {
+        "transparent_joystick_policy": {
+            "protocol_version": 0
+        },
+        "transparent_wheel_policy": {
+            "protocol_version": 0,
+            "sensitivity": 1
+        },
+        "virtual_joystick": {
+            "enable": false
+        },
+        "wheel_policy": {
+            "small_point_move_first": false,
+            "wheel_step_distance": 0.01,
+            "zoom_degree": 45,
+            "zoom_first_interval": 16,
+            "zoom_last_idle": 0,
+            "zoom_margin": 20,
+            "zoom_operation_shortcut_mode": false,
+            "zoom_period": 16,
+            "zoom_step_distance": 0.00625,
+            "zoom_steps": 8
+        }
+    }
+}

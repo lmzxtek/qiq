@@ -1,0 +1,61 @@
+{
+    "actions": [
+        {
+            "data": "{\"cmd\":\"detect_app\",\"params\":{\"app\":\"跑跑卡丁车官方竞速版\",\"package\":\"com.tencent.tmgp.WePop\"}}",
+            "extra1": "",
+            "extra2": "",
+            "timing": 0,
+            "type": "vcontrol"
+        },
+		
+        {"desp":"开始复位","data": "press_rel:(0.225,0.0798611)","extra1": "11","extra2": "","timing": 300,"type": "touch"},
+        {"desp":"开始复位","data": "release","extra1": "11","extra2": "","timing": 100,"type": "touch"},        
+
+        {"data": "press_rel:(0.185547,0.177778)","extra1": "12","extra2": "","timing": 597,"type": "touch"},
+        {"data": "release","extra1": "12","extra2": "","timing": 720,"type": "touch"},
+        {"data": "press_rel:(0.196875,0.420833)","extra1": "11","extra2": "","timing": 218,"type": "touch"},
+        {"data": "release","extra1": "11","extra2": "","timing": 2700,"type": "touch"},
+        {"data": "press_rel:(0.185547,0.177778)","extra1": "12","extra2": "","timing": 151,"type": "touch"},
+        {"data": "release","extra1": "12","extra2": "","timing": 720,"type": "touch"},
+        {"data": "press_rel:(0.196875,0.420833)","extra1": "11","extra2": "","timing": 241,"type": "touch"},
+        {"data": "release","extra1": "11","extra2": "","timing": 4500,"type": "touch"},
+        {"data": "press_rel:(0.185547,0.177778)","extra1": "12","extra2": "","timing": 133,"type": "touch"},
+        {"data": "release","extra1": "12","extra2": "","timing": 900,"type": "touch"},
+        {"data": "press_rel:(0.135156,1.51111)","extra1": "11","extra2": "","timing": 168,"type": "touch"},
+        
+        {"data": "press_rel:(0.135156,1.51111)","extra1": "11","extra2": "","timing": 417,"type": "touch"},
+        {"data": "release","extra1": "11","extra2": "","timing": 125,"type": "touch"}, 
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+		
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+		
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"},
+        {"data": "press_rel:(0.125391,1.51111)","extra1": "1","extra2": "","timing": 1400,"type": "touch"},
+        {"data": "release","extra1": "1","extra2": "","timing": 140,"type": "touch"}		
+		
+    ],
+    "info": {
+        "create_time": 1762833350655,
+        "package_name": "com.tencent.tmgp.WePop",
+        "resolution_x": 2560,
+        "resolution_y": 1440,
+        "total_running_time": 28475
+    }
+}

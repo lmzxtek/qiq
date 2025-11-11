@@ -1,0 +1,31 @@
+{
+    "actions": [
+        {
+            "data": "{\"cmd\":\"detect_app\",\"params\":{\"app\":\"跑跑卡丁车官方竞速版\",\"package\":\"com.tencent.tmgp.WePop\"}}",
+            "extra1": "",
+            "extra2": "",
+            "timing": 0,
+            "type": "vcontrol"
+        },
+        {"desp":"开始复位","data": "press_rel:(0.225,0.0798611)","extra1": "11","extra2": "","timing": 720,"type": "touch"},
+        {"desp":"开始复位","data": "release","extra1": "11","extra2": "","timing": 150,"type": "touch"},
+
+        {"data": "press_rel:(0.119531,0.304167)","extra1": "2","extra2": "","timing": 810,"type": "touch"},
+        {"data": "press_rel:(0.133594,0.304167)","extra1": "2","extra2": "","timing": 33,"type": "touch"},
+        {"data": "press_rel:(0.147656,0.304167)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "press_rel:(0.161719,0.304167)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.175781,0.304167)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.189844,0.304167)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
+        {"data": "press_rel:(0.205078,0.304167)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
+        {"data": "release","extra1": "2","extra2": "","timing": 5400,"type": "touch"},
+        
+        {"data": "release","extra1": "11","extra2": "","timing": 300,"type": "touch"}
+    ],
+    "info": {
+        "create_time": 1762844810362,
+        "package_name": "com.tencent.tmgp.WePop",
+        "resolution_x": 2560,
+        "resolution_y": 1440,
+        "total_running_time": 6969
+    }
+}

@@ -6,22 +6,15 @@
             "extra2": "",
             "timing": 0,
             "type": "vcontrol"
-        },
-        {"data": "keyboard_release:56","extra1": "","extra2": "","timing": 52,"type": "keyboard"},
-        {"data": "keyboard_release:31","extra1": "","extra2": "","timing": 38,"type": "keyboard"},
-                
-        {"data": "press_rel:(0.225,0.0798611)","extra1": "11","extra2": "","timing": 300,"type": "touch"},
-        {"data": "release","extra1": "11","extra2": "","timing": 100,"type": "touch"},        
+        },        
+        {"desp":"开始复位","data": "press_rel:(0.225,0.0798611)","extra1": "11","extra2": "","timing": 540,"type": "touch"},
+        {"desp":"开始复位","data": "release","extra1": "11","extra2": "","timing": 120,"type": "touch"},
 
-        {"data": "press_rel:(0.119531,0.304861)","extra1": "2","extra2": "","timing": 414,"type": "touch"},
-        {"data": "press_rel:(0.129297,0.322222)","extra1": "2","extra2": "","timing": 34,"type": "touch"},
-        {"data": "press_rel:(0.139063,0.339583)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
-        {"data": "press_rel:(0.148828,0.356944)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
-        {"data": "press_rel:(0.158594,0.374306)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
-        {"data": "press_rel:(0.168359,0.391667)","extra1": "2","extra2": "","timing": 16,"type": "touch"},
-        {"data": "press_rel:(0.180469,0.4125)","extra1": "2","extra2": "","timing": 17,"type": "touch"},
-        {"data": "press_rel:(0.119531,0.457639)","extra1": "2","extra2": "","timing": 1589,"type": "touch"},
-        {"data": "release","extra1": "2","extra2": "","timing": 44,"type": "touch"},
+        {"data": "press_rel:(0.05,0.447222)","extra1": "11","extra2": "","timing": 600,"type": "touch"},
+        {"data": "release","extra1": "11","extra2": "","timing": 400,"type": "touch"},
+        {"data": "press_rel:(0.196875,0.420833)","extra1": "11","extra2": "","timing": 330,"type": "touch"},
+        {"data": "release","extra1": "11","extra2": "","timing": 2274,"type": "touch"},
+        {"data": "press_rel:(0.135156,1.51111)","extra1": "11","extra2": "","timing": 737,"type": "touch"},
 
 
         {"data": "release","extra1": "11","extra2": "","timing": 120,"type": "touch"},
