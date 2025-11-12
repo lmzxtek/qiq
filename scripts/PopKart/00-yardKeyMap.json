@@ -157,16 +157,16 @@
             },
             "rel_radius": 0.0859375,
             "rel_work_position": {
-                    "rel_x": 0.17405,
-                    "rel_y": 0.788
+                    "rel_x": 0.1739,
+                    "rel_y": 0.787
             },
             "icon": {
                 "background_color": "00000066",
                 "description": "东西南北",
                 "radius_correction": 1,
                 "rel_position": {
-                    "rel_x": 0.17405,
-                    "rel_y": 0.788
+                    "rel_x": 0.1739,
+                    "rel_y": 0.787
                 },
                 "visibility": true
             },
