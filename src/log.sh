@@ -69,9 +69,10 @@ echoT "   3.添加ufw的安装"
 echoT "   4.添加开放8881:8888端口(ufw)"
 echoT "   5.增加Debian13的DD系统安装"
 echoT "--------------------------------"
-echoR " -=> 2025-10-21   v0.7.8" " $VLATEST"
+echoR " -=> 2025-11-14   v0.7.8" " $VLATEST"
 echoY "   1.添加EasyTier组网的安装脚本"
 echoY "   2.添加自定义docker根目录"
+echoY "   3.添加pixi安装脚本"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 

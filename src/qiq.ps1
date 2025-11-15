@@ -416,11 +416,13 @@ function Manage_Python {
         Write-Host "========== Python Management ==========" -ForegroundColor Green
         Write-Host "  1. Install Python Latest              "
         Write-Host "  2. Install Python by ver.             "
-        Write-Host "  3. Install pyenv                      " -ForegroundColor Yellow
-        Write-Host "  4. Install pipenv                     "
-        Write-Host "  5. Install Poetry                     " -ForegroundColor Blue
-        Write-Host "  6. Install Julia                      "
-        Write-Host " 98. Set poetry Mirror                  " #-ForegroundColor Blue
+        Write-Host "  3. Install pyenv                      " 
+        Write-Host "  4. Install pipenv                     " 
+        Write-Host "  5. Install pixi                       " -ForegroundColor Yellow 
+        Write-Host "  6. Install Poetry                     " 
+        Write-Host "  7. Install Julia                      " 
+        Write-Host " 97. Set pdm pypi.url                   " -ForegroundColor Blue 
+        Write-Host " 98. Set poetry Mirror                  " 
         Write-Host " 99. Set Pip Mirror                     " -ForegroundColor Green 
         Write-Host "  0. Back                               "
         Write-Host "=======================================" -ForegroundColor Green
@@ -626,9 +628,11 @@ index-url = $mirrorURL
             }
             "3" { py_install_pyenv; Pause }
             "4" { python -m pip install --upgrade pip; python -m pip install pipenv; Pause }
-            "5" { Install-Poetry; Pause   }
-            "6" { show_jill_usage; pip install jill; jill install; Pause }
+            "5" { Invoke-WebRequest -useb https://pixi.sh/install.ps1 | Invoke-Expression; Pause   }
+            "6" { Install-Poetry; Pause   }
+            "7" { show_jill_usage; pip install jill; jill install; Pause }
 
+            "97" { pdm config pypi.url "https://mirrors.aliyun.com/pypi/simple" ; Pause }
             "98" { Set-poetry-source; Pause }
             "99" { Set-Pip-Mirror2; Pause   }
             # "7" { Set-Pip-Mirror; Pause   }

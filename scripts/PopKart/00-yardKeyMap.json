@@ -285,12 +285,6 @@
             "type": "Click"
         },
         {
-            "bottom_key": {
-                "device": "keyboard",
-                "scan_code": 336,
-                "text": "Direction_down",
-                "virtual_key": 40
-            },
             "editor_icon_scale": 1.3046854545454545,
             "first_point_policy": {
                 "handle_type": "Move",
@@ -309,15 +303,15 @@
                 "description": "东西南北",
                 "radius_correction": 1,
                 "rel_position": {
-                    "rel_x": 0.1737,
-                    "rel_y": 0.7871
+                    "rel_x": 0.174021,
+                    "rel_y": 0.787401
                 },
                 "visibility": true
             },
-            "rel_radius": 0.15,
+            "rel_radius": 0.08,
             "rel_work_position": {
-                "rel_x": 0.1737,
-                "rel_y": 0.7871
+                    "rel_x": 0.174021,
+                    "rel_y": 0.787401
             },
             "in_line_policy": "Just_Use_Last",
             "key": {
@@ -325,6 +319,12 @@
                 "scan_code": 2147483647,
                 "text": "",
                 "virtual_key": 2147483647
+            },
+            "bottom_key": {
+                "device": "keyboard",
+                "scan_code": 336,
+                "text": "Direction_down",
+                "virtual_key": 40
             },
             "left_key": {
                 "device": "keyboard",
@@ -338,6 +338,12 @@
                 "text": "Direction_right",
                 "virtual_key": 39
             },
+            "top_key": {
+                "device": "keyboard",
+                "scan_code": 328,
+                "text": "Direction_up",
+                "virtual_key": 38
+            },
             "subsequent_point_policy": {
                 "handle_type": "Click",
                 "period": 16,
@@ -346,7 +352,7 @@
             "target_point_input_compensatory_policy": {
                 "count": 3,
                 "distance": 0.0001,
-                "enable": false,
+                "enable": true,
                 "period": 8,
                 "steps": 3,
                 "x_policy": "Default",
@@ -355,12 +361,6 @@
                 "y_policy": "Default",
                 "y_policy_intercept_phaseshift": 0,
                 "y_policy_slope_period": 1
-            },
-            "top_key": {
-                "device": "keyboard",
-                "scan_code": 328,
-                "text": "Direction_up",
-                "virtual_key": 38
             },
             "type": "Swipehold"
         },

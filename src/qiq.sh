@@ -5682,10 +5682,11 @@ MENU_PYTHON_ITEMS=(
     "3|安装Poetry|$GREEN" 
     "4|卸载Poetry|$WHITE" 
     "5|设置Poetry源|$CYAN" 
-    "6|安装miniForge|$YELLOW" 
-    "7|安装miniConda|$WHITE"  
-    "8|设置pip源|$WHITE" 
-    "9|设置conda源|$WHITE" 
+    "6|安装pixi|$YELLOW" 
+    "7|安装miniForge|$WHITE" 
+    "8|安装miniConda|$WHITE"  
+    "9|设置pip源|$WHITE" 
+    "10|设置conda源|$WHITE" 
     "………………………|$WHITE"
     "51|安装hypercorn|$WHITE" 
     "52|安装gunicorn|$WHITE" 
@@ -6111,10 +6112,14 @@ function python_management_menu(){
         3 ) py_subitem_install_poetry ;;
         4 ) py_subitem_uninstall_poetry ;;
         5 ) py_subitem_set_source_poetry ;;
-        6 ) py_subitem_install_miniforge ;;
-        7 ) py_subitem_install_miniconda ;;
-        8 ) py_subitem_set_source_pip ;;
-        9 ) py_subitem_set_source_conda ;;
+        6 ) 
+            curl -fsSL https://pixi.sh/install.sh | bash 
+            _BREAK_INFO=" 安装pixi成功！" && _IS_BREAK="true" ;;
+            ;;
+        7 ) py_subitem_install_miniforge ;;
+        8 ) py_subitem_install_miniconda ;;
+        9 ) py_subitem_set_source_pip ;;
+        10) py_subitem_set_source_conda ;;
 
         51) py_subitem_install_hypercorn ;;
         52) py_subitem_install_gunicorn ;;
