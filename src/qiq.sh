@@ -6114,7 +6114,7 @@ function python_management_menu(){
         5 ) py_subitem_set_source_poetry ;;
         6 ) 
             curl -fsSL https://pixi.sh/install.sh | bash 
-            _BREAK_INFO=" 安装pixi成功！" && _IS_BREAK="true" ;;
+            _BREAK_INFO=" 安装pixi成功！" && _IS_BREAK="true"
             ;;
         7 ) py_subitem_install_miniforge ;;
         8 ) py_subitem_install_miniconda ;;
