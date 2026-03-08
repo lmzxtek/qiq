@@ -709,8 +709,8 @@ function System_Settings {
         Write-Host " 10. Download Shawl                    " 
         Write-Host "  "
         Write-Host " 11. Setup frp service                 " 
-        Write-Host " 12. Setup alist service               " 
-        Write-Host " 13. Setup zoraxy service              " 
+        Write-Host " 12. Setup OpenList service(:5244)     " 
+        Write-Host " 13. Setup zoraxy service(:8000)       " 
         Write-Host " 14. Setup gm-api service              " -ForegroundColor Green
         Write-Host " 15. Setup gm-csv service              " 
         Write-Host "  "
@@ -1081,7 +1081,7 @@ function System_Settings {
         }
     }
     function set_sw_alist {
-        param([string]$sfld = "c:\alist")
+        param([string]$sfld = "c:\openlist")
         $targetDir = $sfld
         if (-not (Test-Path -Path $targetDir)) {
             New-Item -ItemType Directory -Path $targetDir
@@ -1100,7 +1100,7 @@ function System_Settings {
         $vbsContent = @"
 Dim ws
 Set ws = Wscript.CreateObject("Wscript.Shell")
-ws.run "alist.exe server",vbhide
+ws.run "openlist.exe server",vbhide
 Wscript.quit
 "@
         $vbsContent | Out-File -FilePath $vbsFileName -Encoding ASCII
@@ -1110,19 +1110,19 @@ Wscript.quit
         $vbsContent = @"
 Dim ws
 Set ws = Wscript.CreateObject("Wscript.Shell")
-ws.run "taskkill /f /im alist.exe",0
+ws.run "taskkill /f /im openlist.exe",0
 Wscript.quit
 "@
         $vbsContent | Out-File -FilePath $vbsFileName -Encoding ASCII
         Write-Host " Stop .vbs file saved: $vbsFileName" -ForegroundColor Green
 
-        $xmlFileName = "$sfld\sw_alist.xml"
+        $xmlFileName = "$sfld\sw_openlist.xml"
         $xmlContent = @"
 <service>
-  <id>alist</id>
-  <name>Alist-Server</name>
-  <description>This service runs Alist Server.</description>
-  <executable>alist.exe</executable>
+  <id>openlist</id>
+  <name>Openlist-Server</name>
+  <description>This service runs Openlist Server(localhost:5244).</description>
+  <executable>openlist.exe</executable>
   <arguments>server</arguments>
   <log mode="roll"></log>
 </service>
@@ -1140,8 +1140,8 @@ Wscript.quit
         }
 
         
-        $file = "alist-windows-amd64.zip"
-        $url_dl = Get_proxy_url "https://github.com/AlistGo/alist/releases/latest/download/alist-windows-amd64.zip"
+        $file = "openlist-windows-amd64.zip"
+        $url_dl = Get_proxy_url "https://github.com/OpenListTeam/OpenList/releases/latest/download/openlist-windows-amd64.zip"
         # $targetDir = Get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         write-host "File URL: $url_dl"
@@ -1168,7 +1168,7 @@ Wscript.quit
         if ([string]::IsNullOrEmpty($userInput)) { $userInput = 'y' }
         # 使用正则表达式进行智能匹配
         if ($userInput -match '^(y|yes)$') {
-            download_winsw2 $targetDir "sw_alist.exe"
+            download_winsw2 $targetDir "sw_openlist.exe"
         }
     }
     while ($true) {
