@@ -74,9 +74,10 @@ echoT "   1.添加EasyTier组网的安装脚本"
 echoT "   2.添加自定义docker根目录"
 echoT "   3.添加pixi安装脚本"
 echoT "--------------------------------"
-echoR " -=> 2026-03-08   v0.7.9" " $VLATEST"
+echoR " -=> 2026-03-10   v0.7.9" " $VLATEST"
 echoY "   1.添加show_second.bat脚本，显示系统时间的秒数"
 echoY "   2.替换qiq.ps1脚本中alist为OpenList"
+echoY "   3.Ratpanel更新为AcePanel3.0"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "web") $(echoR ": $url_script") 

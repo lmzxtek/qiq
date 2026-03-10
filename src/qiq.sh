@@ -3723,7 +3723,7 @@ function commonly_tools_menu(){
 MENU_SERVICE_TOOLS_ITEMS=(
     "1|1Panel|$YELLOW"
     "2|aaPanel|$WHITE"
-    "3|Ratpanel|$Yellow"
+    "3|Acepanel|$Yellow"
     "4|Ajenti|$WHITE"
     "5|Cockpit|$WHITE"
     "6|VestaCP|$WHITE"
@@ -3830,9 +3830,9 @@ function service_tools_menu(){
         fi     
     }
 
-    function tools_install_ratpanel(){
+    function tools_install_acepanel(){
         _IS_BREAK="true"
-        local app_name='RatPanel'
+        local app_name='AcePanel'
         if command -v panel-cli &> /dev/null; then
             ## 系统已安装1Panel
             _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
@@ -3843,8 +3843,8 @@ function service_tools_menu(){
             echo -e "   > systemctl stop    panel # 停止${app_name}服务"
             echo -e "   > systemctl restart panel # 重启${app_name}服务 "
             echo -e ""
-            echo -e "   > panel-cli              # ${app_name}管理菜单命令 "
-            echo -e "   > panel-cli https off    # 关闭面板https           "
+            echo -e "   > acepanel              # ${app_name}管理菜单命令 "
+            echo -e "   > acepanel https off    # 关闭面板https           "
             echo -e "============================================================"            
             echo -e ""
         else 
@@ -3857,7 +3857,8 @@ function service_tools_menu(){
             [Yy] | [Yy][Ee][Ss])
                 # sys_update 
                 _BREAK_INFO=" 成功安装${app_name}!"
-                curl -fsLm 10 -o ratpanel.sh https://dl.cdn.haozi.net/panel/install.sh && bash ratpanel.sh
+                curl -fsLm 10 -o acepanel.sh https://dl.acepanel.net/helper.sh && bash acepanel.sh
+                # bash <(curl -sSLm 10 https://dl.acepanel.net/helper.sh)
                 ;;
             [Nn] | [Nn][Oo])
                 _BREAK_INFO=" 取消安装${app_name}!"
@@ -5369,7 +5370,7 @@ EOF
         case "${INPUT}" in
         1 ) tools_install_1panel ;;
         2 ) tools_install_aaPanel ;;
-        3 ) tools_install_ratpanel ;;
+        3 ) tools_install_acepanel ;;
         4 ) tools_install_ajenti ;;
         5 ) tools_install_cockpit ;;
         6 ) tools_install_vestacp ;;
